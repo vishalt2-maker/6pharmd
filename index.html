@@ -292,18 +292,35 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
 .dock-btn svg{width:22px;height:22px}
 .dock-btn span{font:600 11px/1 var(--f-body);color:#D9D2F0}
 .dock-btn:active{background:rgba(255,255,255,.12)}
-.tunes{position:fixed;z-index:42;right:max(10px,calc(50% - 260px));bottom:calc(var(--dock-h) + 30px + env(safe-area-inset-bottom,0px));display:grid;gap:6px;width:min(calc(100% - 20px),300px);padding:10px;border-radius:22px;background:var(--ink);color:#fff;box-shadow:0 18px 40px -12px rgba(30,18,56,.7)}
+.tunes{position:fixed;z-index:42;right:max(10px,calc(50% - 260px));bottom:calc(var(--dock-h) + 30px + env(safe-area-inset-bottom,0px));display:grid;gap:6px;width:min(calc(100% - 20px),300px);padding:10px;border-radius:22px;background:var(--ink);color:#fff;box-shadow:0 18px 40px -12px rgba(30,18,56,.7);transition:opacity .2s ease,transform .2s ease,visibility .2s}
+.tunes.closed{opacity:0;visibility:hidden;transform:translateY(12px);pointer-events:none}
+.tunes-link{padding:4px 8px;font-size:14px;font-weight:600;color:var(--gold-text);text-decoration:underline;text-underline-offset:3px}
+.play-chip{position:fixed;z-index:41;left:50%;bottom:calc(var(--dock-h) + 30px + env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;gap:8px;padding:12px 20px 9px;border:0;border-radius:999px;background:var(--marigold);color:var(--ink);font:800 17px/1 var(--f-display);box-shadow:0 12px 28px -10px rgba(0,0,0,.5);transform:translateX(-50%);animation:chipIn .5s cubic-bezier(.2,1.4,.4,1)}
+.play-chip svg{width:20px;height:20px;margin-top:-3px}
+@keyframes chipIn{from{opacity:0;transform:translate(-50%,16px) scale(.9)}}
 .tunes-head{padding:4px 8px 2px;font:700 12px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:#B9B2D6}
 .tune{display:grid;gap:2px;width:100%;padding:10px 14px 8px;border:0;border-radius:14px;background:rgba(255,255,255,.07);color:#fff;text-align:left}
 .tune b{font:700 18px/1.1 var(--f-display)}
 .tune span{font-size:13px;line-height:1.3;color:#CFC8E8}
 .tune[aria-current="true"]{background:var(--marigold);color:var(--ink)}
 .tune[aria-current="true"] span{color:var(--ink-2)}
+.yt{aspect-ratio:16/9;max-width:100%;border-radius:12px;overflow:hidden;background:#000}
+.yt iframe{display:block;width:100%;height:100%;border:0}
 .tune-off{display:block;text-align:center;background:transparent;border:2px solid rgba(255,255,255,.28);font-weight:600}
 @media (hover:hover){.tune:hover{background:rgba(255,255,255,.14)}.tune[aria-current="true"]:hover{background:var(--marigold)}}
 .toast{position:fixed;z-index:45;left:50%;bottom:calc(var(--dock-h) + 30px + env(safe-area-inset-bottom,0px));max-width:calc(100% - 32px);padding:10px 16px 8px;border-radius:12px;background:var(--ink);color:#fff;font-weight:600;text-align:center;overflow-wrap:anywhere;opacity:0;pointer-events:none;transform:translate(-50%,16px);transition:opacity .25s ease,transform .25s ease}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 #fx{position:fixed;inset:0;z-index:50;width:100%;height:100%;pointer-events:none}
+.lyrics{position:fixed;inset:0;z-index:30;pointer-events:none;overflow:hidden}
+.lyric{position:absolute;left:0;top:0;white-space:nowrap;font:700 var(--fs)/1.1 var(--f-hand);color:var(--lc);opacity:0;will-change:transform,opacity;animation:lyric var(--dur) cubic-bezier(.2,.8,.2,1) forwards}
+.lyric.bold{font-family:var(--f-display);font-weight:800}
+@keyframes lyric{
+  0%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(.55)}
+  14%{opacity:var(--o);transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1.08)}
+  22%{opacity:var(--o);transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1)}
+  78%{opacity:var(--o)}
+  100%{opacity:0;transform:translate(calc(var(--x) + var(--dx)),calc(var(--y) - 70px)) rotate(var(--r)) scale(1)}
+}
 
 /* ---------- reveal ---------- */
 .rv{transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
@@ -401,6 +418,7 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
 </div>
 
 <canvas id="fx" aria-hidden="true"></canvas>
+<div class="lyrics" id="lyrics" aria-hidden="true"></div>
 
 <main id="main">
 
@@ -625,13 +643,14 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
   <button class="dock-btn" id="shareBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg><span>Share</span></button>
   <button class="dock-btn" id="soundBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="tunes"><svg viewBox="0 0 24 24" aria-hidden="true"><use id="soundIcon" href="#i-sound-on"/></svg><span id="soundTxt">Music</span></button>
 </nav>
-<div class="tunes" id="tunes" role="dialog" aria-label="Choose music" hidden>
+<div class="tunes closed" id="tunes" role="dialog" aria-label="Music" aria-hidden="true">
   <p class="tunes-head">Music</p>
-  <button class="tune" type="button" data-song="0"><b>Graduation March</b><span>Elgar · Pomp and Circumstance</span></button>
-  <button class="tune" type="button" data-song="1"><b>Canon in D</b><span>Pachelbel</span></button>
-  <button class="tune" type="button" data-song="2"><b>Ode to Joy</b><span>Beethoven</span></button>
-  <button class="tune tune-off" type="button" data-song="off">Music off</button>
+  <button class="tune" type="button" id="songBtn"><b>We Are The Champions</b><span>Queen · official video on YouTube</span></button>
+  <div class="yt"><div id="ytPlayer"></div></div>
+  <a class="tunes-link" href="https://www.google.com/search?q=Queen+We+Are+The+Champions+lyrics" target="_blank" rel="noopener">See the lyrics ↗</a>
+  <button class="tune tune-off" type="button" id="musicOff">Music off</button>
 </div>
+<button class="play-chip" id="playChip" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sound-on"/></svg>Play music</button>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -651,248 +670,55 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
   const safe = (fn) => { try { fn(); } catch (e) { console.error(e); } };
   const rnd = (a, b) => a + Math.random() * (b - a);
 
-  /* ---------- music: three public-domain pieces played by the browser (March → Canon → Ode to Joy) ---------- */
+  /* ---------- music: Queen – "We Are The Champions", official video played through YouTube ---------- */
   const Music = (() => {
-    let ctx = null, master, rev, noise, bus, timer, next = 0, tick = 0, song = 0, muted = false, onChange = null;
-    const hz = (m) => 440 * Math.pow(2, (m - 69) / 12);
-
-    /* -- voices -- */
-    function env(t, a, peak, dec) {
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(peak, t + a);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec);
-      return g;
-    }
-    function newBus() { const dry = ctx.createGain(), wet = ctx.createGain(); dry.connect(master); wet.connect(rev); return { dry, wet }; }
-    function send(node, w) { node.connect(bus.dry); const s = ctx.createGain(); s.gain.value = w; node.connect(s); s.connect(bus.wet); }
-    function tone(t, f, type, peak, dec, w, a = 0.004) {
-      const o = ctx.createOscillator(); o.type = type; o.frequency.value = f;
-      const e = env(t, a, peak, dec); o.connect(e); send(e, w); o.start(t); o.stop(t + a + dec + 0.05);
-    }
-    function hit(t, type, freq, q, v, dec, w) {
-      const s = ctx.createBufferSource(); s.buffer = noise;
-      const f = ctx.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
-      const e = env(t, 0.002, v, dec); s.connect(f); f.connect(e); send(e, w); s.start(t); s.stop(t + dec + 0.05);
-    }
-    function lead(t, m, d, loud) {           // brass when loud, warm strings when soft
-      const f = hz(m), end = t + d + 0.35, v = loud ? 0.07 : 0.05;
-      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 1;
-      lp.frequency.setValueAtTime(loud ? 1000 : 800, t);
-      lp.frequency.linearRampToValueAtTime(loud ? 3400 : 2000, t + 0.07);
-      lp.frequency.exponentialRampToValueAtTime(loud ? 2000 : 1400, t + 0.6);
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(v, t + (loud ? 0.04 : 0.1));
-      g.gain.linearRampToValueAtTime(v * 0.8, t + Math.max(0.12, d));
-      g.gain.exponentialRampToValueAtTime(0.0001, end);
-      lp.connect(g); send(g, 0.35);
-      const vib = ctx.createOscillator(), vg = ctx.createGain();
-      vib.frequency.value = 5.2; vg.gain.setValueAtTime(0, t); vg.gain.linearRampToValueAtTime(f * 0.005, t + 0.4); vib.connect(vg);
-      [-6, 6].forEach((dt) => {
-        const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = dt;
-        vg.connect(o.frequency); o.connect(lp); o.start(t); o.stop(end);
-      });
-      vib.start(t); vib.stop(end);
-    }
-    function violin(t, m, d, v, pan) {
-      const f = hz(m), end = t + d + 0.3;
-      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600; lp.Q.value = 0.7;
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + 0.07);
-      g.gain.setValueAtTime(v * 0.9, t + Math.max(0.08, d - 0.04)); g.gain.exponentialRampToValueAtTime(0.0001, end);
-      let out = g;
-      if (ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = pan; g.connect(p); out = p; }
-      lp.connect(g); send(out, 0.45);
-      const vib = ctx.createOscillator(), vg = ctx.createGain();
-      vib.frequency.value = 5.6; vg.gain.setValueAtTime(0, t); vg.gain.linearRampToValueAtTime(f * 0.006, t + 0.3); vib.connect(vg);
-      [-4, 4].forEach((dt) => {
-        const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = dt;
-        vg.connect(o.frequency); o.connect(lp); o.start(t); o.stop(end);
-      });
-      vib.start(t); vib.stop(end);
-    }
-    function strings(t, notes, d, v) {
-      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1500;
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + Math.min(0.22, d * 0.4));
-      g.gain.setValueAtTime(v, t + Math.max(0.25, d - 0.05)); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.45);
-      lp.connect(g); send(g, 0.55);
-      notes.forEach((n) => [-7, 7].forEach((dt) => {
-        const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(n); o.detune.value = dt;
-        o.connect(lp); o.start(t); o.stop(t + d + 0.5);
-      }));
-    }
-    function bass(t, m, d, v) {
-      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520;
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + 0.06);
-      g.gain.setValueAtTime(v * 0.85, t + Math.max(0.1, d - 0.05)); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.3);
-      lp.connect(g); send(g, 0.2);
-      const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(m);
-      const o2 = ctx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = hz(m) * 2;   // so phone speakers hear it
-      [o, o2].forEach((x) => { x.connect(lp); x.start(t); x.stop(t + d + 0.35); });
-    }
-    function timp(t, m, v) {
-      const f = hz(m);
-      [[1, v, 1.4], [1.5, v * 0.35, 0.8], [2, v * 0.2, 0.5]].forEach(([mul, g, d]) => {
-        const o = ctx.createOscillator();
-        o.frequency.setValueAtTime(f * mul * 1.03, t); o.frequency.exponentialRampToValueAtTime(f * mul, t + 0.06);
-        const e = env(t, 0.003, g, d); o.connect(e); send(e, 0.3); o.start(t); o.stop(t + d + 0.05);
-      });
-      hit(t, 'lowpass', 400, 0.7, v * 0.4, 0.08, 0.2);
-    }
-    function cymbal(t, v) { hit(t, 'highpass', 5500, 0.4, v, 2.0, 0.45); hit(t, 'bandpass', 3200, 0.9, v * 0.5, 1.2, 0.45); }
-    function snare(t, v) { hit(t, 'bandpass', 1800, 0.8, v, 0.09, 0.15); }
-    function celesta(t, m, v) { tone(t, hz(m), 'sine', v, 1.1, 0.5); tone(t, hz(m) * 4, 'sine', v * 0.12, 0.25, 0.5); }
-
-    /* -- 1. Elgar, Pomp and Circumstance March No. 1, trio ("Land of Hope and Glory"), in G -- */
-    const M_MEL = [
-      [0, 4, 67], [4, 1, 66], [5, 1, 67], [6, 2, 69], [8, 4, 64], [12, 4, 62], [16, 4, 60], [20, 1, 59], [21, 1, 60], [22, 2, 62], [24, 8, 57],
-      [32, 4, 59], [36, 1, 61], [37, 2, 62], [39, 1, 64], [40, 4, 69], [44, 4, 62], [48, 4, 67], [52, 1, 67], [53, 2, 66], [55, 1, 64], [56, 8, 62],
-      [64, 4, 79], [68, 1, 78], [69, 1, 79], [70, 2, 81], [72, 4, 76], [76, 4, 74], [80, 4, 72], [84, 1, 71], [85, 1, 72], [86, 2, 74], [88, 8, 69],
-      [96, 4, 71], [100, 1, 73], [101, 2, 74], [103, 1, 76], [104, 4, 81], [108, 4, 74], [112, 4, 84], [116, 1, 84], [117, 2, 83], [119, 1, 81], [120, 8, 83],
-      [128, 4, 76], [132, 1, 78], [133, 2, 79], [135, 1, 81], [136, 4, 74], [140, 4, 79], [144, 8, 79], [152, 2, 84], [154, 4, 83], [158, 2, 81], [160, 8, 79]
-    ];
-    const M_HARM = [                      // [start, length, bass, ...chord]
-      [0, 4, 43, 55, 59, 62], [4, 4, 38, 54, 57, 60], [8, 8, 38, 55, 59, 62], [16, 4, 48, 55, 60, 64], [20, 4, 47, 55, 59, 62], [24, 4, 45, 57, 60, 64], [28, 4, 45, 57, 62, 66],
-      [32, 4, 50, 55, 59, 62], [36, 4, 49, 55, 57, 61, 64], [40, 4, 50, 54, 57, 62], [44, 4, 50, 54, 59, 62], [48, 4, 52, 55, 59, 62, 64], [52, 4, 52, 57, 61, 64], [56, 4, 50, 54, 57, 62], [60, 4, 50, 54, 57, 60, 62],
-      [64, 4, 43, 55, 59, 62], [68, 4, 38, 54, 57, 60], [72, 8, 38, 55, 59, 62], [80, 4, 48, 55, 60, 64], [84, 4, 47, 55, 59, 62], [88, 4, 45, 57, 60, 64], [92, 4, 45, 57, 62, 66],
-      [96, 4, 50, 55, 59, 62], [100, 4, 49, 55, 57, 61, 64], [104, 4, 50, 54, 57, 62], [108, 4, 50, 55, 59, 62], [112, 4, 52, 55, 60, 64], [116, 4, 50, 54, 57, 60, 62], [120, 4, 50, 55, 59, 62], [124, 4, 47, 54, 59, 63],
-      [128, 4, 48, 55, 60, 64], [132, 4, 48, 54, 57, 60, 62], [136, 4, 47, 55, 59, 62], [140, 4, 40, 55, 59, 64], [144, 8, 45, 55, 57, 60, 64], [152, 8, 38, 54, 57, 60, 62], [160, 12, 43, 55, 59, 62, 67]
-    ];
-    const M_TIMP = { 64: 43, 72: 38, 80: 43, 96: 38, 104: 38, 112: 43, 120: 43, 128: 43, 136: 43, 160: 43 };
-    const mMel = {}, mHarm = {};
-    M_MEL.forEach(([k, len, m]) => (mMel[k] = mMel[k] || []).push([len, m]));
-    M_HARM.forEach(([k, len, bn, ...c]) => (mHarm[k] = mHarm[k] || []).push([len, bn, c]));
-    function playMarch(k, t, S) {
-      const loud = k >= 64;
-      (mHarm[k] || []).forEach(([len, bn, c]) => { strings(t, c, len * S, loud ? 0.016 : 0.011); bass(t, bn, len * S, loud ? 0.1 : 0.07); });
-      (mMel[k] || []).forEach(([len, m]) => lead(t, m, len * S, loud));
-      if (M_TIMP[k]) timp(t, M_TIMP[k], k === 160 ? 0.34 : 0.2);
-      if (k >= 152 && k < 160) for (let j = 0; j < 4; j++) timp(t + (j * S) / 4, 38, 0.05 + (k - 152 + j / 4) * 0.02);
-      if (k === 64 || k === 160) cymbal(t, k === 160 ? 0.1 : 0.07);
-    }
-
-    /* -- 2. Pachelbel, Canon in D: ground bass with three violins entering one after another -- */
-    const GROUND = [50, 45, 47, 42, 43, 38, 43, 45];
-    const C_CH = [[57, 62, 66], [57, 61, 64], [59, 62, 66], [57, 61, 66], [59, 62, 67], [57, 62, 66], [59, 62, 67], [57, 61, 64]];
-    const L1 = [78, 76, 74, 73, 71, 69, 71, 73];
-    const L2 = [74, 73, 71, 69, 67, 66, 67, 64];
-    const L3 = [74, 78, 81, 79, 78, 74, 78, 76, 74, 71, 74, 81, 79, 83, 81, 79];
-    const PLAN = [[], [1], [2, 1], [3, 2, 1], [1, 3, 2], [2, 1, 3], [3, 2, 1]];
-    const PAN = [-0.45, 0.45, 0];
-    function playCanon(k, t, S) {
-      if (k >= 112) {
-        if (k === 112) { strings(t, [50, 57, 62, 66, 69], 8 * S, 0.014); bass(t, 38, 8 * S, 0.09); violin(t, 74, 8 * S, 0.04, -0.3); violin(t, 78, 8 * S, 0.03, 0.3); }
-        return;
-      }
-      const cyc = Math.floor(k / 16), pos = k % 16;
-      if (pos % 2 === 0) { const b = pos / 2; bass(t, GROUND[b], 2 * S * 0.95, 0.08); strings(t, C_CH[b], 2 * S, 0.008); }
-      PLAN[cyc].forEach((line, v) => {
-        if (line === 3) violin(t, L3[pos], S, 0.032, PAN[v]);
-        else if (pos % 2 === 0) violin(t, (line === 1 ? L1 : L2)[pos / 2], 2 * S, 0.034, PAN[v]);
-      });
-    }
-
-    /* -- 3. Beethoven, Ode to Joy, in D: gentle first time, full band second time -- */
-    const O_A = [[66, 2], [66, 2], [67, 2], [69, 2], [69, 2], [67, 2], [66, 2], [64, 2], [62, 2], [62, 2], [64, 2], [66, 2]];
-    const O_E1 = [[66, 3], [64, 1], [64, 4]], O_E2 = [[64, 3], [62, 1], [62, 4]];
-    const O_B = [[64, 2], [64, 2], [66, 2], [62, 2], [64, 2], [66, 1], [67, 1], [66, 2], [62, 2], [64, 2], [66, 1], [67, 1], [66, 2], [64, 2], [62, 2], [64, 2], [57, 4]];
-    const oMel = {};
-    [...O_A, ...O_E1, ...O_A, ...O_E2, ...O_B, ...O_A, ...O_E2].reduce((k, [m, len]) => { oMel[k] = [len, m]; return k + len; }, 0);
-    const O_BARS = ['D', 'A', 'D', 'A', 'D', 'A', 'D', 'AD', 'A', 'AD', 'A', 'DA', 'D', 'A', 'D', 'AD'];
-    const O_SEG = { D: [[0, 8, 'D']], A: [[0, 8, 'A']], AD: [[0, 4, 'A'], [4, 4, 'D']], DA: [[0, 2, 'D'], [2, 6, 'A']] };
-    const O_CH = { D: { b: 38, c: [50, 54, 57, 62] }, A: { b: 45, c: [49, 52, 57, 61] } };
-    const chordAt = (bar, pos) => O_SEG[O_BARS[bar]].find(([p0, len]) => pos >= p0 && pos < p0 + len)[2];
-    function playOde(k, t, S) {
-      if (k >= 256) {
-        if (k === 256) { strings(t, [50, 54, 57, 62, 66], 8 * S, 0.016); bass(t, 38, 8 * S, 0.1); lead(t, 62, 8 * S, true); lead(t, 74, 8 * S, true); timp(t, 38, 0.3); cymbal(t, 0.09); }
-        return;
-      }
-      const full = k >= 128, kk = k % 128, bar = kk >> 3, pos = kk & 7;
-      if (!full) {
-        O_SEG[O_BARS[bar]].forEach(([p0, len, c]) => { if (pos === p0) { strings(t, O_CH[c].c, len * S, 0.01); bass(t, O_CH[c].b, len * S, 0.07); } });
-      } else {
-        const c = O_CH[chordAt(bar, pos)];
-        if (pos === 0 || pos === 4) bass(t, c.b, 2 * S, 0.1);
-        if (pos === 2 || pos === 6) { strings(t, c.c, 1.2 * S, 0.014); snare(t, 0.05); }
-        if (pos === 0) timp(t, c.b, 0.15);
-      }
-      const note = oMel[kk];
-      if (note) { lead(t, note[1], note[0] * S, full); if (full) violin(t, note[1] + 12, note[0] * S, 0.022, 0); }
-      if (k === 128) cymbal(t, 0.08);
-    }
-
-    const SONGS = [
-      { name: 'Graduation March', by: 'Elgar · Pomp and Circumstance', step: 60 / 70 / 2, len: 176, play: playMarch },
-      { name: 'Canon in D', by: 'Pachelbel', step: 0.5, len: 120, play: playCanon },
-      { name: 'Ode to Joy', by: 'Beethoven', step: 60 / 116 / 2, len: 264, play: playOde }
-    ];
+    const VIDEO = '04854XqcfCY';            // Queen Official channel upload
+    let player = null, ready = false, playing = false, want = false, failed = false, onChange = null, ctx = null, sfx = null;
     const changed = () => { if (onChange) onChange(); };
-
-    function schedule() {
-      while (next < ctx.currentTime + 0.2) {
-        const S = SONGS[song];
-        S.play(tick, next, S.step);
-        next += S.step; tick++;
-        if (tick >= S.len) { tick = 0; song = (song + 1) % SONGS.length; next += 1.2; changed(); }   // short pause, then the next piece
-      }
-    }
-    function start() {
-      if (ctx) return true;
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return false;
-      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
-      ctx = new AC();
-      master = ctx.createGain(); master.gain.value = 0.0001;
-      const comp = ctx.createDynamicsCompressor(); master.connect(comp); comp.connect(ctx.destination);
-      rev = ctx.createConvolver();
-      const len = Math.floor(ctx.sampleRate * 2.8), ir = ctx.createBuffer(2, len, ctx.sampleRate);
-      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
-      rev.buffer = ir;
-      const rg = ctx.createGain(); rg.gain.value = 0.4; rev.connect(rg); rg.connect(master);
-      noise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 2.5), ctx.sampleRate);
-      const nd = noise.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
-      bus = newBus();
-      ctx.resume();
-      next = ctx.currentTime + 0.1;
-      master.gain.exponentialRampToValueAtTime(0.75, ctx.currentTime + 2);
-      timer = setInterval(schedule, 25); schedule();
-      document.addEventListener('visibilitychange', () => {
-        if (muted) return;
-        if (document.hidden) ctx.suspend(); else ctx.resume();
+    function build() {
+      if (player || !window.YT || !window.YT.Player) return;
+      player = new window.YT.Player('ytPlayer', {
+        host: 'https://www.youtube-nocookie.com', videoId: VIDEO, width: '100%', height: '100%',
+        playerVars: { playsinline: 1, rel: 0, loop: 1, playlist: VIDEO, cc_load_policy: 1, cc_lang_pref: 'en' },   // captions on when the video has them
+        events: {
+          onReady: () => { ready = true; player.setVolume(80); if (want) player.playVideo(); changed(); },
+          onStateChange: (e) => { playing = e.data === 1; changed(); },      // 1 = playing
+          onError: () => { failed = true; changed(); }
+        }
       });
-      changed();
+    }
+    function load() {                       // YouTube's player API, fetched while the envelope is showing
+      if (window.YT && window.YT.Player) return build();
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => { if (prev) prev(); build(); };
+      const sc = document.createElement('script');
+      sc.src = 'https://www.youtube.com/iframe_api'; sc.async = true;
+      sc.onerror = () => { failed = true; changed(); };
+      document.head.appendChild(sc);
+    }
+    function play() { want = true; if (ready) player.playVideo(); changed(); }
+    function pause() { want = false; if (ready) player.pauseVideo(); changed(); }
+    function start() {                      // called inside the envelope tap so browsers allow sound
+      if (!ctx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) { ctx = new AC(); sfx = ctx.createGain(); sfx.gain.value = 0.5; sfx.connect(ctx.destination); }
+      }
+      play();
       return true;
     }
-    function select(i) {                      // jump to a piece: fade out what is playing, start the new one
-      song = i; tick = 0;
-      if (ctx) {
-        const old = bus, now = ctx.currentTime;
-        [old.dry, old.wet].forEach((g) => { g.gain.setValueAtTime(1, now); g.gain.linearRampToValueAtTime(0.0001, now + 0.4); });
-        setTimeout(() => { try { old.dry.disconnect(); old.wet.disconnect(); } catch (e) {} }, 1500);
-        bus = newBus(); next = now + 0.25;
-      }
-      changed();
+    function bell(t, m, v) {
+      [[1, v, 1.1], [4, v * 0.12, 0.25]].forEach(([mul, g, d]) => {
+        const o = ctx.createOscillator(), e = ctx.createGain();
+        o.frequency.value = 440 * Math.pow(2, (m - 69) / 12) * mul;
+        e.gain.setValueAtTime(0.0001, t); e.gain.linearRampToValueAtTime(g, t + 0.004); e.gain.exponentialRampToValueAtTime(0.0001, t + d);
+        o.connect(e); e.connect(sfx); o.start(t); o.stop(t + d + 0.05);
+      });
     }
-    function setMuted(m) {
-      muted = m; changed(); if (!ctx) return;
-      if (m) { master.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.15); setTimeout(() => { if (muted) ctx.suspend(); }, 600); }
-      else ctx.resume().then(() => master.gain.setTargetAtTime(0.75, ctx.currentTime, 0.4));
-    }
-    function chime() {
-      if (!ctx || muted) return;
-      const t = ctx.currentTime + 0.02;
-      [67, 71, 74, 79, 83, 86].forEach((m, i) => celesta(t + i * 0.06, m, 0.05));
-    }
-    function blip() {
-      if (!ctx || muted) return;
-      celesta(ctx.currentTime + 0.01, [79, 83, 86, 91][(Math.random() * 4) | 0], 0.05);
-    }
+    function chime() { if (!ctx || !want) return; const t = ctx.currentTime + 0.02; [67, 71, 74, 79, 83, 86].forEach((m, i) => bell(t + i * 0.06, m, 0.05)); }
+    function blip() { if (!ctx || !want) return; bell(ctx.currentTime + 0.01, [79, 83, 86, 91][(Math.random() * 4) | 0], 0.05); }
     return {
-      start, setMuted, select, chime, blip, songs: SONGS.map(({ name, by }) => ({ name, by })),
-      get muted() { return muted; }, get on() { return !!ctx; }, get song() { return song; },
+      load, start, play, pause, chime, blip,
+      get playing() { return playing; }, get wanted() { return want; }, get failed() { return failed; },
       set onChange(fn) { onChange = fn; }
     };
   })();
@@ -1025,6 +851,7 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
     dock.hidden = false; void dock.offsetWidth; dock.classList.remove('away');
     hero.classList.add('drawn');
     FX.burst('caps'); FX.burst('petals', 70);
+    document.dispatchEvent(new Event('invite-open'));
     setTimeout(() => { intro.hidden = true; }, 700);
   }
   function openInvite() {
@@ -1164,28 +991,31 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
     $('#tossBtn').addEventListener('click', () => { FX.burst('caps'); Music.chime(); });
     $('#petalBtn').addEventListener('click', () => { FX.burst('petals', 160); Music.chime(); });
 
-    const soundBtn = $('#soundBtn'), tunes = $('#tunes');
+    const soundBtn = $('#soundBtn'), tunes = $('#tunes'), chip = $('#playChip');
+    let chipReady = false;
+    const isOpen = () => !tunes.classList.contains('closed');
+    function showTunes(open) {
+      tunes.classList.toggle('closed', !open);
+      tunes.setAttribute('aria-hidden', String(!open));
+      soundBtn.setAttribute('aria-expanded', String(open));
+    }
     function renderMusic() {
-      const on = Music.on && !Music.muted;
+      const on = Music.playing;
       $('#soundIcon').setAttribute('href', on ? '#i-sound-on' : '#i-sound-off');
       $('#soundTxt').textContent = on ? 'Music' : 'Muted';
-      tunes.querySelectorAll('.tune[data-song]').forEach((b) => b.setAttribute('aria-current', String(on && b.dataset.song === String(Music.song))));
+      $('#songBtn').setAttribute('aria-current', String(on));
+      chip.hidden = !(chipReady && Music.wanted && !on && !Music.failed);   // e.g. iPhones need a tap on the player itself
+      if (Music.failed) { soundBtn.hidden = true; showTunes(false); }
     }
-    function showTunes(open) { tunes.hidden = !open; soundBtn.setAttribute('aria-expanded', String(open)); }
     Music.onChange = renderMusic;
-    soundBtn.addEventListener('click', () => { renderMusic(); showTunes(tunes.hidden); });
-    tunes.addEventListener('click', (e) => {
-      const b = e.target.closest('.tune'); if (!b) return;
-      if (b.dataset.song === 'off') Music.setMuted(true);
-      else {
-        if (!Music.on) Music.start();
-        Music.select(+b.dataset.song);
-        if (Music.muted) Music.setMuted(false);
-      }
-      renderMusic(); setTimeout(() => showTunes(false), 220);
-    });
-    document.addEventListener('click', (e) => { if (!tunes.hidden && !e.target.closest('#tunes, #soundBtn')) showTunes(false); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !tunes.hidden) { showTunes(false); soundBtn.focus(); } });
+    Music.load();
+    document.addEventListener('invite-open', () => setTimeout(() => { chipReady = true; renderMusic(); }, 4000));
+    soundBtn.addEventListener('click', () => showTunes(!isOpen()));
+    $('#songBtn').addEventListener('click', () => Music.play());
+    $('#musicOff').addEventListener('click', () => { Music.pause(); setTimeout(() => showTunes(false), 200); });
+    chip.addEventListener('click', () => { Music.play(); showTunes(true); });
+    document.addEventListener('click', (e) => { if (isOpen() && !e.target.closest('#tunes, #soundBtn, #playChip')) showTunes(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) { showTunes(false); soundBtn.focus(); } });
   });
 
   /* ---------- caps react to taps and to where you are on the page ---------- */
@@ -1203,6 +1033,45 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
       io.unobserve(e.target); FX.burst('caps'); Music.chime();
     }), { threshold: 0.6 });
     [document.querySelector('.prog-list li:nth-child(7)'), document.querySelector('.foot-big')].forEach((t) => t && io.observe(t));
+  });
+
+  /* ---------- lines that pop in and drift across the page ---------- */
+  safe(() => {
+    if (reduce) return;
+    const LINES = ['We did it!', 'Class of 2026', 'Six years, one batch', 'From students to doctors', 'Thank you, Mom & Dad', 'Caps up!',
+      'Doctors of Pharmacy', '℞ for happiness', 'No more vivas!', 'Internship: survived', 'Proud moment', 'Late nights, bright futures',
+      'Here’s to the next chapter', 'Batch 2020–26 forever', 'See you on 21 · 11', 'Pharm D, done!'];
+    const layer = $('#lyrics');
+    let n = (Math.random() * LINES.length) | 0, live = 0;
+    const lum = (c) => {
+      const m = c.match(/[\d.]+/g); if (!m) return 1;
+      const [r, g, b] = m.slice(0, 3).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const bgAt = (el) => {                  // colour actually behind a point, so the text stays faintly visible
+      for (; el && el !== document.documentElement; el = el.parentElement) {
+        const c = getComputedStyle(el).backgroundColor;
+        if (c && c !== 'transparent' && !/rgba\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(c)) return c;
+      }
+      return 'rgb(255, 255, 255)';
+    };
+    function spawn() {
+      if (document.hidden || !intro.classList.contains('gone')) return;
+      const W = innerWidth, H = innerHeight, small = W < 700;
+      if (live >= (small ? 3 : 6)) return;
+      const text = LINES[n++ % LINES.length], fs = small ? rnd(17, 22) : rnd(20, 30), w = text.length * fs * 0.52;
+      const x = rnd(12, Math.max(14, W - w - 12)), y = rnd(H * 0.12, H - 150);
+      const dark = lum(bgAt(document.elementFromPoint(Math.min(W - 1, x + w / 2), Math.min(H - 1, y + fs / 2)))) < 0.3;
+      const el = document.createElement('span');
+      el.className = 'lyric' + (Math.random() < 0.35 ? ' bold' : '');
+      el.textContent = text;
+      el.style.cssText = `--x:${x | 0}px;--y:${y | 0}px;--r:${rnd(-7, 7).toFixed(1)}deg;--dx:${rnd(-30, 30) | 0}px;--fs:${fs | 0}px;` +
+        `--o:${(dark ? rnd(0.3, 0.42) : rnd(0.22, 0.32)).toFixed(2)};--lc:${dark ? '#FFFFFF' : '#18298A'};--dur:${rnd(6, 8.5).toFixed(1)}s`;
+      live++;
+      el.addEventListener('animationend', () => { el.remove(); live--; });
+      layer.appendChild(el);
+    }
+    setInterval(spawn, innerWidth < 700 ? 1500 : 1000);
   });
 
   /* ---------- graduate names ---------- */
