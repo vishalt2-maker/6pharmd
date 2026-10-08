@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Kalam:wght@400;700&family=Mukta:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Kalam:wght@400;700&family=Mukta:wght@400;500;600;700&family=Baloo+Tamma+2:wght@600;800&family=Noto+Sans+Kannada:wght@400;600;700&display=swap">
 <script>document.documentElement.className += ' js';</script>
 <style>
 /* Concept: pharmacy packaging meets an Indian celebration.
@@ -146,7 +146,7 @@ html.js .intro{display:grid}
 .stk{position:absolute;z-index:1;pointer-events:none;filter:drop-shadow(0 4px 0 rgba(0,0,0,.15))}
 .stk-a{width:66px;right:20px;top:202px;transform:rotate(-18deg)}
 .stk-b{width:40px;right:30px;top:112px;transform:rotate(10deg)}
-.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"logo" "kicker" "title" "note" "cal" "actions";gap:12px}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"logo" "kicker" "personal" "title" "note" "cal" "actions";gap:12px}
 .logo-chip{grid-area:logo;justify-self:start;background:#fff;border-radius:14px;padding:8px 12px;box-shadow:0 6px 0 rgba(0,0,0,.14)}
 .logo-chip img{height:40px;width:auto}
 .kicker{grid-area:kicker;margin-top:10px;font-weight:600;font-size:17px;color:#DCE4FF}
@@ -326,7 +326,7 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
   .wrap{padding-inline:32px}
   .sec{padding-block:96px 104px}
   .hero{padding-block:128px 104px}
-  .hero-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr);grid-template-areas:"logo cal" "kicker cal" "title cal" "note cal" "actions cal";column-gap:48px;align-items:start}
+  .hero-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr);grid-template-areas:"logo cal" "kicker cal" "personal cal" "title cal" "note cal" "actions cal";column-gap:48px;align-items:start}
   .cal{justify-self:center;align-self:center;width:300px;margin:0}
   .logo-chip img{height:48px}
   .big6{right:-4vw;bottom:-200px;font-size:640px}
@@ -375,6 +375,82 @@ html{background:#EAF0FF}
 .intro-hint{color:var(--ink-2)}
 .tap{background:var(--royal);color:#fff}
 .tap i{background:var(--marigold)}
+
+/* ===== Add-ons: languages, live bar, memories, names, invite links, wishes, how to reach ===== */
+html[lang="kn"]{--f-display:"Baloo Tamma 2","Noto Sans Kannada",sans-serif;--f-body:"Noto Sans Kannada",system-ui,sans-serif;--f-hand:"Noto Sans Kannada",system-ui,sans-serif}
+html[lang="hi"]{--f-display:"Baloo 2","Mukta",sans-serif}
+html[lang="kn"] .hand,html[lang="kn"] .label,html[lang="kn"] .greet{font-weight:600}
+.lang{position:fixed;z-index:70;top:calc(10px + env(safe-area-inset-top,0px));right:10px;display:flex;gap:2px;padding:4px;border-radius:999px;background:#fff;box-shadow:0 6px 18px -8px rgba(30,18,56,.45);transition:transform .3s ease,opacity .3s ease}
+.lang button{min-width:44px;min-height:36px;padding:2px 10px 0;border:0;border-radius:999px;background:transparent;color:var(--ink);font:700 14px/1 var(--f-body)}
+.lang button[aria-pressed="true"]{background:var(--royal);color:#fff}
+.lang.tucked{transform:translateY(-140%);opacity:0;pointer-events:none}
+body.has-live .lang{top:calc(62px + env(safe-area-inset-top,0px))}
+.live-bar{position:fixed;z-index:39;left:10px;right:10px;top:calc(10px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:10px;max-width:640px;margin:0 auto;padding:10px 14px 8px;border-radius:16px;background:var(--ink);color:#fff;font-weight:600;font-size:15px;line-height:1.3;box-shadow:0 12px 30px -12px rgba(30,18,56,.6)}
+.live-bar .dot{flex:none;width:10px;height:10px;border-radius:50%;background:#FF4D4D;box-shadow:0 0 0 0 rgba(255,77,77,.7);animation:livePulse 1.4s infinite}
+.live-bar.done .dot{background:var(--marigold);animation:none}
+@keyframes livePulse{70%{box-shadow:0 0 0 10px rgba(255,77,77,0)}100%{box-shadow:0 0 0 0 rgba(255,77,77,0)}}
+.live-bar span:nth-child(2){flex:1;min-width:0}
+.live-watch{flex:none;padding:6px 12px 4px;border-radius:999px;background:var(--marigold);color:var(--ink);font-weight:800;text-decoration:none}
+.milestone{display:inline-block;margin-top:12px;padding:8px 14px 6px;border-radius:12px;background:var(--royal);color:#fff;font:800 17px/1.2 var(--f-display);transform:rotate(-2deg)}
+.personal{grid-area:personal;display:inline-block;justify-self:start;margin-top:6px;padding:7px 14px 5px;border-radius:999px;background:#fff;color:var(--royal-deep);font-weight:700;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.06)}
+.reach{margin-top:22px;padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.65)}
+.reach h3{font-size:22px;margin-bottom:8px}
+.reach ul{margin:0;padding:0 0 0 18px;display:grid;gap:6px;font-size:16px}
+.block-head{margin-top:56px}
+.block-head h3{font-size:clamp(26px,6vw,36px)}
+.block-head p{color:var(--ink-2);margin-top:4px}
+.memories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px;margin-top:28px}
+@media (min-width:880px){.memories{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.mem{all:unset;box-sizing:border-box;cursor:pointer;display:block;position:relative;padding:8px 8px 12px;border-radius:4px;background:#fff;box-shadow:0 2px 0 #eee,0 16px 28px -16px rgba(30,18,56,.45);transform:rotate(var(--r))}
+.mem::before{content:"";position:absolute;top:-10px;left:50%;width:70px;height:22px;margin-left:-35px;background:var(--tape);opacity:.6;transform:rotate(calc(var(--r) * -1.6))}
+.mem .ph{display:grid;place-items:center;aspect-ratio:1;border-radius:2px;background:var(--tint);overflow:hidden;color:var(--ink-2);text-align:center;font-size:13px;font-weight:600;line-height:1.3}
+.mem .ph svg{width:34px;height:34px;opacity:.55;margin-bottom:6px}
+.mem .ph img{width:100%;height:100%;object-fit:cover}
+.mem .cap{display:block;margin-top:8px;font-family:var(--f-hand);font-size:17px;text-align:center;line-height:1.15}
+.mem[disabled]{cursor:default}
+.mem:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+.tn{position:relative;margin-top:24px;aspect-ratio:4/3;max-width:640px;border-radius:20px;overflow:hidden;background:#ddd;user-select:none;touch-action:pan-y}
+.tn .layer{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:800 22px/1.2 var(--f-display)}
+.tn .layer img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tn .then{background:var(--marigold-soft)}
+.tn .now{background:var(--royal-soft);clip-path:inset(0 0 0 var(--pos,50%))}
+.tn .then span{justify-self:start;margin-left:6%}.tn .now span{justify-self:end;margin-right:6%}
+.tn .layer span{position:relative;max-width:40%;font-size:16px;padding:8px 14px 6px;border-radius:12px;background:rgba(255,255,255,.85)}
+.tn .tag{position:absolute;top:12px;padding:5px 10px 3px;border-radius:999px;background:var(--ink);color:#fff;font:700 13px/1 var(--f-body);z-index:2}
+.tn .tag.l{left:12px}.tn .tag.r{right:12px}
+.tn .bar{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:4px;margin-left:-2px;background:#fff;z-index:2;pointer-events:none;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.tn .bar::after{content:"⇆";position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.tn input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;z-index:3}
+.names{margin-top:24px}
+.names li{padding:0;box-shadow:none}
+.name-btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;overflow:hidden;border-radius:999px;font-weight:600;font-size:16px;box-shadow:0 3px 0 rgba(0,0,0,.08);transition:transform .15s ease}
+.name-btn:active{transform:scale(.95)}
+.name-btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.name-btn span{padding:7px 14px 5px}
+.name-btn span:first-child{background:var(--c);color:#fff;font-family:var(--f-display);font-weight:800}
+.name-btn span:last-child{background:#F4F1FA;background:color-mix(in srgb,var(--c) 14%,#fff)}
+.invite-gen{display:grid;gap:12px;margin-top:20px;padding:18px;border-radius:20px;background:var(--royal-soft);max-width:640px}
+.invite-gen select{min-height:48px;padding:0 12px;border:2px solid rgba(30,18,56,.2);border-radius:14px;background:#fff;color:var(--ink);font:600 16px var(--f-body)}
+.invite-gen .btn-row .chip-btn{color:var(--ink)}
+.invite-gen .chip-btn.solid{background:var(--royal);border-color:var(--royal);color:#fff}
+.group-photo{margin-top:20px}
+.wishes{--bg:#F1ECFF}
+.notes{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:28px}
+.note-card{position:relative;padding:18px 18px 16px;border-radius:4px;background:var(--nc,#FFF3B0);box-shadow:0 14px 24px -16px rgba(30,18,56,.5);transform:rotate(var(--r,-1deg))}
+.note-card p{font-family:var(--f-hand);font-size:19px;line-height:1.35}
+.note-card b{display:block;margin-top:10px;font-size:14px;color:var(--ink-2)}
+.wishes .chip-btn.solid{background:var(--royal);border-color:var(--royal);color:#fff}
+.wishes .btn-row{margin-top:22px}
+.lb{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:rgba(20,16,40,.9)}
+.lb figure{margin:0;max-width:min(920px,100%);display:grid;gap:10px;justify-items:center}
+.lb img{max-height:78vh;width:auto;border-radius:8px}
+.lb figcaption{color:#fff;font-family:var(--f-hand);font-size:20px}
+.lb button{position:absolute;min-width:48px;min-height:48px;border:0;border-radius:999px;background:#fff;color:var(--ink);font:800 22px/1 var(--f-body)}
+.lb .x{top:calc(14px + env(safe-area-inset-top,0px));right:14px}
+.lb .prev{left:12px;top:50%}.lb .next{right:12px;top:50%}
+.after-note{display:none;margin:10px 0 0;padding:12px 16px;border-radius:14px;background:#fff;font-weight:700}
+body.after .hero .capsule,body.after .rsvp .capsule,body.after .rsvp .small,body.after .dock-main{display:none}
+body.after .after-note{display:block}
 </style>
 </head>
 <body>
@@ -407,7 +483,7 @@ html{background:#EAF0FF}
 
 <!-- ============ Envelope intro ============ -->
 <div class="intro" id="intro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
-  <p class="intro-title" id="introTitle">You have an invitation</p>
+  <p class="intro-title" id="introTitle" data-i18n="introTitle">You have an invitation</p>
   <button class="env-btn" id="openEnv" type="button" aria-label="Open the invitation">
     <span class="env" id="env">
       <span class="face env-front">
@@ -419,7 +495,7 @@ html{background:#EAF0FF}
           <text x="45" y="44" text-anchor="middle" font-family="Mukta, sans-serif" font-size="10" font-weight="700" fill="currentColor">21 NOV</text>
           <text x="45" y="55" text-anchor="middle" font-family="Mukta, sans-serif" font-size="10" font-weight="700" fill="currentColor">2026</text>
         </svg>
-        <span class="addr"><span class="addr-to">To,</span><span class="addr-name">You &amp; your family</span><span class="addr-from">From: Pharm D Batch <span class="nw">2020–26</span>, EWCP</span></span>
+        <span class="addr"><span class="addr-to" data-i18n="to">To,</span><span class="addr-name" id="addrName">You &amp; your family</span><span class="addr-from">From: Pharm D Batch <span class="nw">2020–26</span>, EWCP</span></span>
       </span>
       <span class="face env-back">
         <span class="lining"></span>
@@ -430,11 +506,17 @@ html{background:#EAF0FF}
       </span>
     </span>
   </button>
-  <span class="tap"><i></i>Tap to open</span>
+  <span class="tap"><i></i><span data-i18n="tapOpen">Tap to open</span></span>
   <p class="intro-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sound-on"/></svg>Turn your sound on, there’s music</p>
 </div>
 
 <canvas id="fx" aria-hidden="true"></canvas>
+<div class="lang" id="lang" role="group" aria-label="Language">
+  <button type="button" data-lang="en" aria-pressed="true">EN</button>
+  <button type="button" data-lang="kn" aria-pressed="false">ಕನ್ನಡ</button>
+  <button type="button" data-lang="hi" aria-pressed="false">हिंदी</button>
+</div>
+<div class="live-bar" id="liveBar" role="status" hidden><span class="dot" aria-hidden="true"></span><span id="liveText"></span><a class="live-watch" id="liveWatch" target="_blank" rel="noopener" hidden data-i18n="watch">Watch live</a></div>
 
 <main id="main">
 
@@ -447,21 +529,22 @@ html{background:#EAF0FF}
   <div class="wrap hero-grid">
     <div class="logo-chip"><img src="assets/ewcp-logo.png" width="1275" height="389" alt="East West College of Pharmacy, Bengaluru"></div>
     <p class="kicker">Pharm D · Batch 2020–2026</p>
+    <p class="personal" id="personal" hidden></p>
     <h1 class="hero-title">We’re <span class="u">graduating!<svg viewBox="0 0 300 16" aria-hidden="true"><path pathLength="1" d="M4 10C42 2 70 15 108 8S176 1 212 8S268 15 296 5"/></svg></span></h1>
-    <p class="hero-note hand">…and we’d love for you to be <span class="nw">there <svg viewBox="0 0 48 34" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5c11 1 23 8 29 21"/><path d="M25 22l8 5 3-9"/></g></svg></span></p>
+    <p class="hero-note hand"><span data-i18n="note">…and we’d love for you to be there</span> <span class="nw"><svg viewBox="0 0 48 34" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5c11 1 23 8 29 21"/><path d="M25 22l8 5 3-9"/></g></svg></span></p>
     <div class="cal" role="img" aria-label="Saturday, 21 November 2026, 10:00 AM onwards at Kuvempu Auditorium, EWIT Campus">
       <div class="cal-page">
         <div class="cal-top"><span class="cal-rings"><i></i><i></i></span>Nov 2026</div>
         <div class="cal-num">21</div>
-        <div class="cal-day">Saturday</div>
-        <div class="cal-meta"><b>10:00 AM onwards</b>Kuvempu Auditorium, EWIT Campus</div>
+        <div class="cal-day" data-i18n="sat">Saturday</div>
+        <div class="cal-meta"><b data-i18n="onwards">10:00 AM onwards</b>Kuvempu Auditorium, EWIT Campus</div>
       </div>
       <div class="badge6"><b>6</b><span>years of<br>Pharm D</span></div>
     </div>
     <div class="hero-actions">
-      <a class="capsule" href="https://gyanank.com/i/am2e7wwz" target="_blank" rel="noopener"><span class="c1">Register to attend</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
-      <button class="chip-btn" id="tossBtn" type="button"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#i-cap"/></svg>Toss the caps</button>
-      <span class="hand tap-hint">or tap anywhere</span>
+      <a class="capsule" href="https://gyanank.com/i/am2e7wwz" target="_blank" rel="noopener"><span class="c1" data-i18n="registerAttend">Register to attend</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <button class="chip-btn" id="tossBtn" type="button"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#i-cap"/></svg><span data-i18n="toss">Toss the caps</span></button>
+      <span class="hand tap-hint" data-i18n="tapHint">or tap anywhere</span>
     </div>
   </div>
 </header>
@@ -471,7 +554,8 @@ html{background:#EAF0FF}
   <div class="wrap count-grid">
     <div class="rv">
       <h2 id="cdTitle">43 days to go</h2>
-      <p class="hand">until we’re officially Doctors of Pharmacy</p>
+      <p class="hand" data-i18n="untilDocs">until we’re officially Doctors of Pharmacy</p>
+      <p class="milestone" id="milestone" hidden></p>
     </div>
     <div class="strip rv" role="timer" aria-label="Time left until the ceremony">
       <div class="blister"><div class="dome"><div class="tab" style="--t:var(--royal)"><b id="cdD">--</b></div></div><span>Days</span></div>
@@ -487,10 +571,10 @@ html{background:#EAF0FF}
 <section class="sec letter scallop">
   <div class="wrap letter-grid">
     <div class="letter-text rv">
-      <p class="hand greet">Dear family &amp; friends,</p>
-      <p>Six years ago we walked into East West College of Pharmacy knowing little more than the difference between a tablet and a capsule. Since then it has been practicals, viva after viva, case presentations, and a whole year of internship on the hospital wards.</p>
-      <p>On <b>21st November</b> we graduate as <b>Doctors of Pharmacy</b>. It would mean a lot to have you there when we take the Pharmacist’s Oath and throw our caps in the air.</p>
-      <p class="hand sign">With love,<br>Pharm D Batch 2020–2026</p>
+      <p class="hand greet" data-i18n="greet">Dear family &amp; friends,</p>
+      <p data-i18n="letter1">Six years ago we walked into East West College of Pharmacy knowing little more than the difference between a tablet and a capsule. Since then it has been practicals, viva after viva, case presentations, and a whole year of internship on the hospital wards.</p>
+      <p data-i18n="letter2">On <b>21st November</b> we graduate as <b>Doctors of Pharmacy</b>. It would mean a lot to have you there when we take the Pharmacist’s Oath and throw our caps in the air.</p>
+      <p class="hand sign" data-i18n="sign">With love,<br>Pharm D Batch 2020–2026</p>
     </div>
     <figure class="rx rv" aria-label="A prescription for you">
       <div class="rx-top">
@@ -525,24 +609,24 @@ html{background:#EAF0FF}
 <section class="sec guests scallop on-dark">
   <div class="wrap guests-grid">
     <div class="parents rv">
-      <p class="label">Chief Guests</p>
-      <h2 class="parents-title">Our Parents</h2>
-      <p class="parents-txt">Behind every graduate is a family that never stopped believing. Today belongs to you as much as it belongs to us.</p>
-      <button class="chip-btn" id="petalBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flower"/></svg>Shower flowers for them</button>
+      <p class="label" data-i18n="chief">Chief Guests</p>
+      <h2 class="parents-title" data-i18n="parents">Our Parents</h2>
+      <p class="parents-txt" data-i18n="parentsTxt">Behind every graduate is a family that never stopped believing. Today belongs to you as much as it belongs to us.</p>
+      <button class="chip-btn" id="petalBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flower"/></svg><span data-i18n="petals">Shower flowers for them</span></button>
     </div>
     <div class="mg-row" aria-hidden="true"></div>
     <div class="digs rv">
       <div class="dig">
-        <p class="label">Presided over by</p>
+        <p class="label" data-i18n="presided">Presided over by</p>
         <p class="dig-name">Dr. Md. Naseeruddin Inamdar</p>
-        <p class="dig-role">Principal, East West College of Pharmacy</p>
+        <p class="dig-role" data-i18n="principal">Principal, East West College of Pharmacy</p>
       </div>
       <div class="dig">
-        <p class="label">In the presence of</p>
+        <p class="label" data-i18n="presence">In the presence of</p>
         <p class="dig-name">Dr. Purnima Ashok</p>
-        <p class="dig-role">Dean (R&amp;D)</p>
+        <p class="dig-role" data-i18n="dean">Dean (R&amp;D)</p>
         <p class="dig-name">Dr. Apoorva Dev</p>
-        <p class="dig-role">Head, Department of Pharmacy Practice</p>
+        <p class="dig-role" data-i18n="hod">Head, Department of Pharmacy Practice</p>
       </div>
     </div>
   </div>
@@ -551,17 +635,17 @@ html{background:#EAF0FF}
 <!-- ============ Programme ============ -->
 <section class="sec prog scallop">
   <div class="wrap">
-    <div class="prog-head rv"><h2>Programme</h2><span class="hand">tentative</span></div>
+    <div class="prog-head rv"><h2 data-i18n="programme">Programme</h2><span class="hand" data-i18n="tentative">tentative</span></div>
     <ol class="prog-list">
-      <li class="rv" style="--c:var(--marigold)"><span class="time">9:45 AM</span><div><b>Arrival &amp; seating</b></div></li>
-      <li class="rv" style="--c:var(--orange)"><span class="time">10:00 AM</span><div><b>Lamp lighting &amp; invocation</b></div></li>
-      <li class="rv" style="--c:var(--peacock)"><span class="time">10:15 AM</span><div><b>Welcome address</b></div></li>
-      <li class="rv" style="--c:var(--indigo)"><span class="time">10:30 AM</span><div><b>Addresses by the Principal &amp; Dean</b></div></li>
-      <li class="rv hi" style="--c:var(--royal);--n:var(--royal-deep)"><span class="time">11:00 AM</span><div><b>Felicitation of parents</b><span class="note">keep tissues handy</span></div></li>
-      <li class="rv hi" style="--c:var(--peacock);--n:var(--peacock)"><span class="time">11:30 AM</span><div><b>The Pharmacist’s Oath</b><span class="note">the big moment</span></div></li>
-      <li class="rv hi" style="--c:var(--indigo);--n:var(--indigo)"><span class="time">11:45 AM</span><div><b>Graduates’ walk &amp; cap toss</b><span class="note">caps up!</span></div></li>
-      <li class="rv" style="--c:var(--leaf)"><span class="time">12:45 PM</span><div><b>Vote of thanks &amp; group photos</b></div></li>
-      <li class="rv" style="--c:var(--orange)"><span class="time">1:00 PM</span><div><b>Lunch</b></div></li>
+      <li class="rv" style="--c:var(--marigold)"><span class="time">9:45 AM</span><div><b data-i18n="p1">Arrival &amp; seating</b></div></li>
+      <li class="rv" style="--c:var(--orange)"><span class="time">10:00 AM</span><div><b data-i18n="p2">Lamp lighting &amp; invocation</b></div></li>
+      <li class="rv" style="--c:var(--peacock)"><span class="time">10:15 AM</span><div><b data-i18n="p3">Welcome address</b></div></li>
+      <li class="rv" style="--c:var(--indigo)"><span class="time">10:30 AM</span><div><b data-i18n="p4">Addresses by the Principal &amp; Dean</b></div></li>
+      <li class="rv hi" style="--c:var(--royal);--n:var(--royal-deep)"><span class="time">11:00 AM</span><div><b data-i18n="p5">Felicitation of parents</b><span class="note" data-i18n="n5">keep tissues handy</span></div></li>
+      <li class="rv hi" style="--c:var(--peacock);--n:var(--peacock)"><span class="time">11:30 AM</span><div><b data-i18n="p6">The Pharmacist’s Oath</b><span class="note" data-i18n="n6">the big moment</span></div></li>
+      <li class="rv hi" style="--c:var(--indigo);--n:var(--indigo)"><span class="time">11:45 AM</span><div><b data-i18n="p7">Graduates’ walk &amp; cap toss</b><span class="note" data-i18n="n7">caps up!</span></div></li>
+      <li class="rv" style="--c:var(--leaf)"><span class="time">12:45 PM</span><div><b data-i18n="p8">Vote of thanks &amp; group photos</b></div></li>
+      <li class="rv" style="--c:var(--orange)"><span class="time">1:00 PM</span><div><b data-i18n="p9">Lunch</b></div></li>
     </ol>
   </div>
 </section>
@@ -570,14 +654,23 @@ html{background:#EAF0FF}
 <section class="sec venue scallop" id="venue">
   <div class="wrap venue-grid">
     <div class="rv">
-      <h2>Venue</h2>
+      <h2 data-i18n="venue">Venue</h2>
       <p class="venue-name">Rashtra Kavi Kuvempu Auditorium</p>
-      <span class="floor">6th floor</span>
+      <span class="floor" data-i18n="floor">6th floor</span>
       <address id="addr">EWIT Campus, East West College of Pharmacy<br>No. 63, Near BEL Layout, Off Magadi Road<br>Vishwaneedam Post, Anjananagar<br>Bengaluru – 560091</address>
+      <div class="reach">
+        <h3 data-i18n="reach">How to reach</h3>
+        <ul>
+          <li data-i18n="r1">Bus: get off at Bharath Nagara 1st Phase stop, about a 600 m walk.</li>
+          <li data-i18n="r2">Metro: Jnana Bharathi station (Purple Line), then a cab, auto or the feeder bus towards Bharath Nagar.</li>
+          <li data-i18n="r3">Cab or auto: search “East West College of Pharmacy” in Uber, Ola or Rapido.</li>
+          <li data-i18n="r4">The auditorium is on the 6th floor. Please arrive by 9:45 AM.</li>
+        </ul>
+      </div>
     </div>
     <div class="venue-actions rv">
-      <a class="capsule inkcap" data-map href="https://www.google.com/maps/search/?api=1&amp;query=East%20West%20College%20of%20Pharmacy%2C%20Anjananagar%2C%20Magadi%20Road%2C%20Bengaluru%20560091" target="_blank" rel="noopener"><span class="c1">Get directions</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg></span></a>
-      <button class="chip-btn" id="copyAddr" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg>Copy address</button>
+      <a class="capsule inkcap" data-map href="https://www.google.com/maps/search/?api=1&amp;query=East%20West%20College%20of%20Pharmacy%2C%20Anjananagar%2C%20Magadi%20Road%2C%20Bengaluru%20560091" target="_blank" rel="noopener"><span class="c1" data-i18n="directions">Get directions</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg></span></a>
+      <button class="chip-btn" id="copyAddr" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="copyAddr">Copy address</span></button>
     </div>
   </div>
 </section>
@@ -586,22 +679,23 @@ html{background:#EAF0FF}
 <section class="sec rsvp scallop on-dark" id="rsvp">
   <div class="wrap rsvp-grid">
     <div class="rv">
-      <h2>Coming?</h2>
-      <p class="rsvp-lead">Kindly register everyone who is coming with you, so we can arrange seating and lunch. It only takes a minute.</p>
-      <a class="capsule goldcap" href="https://gyanank.com/i/am2e7wwz" target="_blank" rel="noopener"><span class="c1">Register</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
-      <p class="small">One registration per mobile number.</p>
+      <h2 data-i18n="coming">Coming?</h2>
+      <p class="rsvp-lead" data-i18n="rsvpLead">Kindly register everyone who is coming with you, so we can arrange seating and lunch. It only takes a minute.</p>
+      <a class="capsule goldcap" href="https://gyanank.com/i/am2e7wwz" target="_blank" rel="noopener"><span class="c1" data-i18n="register">Register</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <p class="small" data-i18n="onePer">One registration per mobile number.</p>
+      <p class="after-note" data-i18n="closed">Registration is closed. Thank you to everyone who came!</p>
     </div>
     <div class="rsvp-side">
       <div class="box rv">
-        <p class="hand">Any questions?</p>
+        <p class="hand" data-i18n="questions">Any questions?</p>
         <p class="who">Call or WhatsApp <b>Vishal</b><span class="num">94819 54900</span></p>
         <div class="btn-row">
-          <a class="chip-btn solid" href="tel:+919481954900"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>Call</a>
+          <a class="chip-btn solid" href="tel:+919481954900"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="call">Call</span></a>
           <a class="chip-btn" id="waVishal" href="https://wa.me/919481954900" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp</a>
         </div>
       </div>
       <div class="box rv">
-        <p class="hand">Save the date</p>
+        <p class="hand" data-i18n="saveDate">Save the date</p>
         <div class="btn-row">
           <a class="chip-btn solid" id="gcal" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cal"/></svg>Google Calendar</a>
           <a class="chip-btn" href="assets/graduation-day.ics" download><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cal"/></svg>Apple / Outlook</a>
@@ -618,35 +712,58 @@ html{background:#EAF0FF}
       <h2>Batch 2020–2026</h2>
       <p class="hand sub">six years, one batch</p>
     </div>
-    <div class="polaroids">
-      <figure class="pol rv" style="--r:-3deg;--tape:var(--royal);--tint:var(--marigold-soft)">
-        <div class="pol-img"><svg viewBox="0 0 160 120" aria-hidden="true"><g filter="url(#wobble)" fill="none" stroke="#1E1238" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="26" r="11" fill="#FFB21E" stroke="none"/><path d="M14 104h132"/><path d="M34 104V56h92v48" fill="#fff"/><path d="M26 58l54-28 54 28" fill="#fff"/><path d="M80 30V10"/><path d="M80 11h22l-5 7 5 7H80" fill="#E63E1C"/><path d="M70 104V80h20v24"/><rect x="44" y="66" width="14" height="12" fill="#C6F1EC"/><rect x="102" y="66" width="14" height="12" fill="#C6F1EC"/><path d="M46 92h10M104 92h10"/></g></svg></div>
-        <figcaption>Day one, 2020</figcaption>
-      </figure>
-      <figure class="pol rv" style="--r:2deg;--tape:var(--peacock);--tint:var(--peacock-soft)">
-        <div class="pol-img"><svg viewBox="0 0 160 120" aria-hidden="true"><g filter="url(#wobble)" fill="none" stroke="#1E1238" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 28h26l6-12 9 26 7-14h20" stroke="#00707A"/><path d="M14 104h132"/><rect x="104" y="62" width="34" height="42" fill="#fff"/><rect x="44" y="40" width="68" height="64" rx="3" fill="#fff"/><path d="M71 53h14M78 46v14" stroke="#E63E1C" stroke-width="5"/><rect x="53" y="70" width="12" height="10" fill="#FFE6A8"/><rect x="91" y="70" width="12" height="10" fill="#FFE6A8"/><path d="M70 104V86h16v18"/><rect x="121" y="72" width="11" height="9" fill="#FFE6A8"/></g></svg></div>
-        <figcaption>Internship year</figcaption>
-      </figure>
-      <figure class="pol rv" style="--r:-1.5deg;--tape:var(--marigold);--tint:var(--royal-soft)">
-        <div class="pol-img"><svg viewBox="0 0 160 120" aria-hidden="true"><g filter="url(#wobble)" stroke="#1E1238" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M50 58v14c0 9 60 9 60 0V58" fill="#3A2B6E"/><path d="M80 24l56 24-56 24-56-24z" fill="#1E1238"/><path d="M136 48v26" fill="none" stroke="#FFB21E" stroke-width="3.5"/><path d="M131 74h10l-2 12h-6z" fill="#FFB21E" stroke="#FFB21E"/><rect x="34" y="90" width="76" height="16" rx="8" fill="#fff"/><path d="M66 90v16" stroke="#E63E1C" stroke-width="5"/></g></svg></div>
-        <figcaption>Graduation, 2026</figcaption>
-      </figure>
+    <div class="block-head"><h3 data-i18n="memTitle">Memory wall</h3><p data-i18n="memSub">Six years in pictures. Tap a photo to see it bigger.</p></div>
+    <div class="memories" id="memories"></div>
+    <a class="chip-btn group-photo" id="groupPhoto" download hidden><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="groupPhoto">Download the group photo</span></a>
+
+    <div class="block-head"><h3 data-i18n="tnTitle">Then &amp; now</h3><p data-i18n="tnSub">Drag the slider: day one in 2020 vs graduation day.</p></div>
+    <div class="tn" id="tn" style="--pos:50%">
+      <div class="layer then" id="tnThen"><span data-i18n="tnThen">Day one</span></div>
+      <div class="layer now" id="tnNow"><span data-i18n="tnNow">Graduation day</span></div>
+      <b class="tag l">2020</b><b class="tag r">2026</b>
+      <div class="bar" aria-hidden="true"></div>
+      <input type="range" id="tnRange" min="0" max="100" value="50" aria-label="Compare 2020 and 2026 photos">
     </div>
+
+    <div class="block-head"><h3 data-i18n="gradsTitle">The graduates</h3><p data-i18n="gradsSub">Tap a name to toss a cap for them.</p></div>
     <ul class="names" id="names" hidden></ul>
+    <div class="invite-gen" id="inviteGen" hidden>
+      <label for="gradSel"><b data-i18n="genTitle">Graduates: send your family their own invitation</b></label>
+      <select id="gradSel"></select>
+      <div class="btn-row">
+        <a class="chip-btn solid" id="waMine" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg><span data-i18n="sendWa">Send on WhatsApp</span></a>
+        <button class="chip-btn" id="copyMine" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="copyMine">Copy my link</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Wishes ============ -->
+<section class="sec wishes scallop" id="wishes">
+  <div class="wrap">
+    <div class="rv"><h2 data-i18n="wishTitle">Wishes for the batch</h2><p class="hand sub" data-i18n="wishSub">from family, friends and teachers</p></div>
+    <div class="notes" id="notes"></div>
+    <div class="btn-row"><a class="chip-btn solid" id="wishBtn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg><span data-i18n="sendWish">Send a wish</span></a></div>
   </div>
 </section>
 
 </main>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo" hidden>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button class="x" type="button" id="lbClose" aria-label="Close">×</button>
+  <button class="prev" type="button" id="lbPrev" aria-label="Previous photo">‹</button>
+  <button class="next" type="button" id="lbNext" aria-label="Next photo">›</button>
+</div>
 
 <!-- ============ Footer ============ -->
 <footer class="foot scallop">
   <div class="toran" aria-hidden="true"><svg class="toran-svg"></svg></div>
   <div class="wrap">
-    <p class="foot-big rv">See you on the 21st!</p>
+    <p class="foot-big rv" data-i18n="seeYou">See you on the 21st!</p>
     <p class="made">Made with love by Pharm D Batch <span class="nw">2020–2026</span>, East West College of Pharmacy, Bengaluru.</p>
     <div class="foot-actions">
-      <a class="chip-btn" id="waShare" href="https://wa.me/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg>Share on WhatsApp</a>
-      <button class="chip-btn" id="copyLink" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg>Copy link</button>
+      <a class="chip-btn" id="waShare" href="https://wa.me/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg><span data-i18n="shareWa">Share on WhatsApp</span></a>
+      <button class="chip-btn" id="copyLink" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="copyLink">Copy link</span></button>
     </div>
     <div class="logo-chip"><img src="assets/ewcp-logo.png" width="1275" height="389" alt="East West College of Pharmacy" loading="lazy"></div>
     <p class="domain">6pharmd.fun</p>
@@ -655,9 +772,9 @@ html{background:#EAF0FF}
 </footer>
 
 <nav class="dock away" id="dock" aria-label="Quick actions" hidden>
-  <a class="dock-main" href="https://gyanank.com/i/am2e7wwz" target="_blank" rel="noopener"><span class="c1">Register</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
-  <a class="dock-btn" data-map href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span>Map</span></a>
-  <button class="dock-btn" id="shareBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg><span>Share</span></button>
+  <a class="dock-main" href="https://gyanank.com/i/am2e7wwz" target="_blank" rel="noopener"><span class="c1" data-i18n="register">Register</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <a class="dock-btn" data-map href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span data-i18n="map">Map</span></a>
+  <button class="dock-btn" id="shareBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="share">Share</span></button>
   <button class="dock-btn" id="soundBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="tunes"><svg viewBox="0 0 24 24" aria-hidden="true"><use id="soundIcon" href="#i-sound-on"/></svg><span id="soundTxt">Music</span></button>
 </nav>
 <div class="tunes closed" id="tunes" role="dialog" aria-label="Music" aria-hidden="true">
@@ -679,7 +796,27 @@ html{background:#EAF0FF}
   const RSVP_URL = 'https://gyanank.com/i/am2e7wwz';
   const MAP_URL = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('East West College of Pharmacy, Anjananagar, Magadi Road, Bengaluru 560091');
   const START = Date.UTC(2026, 10, 21, 4, 30);   // 21 Nov 2026, 10:00 AM IST
-  const GRADUATES = [];                           // e.g. ['Aishwarya R', 'Mohammed Faizan', ...]
+  const GRADUATES = [
+    'Vishal T', 'Radhika G S', 'Mohan M', 'Amara Yousuf Wani', 'Vaishnavi V Mesta', 'Dharshan Gowda H A', 'Chandini J',
+    'Nikitha P', 'Banylla Wankhar', 'Phibanroi Mukim', 'Adbul Akhir Sheikh', 'Dontireddy Sai Jyotsna', 'Jeevitha M',
+    'Santhasivam D', 'Tejas R', 'Lognathan R', 'Rahal Abdou', 'Pritam Baidya', 'Abyay Dash', 'Md Kaif'
+  ];
+  // Photos: put files in site/assets/photos/ and write the file name in src, e.g. 'assets/photos/day-one.jpg'
+  const MEMORIES = [
+    { caption: 'Day one, 2020', src: '' }, { caption: 'First practical', src: '' }, { caption: 'Exam season', src: '' },
+    { caption: 'Hospital rounds', src: '' }, { caption: 'Internship year', src: '' }, { caption: 'College fest', src: '' },
+    { caption: 'Farewell', src: '' }, { caption: 'Graduation day', src: '' }
+  ];
+  const THEN_NOW = { then: '', now: '' };          // two photos for the slider
+  const GROUP_PHOTO = '';                         // shown as a download after the event
+  const STREAM_URL = '';                          // YouTube live link on the day, e.g. 'https://youtube.com/live/...'
+  const WISHES = [];                              // e.g. [{ text: 'So proud of you all!', from: 'Radhika’s mother' }]
+  const PROGRAMME = [                             // IST times for the live banner on the day
+    ['9:45', 'p1'], ['10:00', 'p2'], ['10:15', 'p3'], ['10:30', 'p4'], ['11:00', 'p5'], ['11:30', 'p6'], ['11:45', 'p7'], ['12:45', 'p8'], ['13:00', 'p9'], ['14:30', null]
+  ];
+  // ?now=2026-11-21T11:35:00%2B05:30 in the address bar previews the page at that moment
+  const NOW_OVERRIDE = (() => { try { const v = new URLSearchParams(location.search).get('now'); const t = v && Date.parse(v); return t || 0; } catch (e) { return 0; } })();
+  const nowMs = () => (NOW_OVERRIDE ? NOW_OVERRIDE + performance.now() : Date.now());
   /* ===================== */
 
   const $ = (s) => document.querySelector(s);
@@ -784,6 +921,11 @@ html{background:#EAF0FF}
       cx.beginPath(); cx.arc(0, 0, 3, 0, 7); cx.fill();
       cx.fillRect(tx - 3 + Math.sin(p.flip) * 3, ty + s * 0.38, 6, 8);
       cx.restore();
+      if (p.label) {
+        cx.save(); cx.font = '800 15px "Baloo 2", sans-serif'; cx.textAlign = 'center';
+        cx.lineWidth = 4; cx.strokeStyle = '#fff'; cx.strokeText(p.label, p.x, p.y + s * 0.95);
+        cx.fillStyle = '#1E1238'; cx.fillText(p.label, p.x, p.y + s * 0.95); cx.restore();
+      }
     }
     function loop(now) {
       const dt = Math.min(2.5, (now - last) / 16.67); last = now;
@@ -815,6 +957,12 @@ html{background:#EAF0FF}
       for (let i = 0; i < n; i++) parts.push({ k: 'cap', x: x + rnd(-10, 10), y, vx: rnd(-2.5, 2.5), vy: -rnd(9, 14), rot: rnd(0, 6.28), vr: rnd(-0.15, 0.15), flip: rnd(0, 6.28), vf: rnd(0.08, 0.18), s: rnd(30, 42), tc: TASSEL[(Math.random() * 4) | 0] });
       for (let i = 0; i < 16; i++) parts.push({ k: 'conf', x, y, vx: rnd(-5, 5), vy: -rnd(4, 10), rot: rnd(0, 6.28), vr: rnd(-0.25, 0.25), flip: rnd(0, 6.28), vf: rnd(0.1, 0.3), w: rnd(6, 10), h: rnd(9, 14), round: Math.random() < 0.25, c: CONF[i % CONF.length], sway: rnd(0, 6.28) });
     }
+    function named(x, y, label) {      // one cap carrying a graduate's name
+      if (reduce || !cx) return;
+      parts.push({ k: 'cap', x, y, vx: rnd(-1.5, 1.5), vy: -rnd(12, 15), rot: rnd(-0.3, 0.3), vr: rnd(-0.05, 0.05), flip: rnd(0, 6.28), vf: rnd(0.05, 0.1), s: 44, tc: TASSEL[(Math.random() * 4) | 0], label });
+      for (let i = 0; i < 24; i++) parts.push({ k: 'conf', x, y, vx: rnd(-5, 5), vy: -rnd(4, 11), rot: rnd(0, 6.28), vr: rnd(-0.25, 0.25), flip: rnd(0, 6.28), vf: rnd(0.1, 0.3), w: rnd(6, 10), h: rnd(9, 14), round: Math.random() < 0.25, c: CONF[i % CONF.length], sway: rnd(0, 6.28) });
+      run();
+    }
     function tap(x, y) {            // knock a falling cap back up, or toss a new one from the finger
       if (reduce || !cx) return;
       let hit = null, best = 48 * 48;
@@ -843,7 +991,7 @@ html{background:#EAF0FF}
       if (kind === 'caps') caps(); else petals(n || 140);
       run();
     }
-    return { burst, drop, tap };
+    return { burst, drop, tap, named };
   })();
 
   /* ---------- small helpers ---------- */
@@ -886,6 +1034,105 @@ html{background:#EAF0FF}
   } else if (dock) {
     dock.hidden = false; dock.classList.remove('away');
   }
+
+
+  /* ---------- languages: English, Kannada, Hindi (translations are drafts; please have a native speaker check) ---------- */
+  const T = {
+    kn: {
+      introTitle: 'ನಿಮಗೊಂದು ಆಹ್ವಾನ', tapOpen: 'ತೆರೆಯಲು ಒತ್ತಿ', to: 'ಇವರಿಗೆ,', you: 'ನೀವು ಮತ್ತು ನಿಮ್ಮ ಕುಟುಂಬ', family: '{n} ಅವರ ಕುಟುಂಬ', personal: '{n} ಅವರ ಕುಟುಂಬಕ್ಕೆ ವಿಶೇಷ ಆಹ್ವಾನ',
+      note: '…ನೀವು ನಮ್ಮೊಂದಿಗಿರಬೇಕೆಂಬುದು ನಮ್ಮ ಆಸೆ', sat: 'ಶನಿವಾರ', onwards: 'ಬೆಳಿಗ್ಗೆ 10:00ರಿಂದ', registerAttend: 'ನೋಂದಾಯಿಸಿ', register: 'ನೋಂದಾಯಿಸಿ',
+      toss: 'ಟೋಪಿ ಹಾರಿಸಿ', tapHint: 'ಅಥವಾ ಎಲ್ಲಿಯಾದರೂ ಒತ್ತಿ', untilDocs: 'ನಾವು ಅಧಿಕೃತವಾಗಿ ಡಾಕ್ಟರ್ ಆಫ್ ಫಾರ್ಮಸಿ ಆಗುವವರೆಗೆ',
+      days: 'ಇನ್ನು {n} ದಿನಗಳು', day1: 'ಇನ್ನು 1 ದಿನ', almost: 'ಇನ್ನೇನು ಬಂದೇ ಬಿಟ್ಟಿತು!', today: 'ಇಂದೇ ಆ ದಿನ!', thanksCame: 'ಬಂದಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು!',
+      m30: 'ಇನ್ನು ಒಂದು ತಿಂಗಳಿಗಿಂತ ಕಡಿಮೆ!', m7: 'ಕೊನೆಯ ವಾರ!', m1: 'ನಾಳೆಯೇ!',
+      greet: 'ಪ್ರೀತಿಯ ಕುಟುಂಬ ಮತ್ತು ಸ್ನೇಹಿತರೇ,',
+      letter1: 'ಆರು ವರ್ಷಗಳ ಹಿಂದೆ ನಾವು ಈಸ್ಟ್ ವೆಸ್ಟ್ ಕಾಲೇಜ್ ಆಫ್ ಫಾರ್ಮಸಿಗೆ ಕಾಲಿಟ್ಟಾಗ, ಮಾತ್ರೆ ಮತ್ತು ಕ್ಯಾಪ್ಸೂಲ್ ನಡುವಿನ ವ್ಯತ್ಯಾಸ ಬಿಟ್ಟರೆ ನಮಗೆ ಹೆಚ್ಚೇನೂ ಗೊತ್ತಿರಲಿಲ್ಲ. ಅಂದಿನಿಂದ ಪ್ರಾಯೋಗಿಕ ತರಗತಿಗಳು, ಒಂದರ ನಂತರ ಒಂದು ವೈವಾ, ಕೇಸ್ ಪ್ರೆಸೆಂಟೇಶನ್‌ಗಳು ಮತ್ತು ಆಸ್ಪತ್ರೆಯ ವಾರ್ಡ್‌ಗಳಲ್ಲಿ ಒಂದು ವರ್ಷದ ಇಂಟರ್ನ್‌ಶಿಪ್.',
+      letter2: '<b>ನವೆಂಬರ್ 21</b>ರಂದು ನಾವು <b>ಡಾಕ್ಟರ್ ಆಫ್ ಫಾರ್ಮಸಿ</b> ಪದವಿ ಪಡೆಯುತ್ತಿದ್ದೇವೆ. ನಾವು ಫಾರ್ಮಸಿಸ್ಟ್ ಪ್ರಮಾಣವಚನ ಸ್ವೀಕರಿಸಿ ಟೋಪಿಗಳನ್ನು ಹಾರಿಸುವಾಗ ನೀವು ಅಲ್ಲಿದ್ದರೆ ನಮಗೆ ತುಂಬಾ ಸಂತೋಷ.',
+      sign: 'ಪ್ರೀತಿಯಿಂದ,<br>ಫಾರ್ಮ್ ಡಿ ಬ್ಯಾಚ್ 2020–2026', chief: 'ಮುಖ್ಯ ಅತಿಥಿಗಳು', parents: 'ನಮ್ಮ ಪೋಷಕರು',
+      parentsTxt: 'ಪ್ರತಿಯೊಬ್ಬ ಪದವೀಧರನ ಹಿಂದೆ ಎಂದೂ ನಂಬಿಕೆ ಕಳೆದುಕೊಳ್ಳದ ಒಂದು ಕುಟುಂಬವಿದೆ. ಇಂದಿನ ದಿನ ನಮ್ಮಷ್ಟೇ ನಿಮ್ಮದೂ ಹೌದು.',
+      petals: 'ಅವರ ಮೇಲೆ ಹೂಮಳೆ ಸುರಿಸಿ', presided: 'ಅಧ್ಯಕ್ಷತೆ', presence: 'ಉಪಸ್ಥಿತಿ', principal: 'ಪ್ರಾಂಶುಪಾಲರು, ಈಸ್ಟ್ ವೆಸ್ಟ್ ಕಾಲೇಜ್ ಆಫ್ ಫಾರ್ಮಸಿ',
+      dean: 'ಡೀನ್ (ಆರ್ ಅಂಡ್ ಡಿ)', hod: 'ಮುಖ್ಯಸ್ಥರು, ಫಾರ್ಮಸಿ ಪ್ರಾಕ್ಟೀಸ್ ವಿಭಾಗ', programme: 'ಕಾರ್ಯಕ್ರಮ', tentative: 'ತಾತ್ಕಾಲಿಕ',
+      p1: 'ಆಗಮನ ಮತ್ತು ಆಸನ', p2: 'ದೀಪ ಬೆಳಗಿಸುವುದು ಮತ್ತು ಪ್ರಾರ್ಥನೆ', p3: 'ಸ್ವಾಗತ ಭಾಷಣ', p4: 'ಪ್ರಾಂಶುಪಾಲರು ಮತ್ತು ಡೀನ್ ಅವರ ಭಾಷಣ',
+      p5: 'ಪೋಷಕರಿಗೆ ಸನ್ಮಾನ', p6: 'ಫಾರ್ಮಸಿಸ್ಟ್ ಪ್ರಮಾಣವಚನ', p7: 'ಪದವೀಧರರ ನಡಿಗೆ ಮತ್ತು ಟೋಪಿ ಹಾರಿಸುವುದು', p8: 'ವಂದನಾರ್ಪಣೆ ಮತ್ತು ಗ್ರೂಪ್ ಫೋಟೋ', p9: 'ಊಟ',
+      n5: 'ಕರವಸ್ತ್ರ ಜೊತೆಗಿರಲಿ', n6: 'ಮಹತ್ವದ ಕ್ಷಣ', n7: 'ಟೋಪಿ ಮೇಲೆ!', venue: 'ಸ್ಥಳ', floor: '6ನೇ ಮಹಡಿ', directions: 'ದಾರಿ ನೋಡಿ', copyAddr: 'ವಿಳಾಸ ನಕಲಿಸಿ',
+      reach: 'ತಲುಪುವುದು ಹೇಗೆ', r1: 'ಬಸ್: ಭಾರತ್ ನಗರ 1ನೇ ಹಂತ ನಿಲ್ದಾಣದಲ್ಲಿ ಇಳಿಯಿರಿ, ಸುಮಾರು 600 ಮೀ ನಡಿಗೆ.',
+      r2: 'ಮೆಟ್ರೋ: ಜ್ಞಾನಭಾರತಿ ನಿಲ್ದಾಣ (ನೇರಳೆ ಮಾರ್ಗ), ನಂತರ ಕ್ಯಾಬ್, ಆಟೋ ಅಥವಾ ಭಾರತ್ ನಗರದ ಕಡೆ ಫೀಡರ್ ಬಸ್.',
+      r3: 'ಕ್ಯಾಬ್ ಅಥವಾ ಆಟೋ: ಉಬರ್, ಓಲಾ ಅಥವಾ ರ್ಯಾಪಿಡೋದಲ್ಲಿ “East West College of Pharmacy” ಎಂದು ಹುಡುಕಿ.',
+      r4: 'ಸಭಾಂಗಣ 6ನೇ ಮಹಡಿಯಲ್ಲಿದೆ. ದಯವಿಟ್ಟು ಬೆಳಿಗ್ಗೆ 9:45ರೊಳಗೆ ಬನ್ನಿ.', coming: 'ಬರುತ್ತೀರಾ?',
+      rsvpLead: 'ನಿಮ್ಮೊಂದಿಗೆ ಬರುವ ಎಲ್ಲರನ್ನೂ ದಯವಿಟ್ಟು ನೋಂದಾಯಿಸಿ, ಇದರಿಂದ ನಾವು ಆಸನ ಮತ್ತು ಊಟದ ವ್ಯವಸ್ಥೆ ಮಾಡಬಹುದು. ಒಂದೇ ನಿಮಿಷ ಸಾಕು.',
+      onePer: 'ಒಂದು ಮೊಬೈಲ್ ಸಂಖ್ಯೆಗೆ ಒಂದು ನೋಂದಣಿ.', closed: 'ನೋಂದಣಿ ಮುಗಿದಿದೆ. ಬಂದ ಎಲ್ಲರಿಗೂ ಧನ್ಯವಾದಗಳು!', questions: 'ಏನಾದರೂ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?',
+      call: 'ಕರೆ ಮಾಡಿ', saveDate: 'ದಿನಾಂಕ ನೆನಪಿಡಿ', memTitle: 'ನೆನಪಿನ ಗೋಡೆ', memSub: 'ಚಿತ್ರಗಳಲ್ಲಿ ಆರು ವರ್ಷಗಳು. ದೊಡ್ಡದಾಗಿ ನೋಡಲು ಫೋಟೋ ಒತ್ತಿ.',
+      soon: 'ಫೋಟೋ ಶೀಘ್ರದಲ್ಲೇ', groupPhoto: 'ಗ್ರೂಪ್ ಫೋಟೋ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ', tnTitle: 'ಅಂದು ಮತ್ತು ಇಂದು', tnSub: 'ಸ್ಲೈಡರ್ ಎಳೆಯಿರಿ: 2020ರ ಮೊದಲ ದಿನ ಮತ್ತು ಪದವಿ ದಿನ.',
+      gradsTitle: 'ಪದವೀಧರರು', gradsSub: 'ಅವರಿಗಾಗಿ ಟೋಪಿ ಹಾರಿಸಲು ಹೆಸರನ್ನು ಒತ್ತಿ.', genTitle: 'ಪದವೀಧರರೇ: ನಿಮ್ಮ ಕುಟುಂಬಕ್ಕೆ ಅವರದೇ ಆಹ್ವಾನ ಕಳುಹಿಸಿ',
+      pick: 'ನಿಮ್ಮ ಹೆಸರು ಆಯ್ಕೆಮಾಡಿ', tnThen: 'ಮೊದಲ ದಿನ', tnNow: 'ಪದವಿ ದಿನ', sendWa: 'ವಾಟ್ಸಾಪ್‌ನಲ್ಲಿ ಕಳುಹಿಸಿ', copyMine: 'ನನ್ನ ಲಿಂಕ್ ನಕಲಿಸಿ', wishTitle: 'ಬ್ಯಾಚ್‌ಗೆ ಶುಭ ಹಾರೈಕೆಗಳು',
+      wishSub: 'ಕುಟುಂಬ, ಸ್ನೇಹಿತರು ಮತ್ತು ಶಿಕ್ಷಕರಿಂದ', sendWish: 'ಶುಭಾಶಯ ಕಳುಹಿಸಿ', firstWish: 'ಮೊದಲ ಶುಭಾಶಯ ನಿಮ್ಮದಾಗಲಿ!',
+      seeYou: 'ನವೆಂಬರ್ 21ರಂದು ಭೇಟಿಯಾಗೋಣ!', shareWa: 'ವಾಟ್ಸಾಪ್‌ನಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳಿ', copyLink: 'ಲಿಂಕ್ ನಕಲಿಸಿ', map: 'ನಕ್ಷೆ', share: 'ಹಂಚಿ',
+      watch: 'ನೇರ ಪ್ರಸಾರ ನೋಡಿ', now: 'ಈಗ ನಡೆಯುತ್ತಿದೆ: {x}', startsToday: 'ಇಂದು ಬೆಳಿಗ್ಗೆ 10:00ಕ್ಕೆ ಆರಂಭ', afterBar: 'ನಮ್ಮೊಂದಿಗೆ ಸಂಭ್ರಮಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು!',
+      capsFor: '{n} ಅವರಿಗಾಗಿ ಟೋಪಿ ಮೇಲೆ!', music: 'ಸಂಗೀತ', muted: 'ಮ್ಯೂಟ್'
+    },
+    hi: {
+      introTitle: 'आपके लिए एक निमंत्रण', tapOpen: 'खोलने के लिए टैप करें', to: 'सेवा में,', you: 'आप और आपका परिवार', family: '{n} का परिवार', personal: '{n} के परिवार के लिए ख़ास निमंत्रण',
+      note: '…और हम चाहते हैं कि आप भी वहाँ हों', sat: 'शनिवार', onwards: 'सुबह 10:00 बजे से', registerAttend: 'रजिस्टर करें', register: 'रजिस्टर करें',
+      toss: 'टोपियाँ उछालें', tapHint: 'या कहीं भी टैप करें', untilDocs: 'जब तक हम आधिकारिक रूप से डॉक्टर ऑफ़ फ़ार्मेसी नहीं बन जाते',
+      days: 'बस {n} दिन बाकी', day1: 'बस 1 दिन बाकी', almost: 'बस पहुँच ही गए!', today: 'आज ही है!', thanksCame: 'आने के लिए धन्यवाद!',
+      m30: 'एक महीने से भी कम बाकी!', m7: 'आख़िरी हफ़्ता!', m1: 'कल ही है!',
+      greet: 'प्रिय परिवार और मित्रों,',
+      letter1: 'छह साल पहले जब हमने ईस्ट वेस्ट कॉलेज ऑफ़ फ़ार्मेसी में कदम रखा, तब हमें टैबलेट और कैप्सूल के फ़र्क़ से ज़्यादा कुछ नहीं पता था। तब से प्रैक्टिकल, एक के बाद एक वाइवा, केस प्रेज़ेंटेशन और अस्पताल के वार्डों में पूरे एक साल की इंटर्नशिप।',
+      letter2: '<b>21 नवंबर</b> को हम <b>डॉक्टर ऑफ़ फ़ार्मेसी</b> बनेंगे। जब हम फ़ार्मासिस्ट की शपथ लें और अपनी टोपियाँ हवा में उछालें, तब आपका वहाँ होना हमारे लिए बहुत मायने रखेगा।',
+      sign: 'प्यार सहित,<br>फ़ार्म डी बैच 2020–2026', chief: 'मुख्य अतिथि', parents: 'हमारे माता-पिता',
+      parentsTxt: 'हर ग्रेजुएट के पीछे एक परिवार होता है जिसने कभी भरोसा नहीं छोड़ा। आज का दिन जितना हमारा है, उतना ही आपका भी।',
+      petals: 'उन पर फूल बरसाएँ', presided: 'अध्यक्षता', presence: 'उपस्थिति', principal: 'प्राचार्य, ईस्ट वेस्ट कॉलेज ऑफ़ फ़ार्मेसी',
+      dean: 'डीन (आर एंड डी)', hod: 'विभागाध्यक्ष, फ़ार्मेसी प्रैक्टिस विभाग', programme: 'कार्यक्रम', tentative: 'संभावित',
+      p1: 'आगमन और बैठक', p2: 'दीप प्रज्वलन और प्रार्थना', p3: 'स्वागत भाषण', p4: 'प्राचार्य और डीन का संबोधन',
+      p5: 'माता-पिता का सम्मान', p6: 'फ़ार्मासिस्ट की शपथ', p7: 'ग्रेजुएट्स की वॉक और टोपी उछाल', p8: 'धन्यवाद ज्ञापन और ग्रुप फ़ोटो', p9: 'दोपहर का भोजन',
+      n5: 'रूमाल साथ रखें', n6: 'सबसे ख़ास पल', n7: 'टोपियाँ ऊपर!', venue: 'स्थान', floor: 'छठी मंज़िल', directions: 'रास्ता देखें', copyAddr: 'पता कॉपी करें',
+      reach: 'कैसे पहुँचें', r1: 'बस: भारत नगर फ़र्स्ट फ़ेज़ स्टॉप पर उतरें, लगभग 600 मीटर पैदल।',
+      r2: 'मेट्रो: ज्ञानभारती स्टेशन (पर्पल लाइन), फिर कैब, ऑटो या भारत नगर की ओर फ़ीडर बस।',
+      r3: 'कैब या ऑटो: उबर, ओला या रैपिडो में “East West College of Pharmacy” खोजें।',
+      r4: 'ऑडिटोरियम छठी मंज़िल पर है। कृपया सुबह 9:45 तक पहुँचें।', coming: 'आ रहे हैं?',
+      rsvpLead: 'कृपया अपने साथ आने वाले सभी लोगों का रजिस्ट्रेशन करें, ताकि हम बैठने और भोजन की व्यवस्था कर सकें। बस एक मिनट लगेगा।',
+      onePer: 'एक मोबाइल नंबर से एक रजिस्ट्रेशन।', closed: 'रजिस्ट्रेशन बंद हो चुका है। आने वाले सभी लोगों का धन्यवाद!', questions: 'कोई सवाल?',
+      call: 'कॉल करें', saveDate: 'तारीख़ याद रखें', memTitle: 'यादों की दीवार', memSub: 'तस्वीरों में छह साल। बड़ा देखने के लिए फ़ोटो पर टैप करें।',
+      soon: 'फ़ोटो जल्द ही', groupPhoto: 'ग्रुप फ़ोटो डाउनलोड करें', tnTitle: 'तब और अब', tnSub: 'स्लाइडर खिसकाएँ: 2020 का पहला दिन बनाम ग्रेजुएशन का दिन।',
+      gradsTitle: 'ग्रेजुएट्स', gradsSub: 'किसी नाम पर टैप करें और उनके लिए टोपी उछालें।', genTitle: 'ग्रेजुएट्स: अपने परिवार को उनका अपना निमंत्रण भेजें',
+      pick: 'अपना नाम चुनें', tnThen: 'पहला दिन', tnNow: 'ग्रेजुएशन का दिन', sendWa: 'व्हाट्सऐप पर भेजें', copyMine: 'मेरा लिंक कॉपी करें', wishTitle: 'बैच के लिए शुभकामनाएँ',
+      wishSub: 'परिवार, दोस्तों और शिक्षकों की ओर से', sendWish: 'शुभकामना भेजें', firstWish: 'पहली शुभकामना आपकी हो सकती है!',
+      seeYou: '21 तारीख़ को मिलते हैं!', shareWa: 'व्हाट्सऐप पर शेयर करें', copyLink: 'लिंक कॉपी करें', map: 'नक्शा', share: 'शेयर',
+      watch: 'लाइव देखें', now: 'अभी चल रहा है: {x}', startsToday: 'आज सुबह 10:00 बजे शुरू', afterBar: 'हमारे साथ जश्न मनाने के लिए धन्यवाद!',
+      capsFor: '{n} के लिए टोपियाँ ऊपर!', music: 'संगीत', muted: 'म्यूट'
+    },
+    en: {
+      you: 'You &amp; your family', family: '{n}’s family', personal: 'A special invitation for {n}’s family',
+      days: '{n} days to go', day1: '1 day to go', almost: 'Almost there!', today: 'It’s today!', thanksCame: 'Thank you for coming!',
+      m30: 'Less than a month to go!', m7: 'Final week!', m1: 'Tomorrow!', soon: 'Photo coming soon', pick: 'Choose your name',
+      firstWish: 'Your wish could be the first one here!', now: 'Happening now: {x}', startsToday: 'Today! Starts at 10:00 AM',
+      afterBar: 'Thank you for celebrating with us!', capsFor: 'Caps up for {n}!', music: 'Music', muted: 'Muted'
+    }
+  };
+  let LANG = 'en';
+  const tr = (key, vars) => {
+    let v = (T[LANG] && T[LANG][key]) || T.en[key];
+    if (v === undefined) { const el = document.querySelector(`[data-i18n="${key}"]`); v = el && el.dataset.en ? el.dataset.en.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&') : key; }
+    return String(v).replace(/\{(\w)\}/g, (m, k) => (vars && vars[k] !== undefined ? vars[k] : m));
+  };
+  const langListeners = [];
+  function setLang(l) {
+    LANG = T[l] ? l : 'en';
+    document.documentElement.lang = LANG === 'en' ? 'en-IN' : LANG;
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      if (el.dataset.en === undefined) el.dataset.en = el.innerHTML;
+      el.innerHTML = LANG === 'en' ? el.dataset.en : (T[LANG][el.dataset.i18n] || el.dataset.en);
+    });
+    document.querySelectorAll('#lang button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
+    try { localStorage.setItem('lang', LANG); } catch (e) {}
+    langListeners.forEach((fn) => safe(fn));
+  }
+  safe(() => {
+    let saved = 'en'; try { saved = localStorage.getItem('lang') || 'en'; } catch (e) {}
+    document.querySelectorAll('#lang button').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
+    setLang(saved);
+    let ticking = false;
+    addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { $('#lang').classList.toggle('tucked', scrollY > 260 && intro.classList.contains('gone')); ticking = false; }); }, { passive: true });
+  });
 
   /* ---------- toran (marigold & mango-leaf garland) that swings as you scroll ---------- */
   function flower(x, y, r, yellow) {
@@ -969,20 +1216,24 @@ html{background:#EAF0FF}
     const pad = (n) => String(n).padStart(2, '0');
     let timer;
     function tick() {
-      const ms = START - Date.now();
+      const ms = START - nowMs();
       if (ms <= 0) {
         els.forEach((e) => { e.textContent = '00'; });
-        title.textContent = ms > -10 * 3600e3 ? 'It’s today!' : 'Thank you for coming!';
+        title.textContent = ms > -4.5 * 3600e3 ? tr('today') : tr('thanksCame');
+        $('#milestone').hidden = true;
         clearInterval(timer); return;
       }
       const s = Math.floor(ms / 1000), d = Math.floor(s / 86400);
       const vals = [String(d), pad(Math.floor((s % 86400) / 3600)), pad(Math.floor((s % 3600) / 60)), pad(s % 60)];
       vals.forEach((v, i) => { if (els[i].textContent !== v) els[i].textContent = v; });
-      const t = d >= 2 ? `${d} days to go` : d === 1 ? '1 day to go' : 'Almost there!';
+      const t = d >= 2 ? tr('days', { n: d }) : d === 1 ? tr('day1') : tr('almost');
       if (title.textContent !== t) title.textContent = t;
+      const ms2 = d <= 1 ? 'm1' : d <= 7 ? 'm7' : d < 30 ? 'm30' : '';
+      const mEl = $('#milestone'); mEl.hidden = !ms2; if (ms2 && mEl.textContent !== tr(ms2)) mEl.textContent = tr(ms2);
       if (!reduce) { secTab.classList.remove('pop'); void secTab.offsetWidth; secTab.classList.add('pop'); }
     }
     tick(); timer = setInterval(tick, 1000);
+    langListeners.push(tick);
   });
 
   /* ---------- links, buttons, sharing ---------- */
@@ -1019,12 +1270,13 @@ html{background:#EAF0FF}
     function renderMusic() {
       const on = Music.playing;
       $('#soundIcon').setAttribute('href', on ? '#i-sound-on' : '#i-sound-off');
-      $('#soundTxt').textContent = on ? 'Music' : 'Muted';
+      $('#soundTxt').textContent = on ? tr('music') : tr('muted');
       $('#songBtn').setAttribute('aria-current', String(on));
       chip.hidden = !(chipReady && Music.wanted && !on && !Music.failed);   // e.g. iPhones need a tap on the player itself
       if (Music.failed) { soundBtn.hidden = true; showTunes(false); }
     }
     Music.onChange = renderMusic;
+    langListeners.push(renderMusic);
     Music.load();
     document.addEventListener('invite-open', () => setTimeout(() => { chipReady = true; renderMusic(); }, 4000));
     soundBtn.addEventListener('click', () => showTunes(!isOpen()));
@@ -1052,17 +1304,127 @@ html{background:#EAF0FF}
     [document.querySelector('.prog-list li:nth-child(7)'), document.querySelector('.foot-big')].forEach((t) => t && io.observe(t));
   });
 
-  /* ---------- graduate names ---------- */
+  /* ---------- graduate names: tap to toss a cap for them ---------- */
+  const slug = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   safe(() => {
     if (!GRADUATES.length) return;
     const list = $('#names'), cols = ['var(--royal)', 'var(--peacock)', 'var(--indigo)', 'var(--orange)', 'var(--leaf)'];
     GRADUATES.forEach((name, i) => {
-      const li = document.createElement('li'); li.style.setProperty('--c', cols[i % cols.length]);
+      const li = document.createElement('li');
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'name-btn'; btn.style.setProperty('--c', cols[i % cols.length]);
       const a = document.createElement('span'); a.textContent = name.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
       const b = document.createElement('span'); b.textContent = name;
-      li.append(a, b); list.append(li);
+      btn.append(a, b); li.append(btn); list.append(li);
+      btn.addEventListener('click', () => { const r = btn.getBoundingClientRect(); FX.named(r.left + r.width / 2, r.top, name); Music.chime(); toast(tr('capsFor', { n: name })); });
     });
     list.hidden = false;
+  });
+
+  /* ---------- personal invitations: 6pharmd.fun/#vishal-t ---------- */
+  safe(() => {
+    const byslug = Object.fromEntries(GRADUATES.map((n) => [slug(n), n]));
+    const who = byslug[decodeURIComponent(location.hash.slice(1)).toLowerCase()];
+    function paint() {
+      $('#addrName').innerHTML = who ? '' : tr('you');
+      if (who) $('#addrName').textContent = tr('family', { n: who });
+      const p = $('#personal'); p.hidden = !who; if (who) p.textContent = tr('personal', { n: who });
+      const sel = $('#gradSel'), first = sel.options[0]; if (first) first.textContent = tr('pick');
+    }
+    const sel = $('#gradSel'), gen = $('#inviteGen');
+    if (GRADUATES.length) {
+      sel.innerHTML = '<option value=""></option>' + GRADUATES.map((n) => `<option value="${slug(n)}">${n.replace(/</g, '')}</option>`).join('');
+      gen.hidden = false;
+      const link = () => SITE + '#' + sel.value;
+      const update = () => {
+        const ok = !!sel.value, wa = $('#waMine');
+        wa.href = ok ? 'https://wa.me/?text=' + encodeURIComponent(SHARE_TEXT + ' Your personal invitation: ' + link()) : '#';
+        wa.style.opacity = $('#copyMine').style.opacity = ok ? '' : '.5';
+      };
+      sel.addEventListener('change', update); update();
+      $('#waMine').addEventListener('click', (e) => { if (!sel.value) { e.preventDefault(); sel.focus(); } });
+      $('#copyMine').addEventListener('click', () => { if (!sel.value) { sel.focus(); return; } copy(link(), 'Link copied'); });
+    }
+    paint(); langListeners.push(paint);
+  });
+
+  /* ---------- memory wall + lightbox ---------- */
+  safe(() => {
+    const wrap = $('#memories'), tints = ['var(--marigold-soft)', 'var(--peacock-soft)', 'var(--royal-soft)', '#FFE4D6'], tapes = ['var(--royal)', 'var(--peacock)', 'var(--marigold)', 'var(--leaf)'];
+    const withPhoto = MEMORIES.filter((m) => m.src);
+    const cam = '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></g></svg>';
+    function render() {
+      wrap.innerHTML = '';
+      MEMORIES.forEach((m, i) => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'mem';
+        b.style.cssText = `--r:${[-2.5, 1.8, -1.2, 2.4][i % 4]}deg;--tint:${tints[i % 4]};--tape:${tapes[i % 4]}`;
+        const ph = document.createElement('span'); ph.className = 'ph';
+        if (m.src) { const img = document.createElement('img'); img.src = m.src; img.alt = m.caption; img.loading = 'lazy'; ph.append(img); }
+        else { ph.innerHTML = cam + '<br>'; ph.append(tr('soon')); b.disabled = true; }
+        const cap = document.createElement('span'); cap.className = 'cap'; cap.textContent = m.caption;
+        b.append(ph, cap); wrap.append(b);
+        if (m.src) b.addEventListener('click', () => open(withPhoto.indexOf(m)));
+      });
+    }
+    const lb = $('#lb'); let cur = 0;
+    function show() { const m = withPhoto[cur]; $('#lbImg').src = m.src; $('#lbImg').alt = m.caption; $('#lbCap').textContent = m.caption; }
+    function open(i) { cur = i; show(); lb.hidden = false; document.body.classList.add('locked'); $('#lbClose').focus(); }
+    function close() { lb.hidden = true; document.body.classList.remove('locked'); }
+    $('#lbClose').addEventListener('click', close);
+    $('#lbPrev').addEventListener('click', () => { cur = (cur - 1 + withPhoto.length) % withPhoto.length; show(); });
+    $('#lbNext').addEventListener('click', () => { cur = (cur + 1) % withPhoto.length; show(); });
+    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+    document.addEventListener('keydown', (e) => { if (lb.hidden) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') $('#lbPrev').click(); if (e.key === 'ArrowRight') $('#lbNext').click(); });
+    if (withPhoto.length < 2) { $('#lbPrev').hidden = $('#lbNext').hidden = true; }
+    render(); langListeners.push(render);
+    if (GROUP_PHOTO) { const g = $('#groupPhoto'); g.href = GROUP_PHOTO; g.hidden = false; }
+  });
+
+  /* ---------- then & now slider ---------- */
+  safe(() => {
+    const tn = $('#tn'), range = $('#tnRange');
+    [['then', '#tnThen'], ['now', '#tnNow']].forEach(([k, sel]) => { if (THEN_NOW[k]) { const img = document.createElement('img'); img.src = THEN_NOW[k]; img.alt = k === 'then' ? '2020' : '2026'; img.loading = 'lazy'; $(sel).prepend(img); $(sel).querySelector('span').hidden = true; } });
+    range.addEventListener('input', () => tn.style.setProperty('--pos', range.value + '%'));
+  });
+
+  /* ---------- wishes wall ---------- */
+  safe(() => {
+    const notes = $('#notes'), colors = ['#FFF3B0', '#FFE0EC', '#DDF4FF', '#E2F7E1', '#EDE3FF'];
+    function render() {
+      notes.innerHTML = '';
+      const list = WISHES.length ? WISHES : [{ text: tr('firstWish'), from: '' }];
+      list.forEach((w, i) => {
+        const d = document.createElement('div'); d.className = 'note-card'; d.style.cssText = `--nc:${colors[i % colors.length]};--r:${[-1.5, 1.2, -0.6, 1.8][i % 4]}deg`;
+        const p = document.createElement('p'); p.textContent = w.text; d.append(p);
+        if (w.from) { const b = document.createElement('b'); b.textContent = '— ' + w.from; d.append(b); }
+        notes.append(d);
+      });
+    }
+    render(); langListeners.push(render);
+    $('#wishBtn').href = 'https://wa.me/919481954900?text=' + encodeURIComponent('My wish for Pharm D Batch 2020–26: ');
+  });
+
+  /* ---------- on the day: live banner, then "after" mode ---------- */
+  safe(() => {
+    const bar = $('#liveBar'), text = $('#liveText'), watch = $('#liveWatch');
+    const IST = 5.5 * 3600e3, DAY = Date.UTC(2026, 10, 21) - IST;        // midnight IST on 21 Nov 2026
+    const at = (hhmm) => { const [h, m] = hhmm.split(':').map(Number); return DAY + (h * 60 + m) * 60e3; };
+    if (STREAM_URL) watch.href = STREAM_URL;
+    function update() {
+      const t = nowMs(), end = at(PROGRAMME[PROGRAMME.length - 1][0]);
+      let msg = '', live = false, after = false;
+      if (t >= end) { after = true; msg = tr('afterBar'); }
+      else if (t >= at(PROGRAMME[0][0])) {
+        live = true;
+        for (let i = PROGRAMME.length - 2; i >= 0; i--) if (t >= at(PROGRAMME[i][0])) { msg = tr('now', { x: tr(PROGRAMME[i][1]) }); break; }
+      } else if (t >= DAY) msg = tr('startsToday');
+      document.body.classList.toggle('after', after);
+      bar.hidden = !msg || (after && t > end + 21 * 86400e3);           // thank-you banner for three weeks
+      bar.classList.toggle('done', after);
+      document.body.classList.toggle('has-live', !bar.hidden);
+      if (msg && text.textContent !== msg) text.textContent = msg;
+      watch.hidden = !(live && STREAM_URL);
+    }
+    update(); setInterval(update, 20000); langListeners.push(update);
   });
 
   /* ---------- reveal on scroll (only for blocks below the first screen) ---------- */
