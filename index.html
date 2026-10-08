@@ -46,6 +46,7 @@
   --dock-h:64px;
 }
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--royal)}
 body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-body);overflow-x:hidden;overflow-x:clip;-webkit-tap-highlight-color:transparent}
 .nw{white-space:nowrap}
@@ -291,6 +292,15 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
 .dock-btn svg{width:22px;height:22px}
 .dock-btn span{font:600 11px/1 var(--f-body);color:#D9D2F0}
 .dock-btn:active{background:rgba(255,255,255,.12)}
+.tunes{position:fixed;z-index:42;right:max(10px,calc(50% - 260px));bottom:calc(var(--dock-h) + 30px + env(safe-area-inset-bottom,0px));display:grid;gap:6px;width:min(calc(100% - 20px),300px);padding:10px;border-radius:22px;background:var(--ink);color:#fff;box-shadow:0 18px 40px -12px rgba(30,18,56,.7)}
+.tunes-head{padding:4px 8px 2px;font:700 12px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:#B9B2D6}
+.tune{display:grid;gap:2px;width:100%;padding:10px 14px 8px;border:0;border-radius:14px;background:rgba(255,255,255,.07);color:#fff;text-align:left}
+.tune b{font:700 18px/1.1 var(--f-display)}
+.tune span{font-size:13px;line-height:1.3;color:#CFC8E8}
+.tune[aria-current="true"]{background:var(--marigold);color:var(--ink)}
+.tune[aria-current="true"] span{color:var(--ink-2)}
+.tune-off{display:block;text-align:center;background:transparent;border:2px solid rgba(255,255,255,.28);font-weight:600}
+@media (hover:hover){.tune:hover{background:rgba(255,255,255,.14)}.tune[aria-current="true"]:hover{background:var(--marigold)}}
 .toast{position:fixed;z-index:45;left:50%;bottom:calc(var(--dock-h) + 30px + env(safe-area-inset-bottom,0px));max-width:calc(100% - 32px);padding:10px 16px 8px;border-radius:12px;background:var(--ink);color:#fff;font-weight:600;text-align:center;overflow-wrap:anywhere;opacity:0;pointer-events:none;transform:translate(-50%,16px);transition:opacity .25s ease,transform .25s ease}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 #fx{position:fixed;inset:0;z-index:50;width:100%;height:100%;pointer-events:none}
@@ -483,7 +493,7 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
     <div class="parents rv">
       <p class="label">Chief Guests</p>
       <h2 class="parents-title">Our Parents</h2>
-      <p class="parents-txt">For every early-morning bus, every exam-night phone call, and six years of believing in us. This day is as much yours as it is ours.</p>
+      <p class="parents-txt">Behind every graduate is a family that never stopped believing. Today belongs to you as much as it belongs to us.</p>
       <button class="chip-btn" id="petalBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flower"/></svg>Shower flowers for them</button>
     </div>
     <div class="mg-row" aria-hidden="true"></div>
@@ -613,8 +623,15 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
   <a class="dock-main" href="https://gyanank.com/i/am2e7wwz" target="_blank" rel="noopener"><span class="c1">Register</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
   <a class="dock-btn" data-map href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span>Map</span></a>
   <button class="dock-btn" id="shareBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg><span>Share</span></button>
-  <button class="dock-btn" id="soundBtn" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><use id="soundIcon" href="#i-sound-on"/></svg><span id="soundTxt">Music</span></button>
+  <button class="dock-btn" id="soundBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="tunes"><svg viewBox="0 0 24 24" aria-hidden="true"><use id="soundIcon" href="#i-sound-on"/></svg><span id="soundTxt">Music</span></button>
 </nav>
+<div class="tunes" id="tunes" role="dialog" aria-label="Choose music" hidden>
+  <p class="tunes-head">Music</p>
+  <button class="tune" type="button" data-song="0"><b>Graduation March</b><span>Elgar · Pomp and Circumstance</span></button>
+  <button class="tune" type="button" data-song="1"><b>Canon in D</b><span>Pachelbel</span></button>
+  <button class="tune" type="button" data-song="2"><b>Ode to Joy</b><span>Beethoven</span></button>
+  <button class="tune tune-off" type="button" data-song="off">Music off</button>
+</div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -634,18 +651,12 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
   const safe = (fn) => { try { fn(); } catch (e) { console.error(e); } };
   const rnd = (a, b) => a + Math.random() * (b - a);
 
-  /* ---------- music: made in the browser (electric piano, strings, bass, light claps) ---------- */
+  /* ---------- music: three public-domain pieces played by the browser (March → Canon → Ode to Joy) ---------- */
   const Music = (() => {
-    let ctx = null, master, rev, noise, timer, next = 0, step = 0, muted = false;
-    const S16 = 60 / 96 / 4;
-    const CHORDS = [[55, 59, 62], [54, 57, 62], [55, 59, 64], [55, 60, 64]];   // G  D  Em  C, close voicing
-    const ROOTS = [43, 38, 40, 36];
-    const MEL = [                                                                // G major, eighth notes, 0 = rest
-      [71, 0, 74, 0, 79, 0, 78, 79], [81, 0, 0, 78, 74, 0, 0, 0], [76, 0, 79, 0, 83, 0, 81, 79], [76, 0, 74, 72, 74, 0, 0, 0],
-      [74, 0, 79, 0, 83, 0, 81, 79], [81, 0, 78, 0, 74, 0, 76, 78], [79, 0, 76, 0, 71, 0, 74, 76], [76, 74, 72, 0, 74, 0, 0, 0]
-    ];
+    let ctx = null, master, rev, noise, bus, timer, next = 0, tick = 0, song = 0, muted = false, onChange = null;
     const hz = (m) => 440 * Math.pow(2, (m - 69) / 12);
 
+    /* -- voices -- */
     function env(t, a, peak, dec) {
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
@@ -653,62 +664,179 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
       g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec);
       return g;
     }
-    function send(node, wet) {
-      node.connect(master);
-      const s = ctx.createGain(); s.gain.value = wet; node.connect(s); s.connect(rev);
-    }
-    function tone(t, f, type, peak, dec, wet, a = 0.004) {
+    function newBus() { const dry = ctx.createGain(), wet = ctx.createGain(); dry.connect(master); wet.connect(rev); return { dry, wet }; }
+    function send(node, w) { node.connect(bus.dry); const s = ctx.createGain(); s.gain.value = w; node.connect(s); s.connect(bus.wet); }
+    function tone(t, f, type, peak, dec, w, a = 0.004) {
       const o = ctx.createOscillator(); o.type = type; o.frequency.value = f;
-      const e = env(t, a, peak, dec); o.connect(e); send(e, wet);
-      o.start(t); o.stop(t + a + dec + 0.05);
+      const e = env(t, a, peak, dec); o.connect(e); send(e, w); o.start(t); o.stop(t + a + dec + 0.05);
     }
-    function ep(t, m, v, dur) {                    // FM electric piano: bright attack, mellow tail
-      const f = hz(m);
-      const car = ctx.createOscillator(), mod = ctx.createOscillator(), tine = ctx.createOscillator();
-      car.frequency.value = f; mod.frequency.value = f; tine.frequency.value = f * 7;
-      const idx = ctx.createGain();
-      idx.gain.setValueAtTime(f * 1.8, t); idx.gain.exponentialRampToValueAtTime(f * 0.22, t + 0.5);
-      mod.connect(idx); idx.connect(car.frequency);
-      const amp = env(t, 0.003, v, dur); car.connect(amp); send(amp, 0.32);
-      const tg = env(t, 0.001, v * 0.05, 0.16); tine.connect(tg); send(tg, 0.2);
-      [car, mod, tine].forEach((o) => { o.start(t); o.stop(t + dur + 0.1); });
-    }
-    function strings(t, notes, dur) {
-      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1500; lp.Q.value = 0.4;
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.012, t + 0.8);
-      g.gain.setValueAtTime(0.012, t + dur - 0.3); g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.9);
-      lp.connect(g); send(g, 0.8);
-      notes.forEach((n) => [-9, 0, 9].forEach((dt) => {
-        const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(n); o.detune.value = dt;
-        o.connect(lp); o.start(t); o.stop(t + dur + 1);
-      }));
-    }
-    function melody(t, m) { ep(t, m, 0.07, 1.2); tone(t, hz(m) * 2, 'sine', 0.012, 0.6, 0.4); }
-    function bass(t, m) { tone(t, hz(m), 'triangle', 0.16, 0.5, 0.05, 0.01); tone(t, hz(m + 12), 'sine', 0.05, 0.35, 0.05, 0.01); }
-    function hit(t, type, freq, q, v, dec, wet) {
+    function hit(t, type, freq, q, v, dec, w) {
       const s = ctx.createBufferSource(); s.buffer = noise;
       const f = ctx.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
-      const e = env(t, 0.001, v, dec); s.connect(f); f.connect(e); send(e, wet); s.start(t); s.stop(t + dec + 0.05);
+      const e = env(t, 0.002, v, dec); s.connect(f); f.connect(e); send(e, w); s.start(t); s.stop(t + dec + 0.05);
     }
-    function kick(t) {
-      const o = ctx.createOscillator();
-      o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.16);
-      const e = env(t, 0.002, 0.3, 0.3); o.connect(e); send(e, 0.02); o.start(t); o.stop(t + 0.36);
-      hit(t, 'bandpass', 2500, 1, 0.025, 0.02, 0);
+    function lead(t, m, d, loud) {           // brass when loud, warm strings when soft
+      const f = hz(m), end = t + d + 0.35, v = loud ? 0.07 : 0.05;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 1;
+      lp.frequency.setValueAtTime(loud ? 1000 : 800, t);
+      lp.frequency.linearRampToValueAtTime(loud ? 3400 : 2000, t + 0.07);
+      lp.frequency.exponentialRampToValueAtTime(loud ? 2000 : 1400, t + 0.6);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(v, t + (loud ? 0.04 : 0.1));
+      g.gain.linearRampToValueAtTime(v * 0.8, t + Math.max(0.12, d));
+      g.gain.exponentialRampToValueAtTime(0.0001, end);
+      lp.connect(g); send(g, 0.35);
+      const vib = ctx.createOscillator(), vg = ctx.createGain();
+      vib.frequency.value = 5.2; vg.gain.setValueAtTime(0, t); vg.gain.linearRampToValueAtTime(f * 0.005, t + 0.4); vib.connect(vg);
+      [-6, 6].forEach((dt) => {
+        const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = dt;
+        vg.connect(o.frequency); o.connect(lp); o.start(t); o.stop(end);
+      });
+      vib.start(t); vib.stop(end);
     }
-    function clap(t) { [0, 0.011, 0.022].forEach((d, i) => hit(t + d, 'bandpass', 1400, 0.9, i === 2 ? 0.12 : 0.07, i === 2 ? 0.16 : 0.018, 0.3)); }
-    function hat(t, v) { hit(t, 'highpass', 8000, 0.7, v, 0.04, 0.05); }
+    function violin(t, m, d, v, pan) {
+      const f = hz(m), end = t + d + 0.3;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600; lp.Q.value = 0.7;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + 0.07);
+      g.gain.setValueAtTime(v * 0.9, t + Math.max(0.08, d - 0.04)); g.gain.exponentialRampToValueAtTime(0.0001, end);
+      let out = g;
+      if (ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = pan; g.connect(p); out = p; }
+      lp.connect(g); send(out, 0.45);
+      const vib = ctx.createOscillator(), vg = ctx.createGain();
+      vib.frequency.value = 5.6; vg.gain.setValueAtTime(0, t); vg.gain.linearRampToValueAtTime(f * 0.006, t + 0.3); vib.connect(vg);
+      [-4, 4].forEach((dt) => {
+        const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = dt;
+        vg.connect(o.frequency); o.connect(lp); o.start(t); o.stop(end);
+      });
+      vib.start(t); vib.stop(end);
+    }
+    function strings(t, notes, d, v) {
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1500;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + Math.min(0.22, d * 0.4));
+      g.gain.setValueAtTime(v, t + Math.max(0.25, d - 0.05)); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.45);
+      lp.connect(g); send(g, 0.55);
+      notes.forEach((n) => [-7, 7].forEach((dt) => {
+        const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(n); o.detune.value = dt;
+        o.connect(lp); o.start(t); o.stop(t + d + 0.5);
+      }));
+    }
+    function bass(t, m, d, v) {
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + 0.06);
+      g.gain.setValueAtTime(v * 0.85, t + Math.max(0.1, d - 0.05)); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.3);
+      lp.connect(g); send(g, 0.2);
+      const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(m);
+      const o2 = ctx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = hz(m) * 2;   // so phone speakers hear it
+      [o, o2].forEach((x) => { x.connect(lp); x.start(t); x.stop(t + d + 0.35); });
+    }
+    function timp(t, m, v) {
+      const f = hz(m);
+      [[1, v, 1.4], [1.5, v * 0.35, 0.8], [2, v * 0.2, 0.5]].forEach(([mul, g, d]) => {
+        const o = ctx.createOscillator();
+        o.frequency.setValueAtTime(f * mul * 1.03, t); o.frequency.exponentialRampToValueAtTime(f * mul, t + 0.06);
+        const e = env(t, 0.003, g, d); o.connect(e); send(e, 0.3); o.start(t); o.stop(t + d + 0.05);
+      });
+      hit(t, 'lowpass', 400, 0.7, v * 0.4, 0.08, 0.2);
+    }
+    function cymbal(t, v) { hit(t, 'highpass', 5500, 0.4, v, 2.0, 0.45); hit(t, 'bandpass', 3200, 0.9, v * 0.5, 1.2, 0.45); }
+    function snare(t, v) { hit(t, 'bandpass', 1800, 0.8, v, 0.09, 0.15); }
+    function celesta(t, m, v) { tone(t, hz(m), 'sine', v, 1.1, 0.5); tone(t, hz(m) * 4, 'sine', v * 0.12, 0.25, 0.5); }
+
+    /* -- 1. Elgar, Pomp and Circumstance March No. 1, trio ("Land of Hope and Glory"), in G -- */
+    const M_MEL = [
+      [0, 4, 67], [4, 1, 66], [5, 1, 67], [6, 2, 69], [8, 4, 64], [12, 4, 62], [16, 4, 60], [20, 1, 59], [21, 1, 60], [22, 2, 62], [24, 8, 57],
+      [32, 4, 59], [36, 1, 61], [37, 2, 62], [39, 1, 64], [40, 4, 69], [44, 4, 62], [48, 4, 67], [52, 1, 67], [53, 2, 66], [55, 1, 64], [56, 8, 62],
+      [64, 4, 79], [68, 1, 78], [69, 1, 79], [70, 2, 81], [72, 4, 76], [76, 4, 74], [80, 4, 72], [84, 1, 71], [85, 1, 72], [86, 2, 74], [88, 8, 69],
+      [96, 4, 71], [100, 1, 73], [101, 2, 74], [103, 1, 76], [104, 4, 81], [108, 4, 74], [112, 4, 84], [116, 1, 84], [117, 2, 83], [119, 1, 81], [120, 8, 83],
+      [128, 4, 76], [132, 1, 78], [133, 2, 79], [135, 1, 81], [136, 4, 74], [140, 4, 79], [144, 8, 79], [152, 2, 84], [154, 4, 83], [158, 2, 81], [160, 8, 79]
+    ];
+    const M_HARM = [                      // [start, length, bass, ...chord]
+      [0, 4, 43, 55, 59, 62], [4, 4, 38, 54, 57, 60], [8, 8, 38, 55, 59, 62], [16, 4, 48, 55, 60, 64], [20, 4, 47, 55, 59, 62], [24, 4, 45, 57, 60, 64], [28, 4, 45, 57, 62, 66],
+      [32, 4, 50, 55, 59, 62], [36, 4, 49, 55, 57, 61, 64], [40, 4, 50, 54, 57, 62], [44, 4, 50, 54, 59, 62], [48, 4, 52, 55, 59, 62, 64], [52, 4, 52, 57, 61, 64], [56, 4, 50, 54, 57, 62], [60, 4, 50, 54, 57, 60, 62],
+      [64, 4, 43, 55, 59, 62], [68, 4, 38, 54, 57, 60], [72, 8, 38, 55, 59, 62], [80, 4, 48, 55, 60, 64], [84, 4, 47, 55, 59, 62], [88, 4, 45, 57, 60, 64], [92, 4, 45, 57, 62, 66],
+      [96, 4, 50, 55, 59, 62], [100, 4, 49, 55, 57, 61, 64], [104, 4, 50, 54, 57, 62], [108, 4, 50, 55, 59, 62], [112, 4, 52, 55, 60, 64], [116, 4, 50, 54, 57, 60, 62], [120, 4, 50, 55, 59, 62], [124, 4, 47, 54, 59, 63],
+      [128, 4, 48, 55, 60, 64], [132, 4, 48, 54, 57, 60, 62], [136, 4, 47, 55, 59, 62], [140, 4, 40, 55, 59, 64], [144, 8, 45, 55, 57, 60, 64], [152, 8, 38, 54, 57, 60, 62], [160, 12, 43, 55, 59, 62, 67]
+    ];
+    const M_TIMP = { 64: 43, 72: 38, 80: 43, 96: 38, 104: 38, 112: 43, 120: 43, 128: 43, 136: 43, 160: 43 };
+    const mMel = {}, mHarm = {};
+    M_MEL.forEach(([k, len, m]) => (mMel[k] = mMel[k] || []).push([len, m]));
+    M_HARM.forEach(([k, len, bn, ...c]) => (mHarm[k] = mHarm[k] || []).push([len, bn, c]));
+    function playMarch(k, t, S) {
+      const loud = k >= 64;
+      (mHarm[k] || []).forEach(([len, bn, c]) => { strings(t, c, len * S, loud ? 0.016 : 0.011); bass(t, bn, len * S, loud ? 0.1 : 0.07); });
+      (mMel[k] || []).forEach(([len, m]) => lead(t, m, len * S, loud));
+      if (M_TIMP[k]) timp(t, M_TIMP[k], k === 160 ? 0.34 : 0.2);
+      if (k >= 152 && k < 160) for (let j = 0; j < 4; j++) timp(t + (j * S) / 4, 38, 0.05 + (k - 152 + j / 4) * 0.02);
+      if (k === 64 || k === 160) cymbal(t, k === 160 ? 0.1 : 0.07);
+    }
+
+    /* -- 2. Pachelbel, Canon in D: ground bass with three violins entering one after another -- */
+    const GROUND = [50, 45, 47, 42, 43, 38, 43, 45];
+    const C_CH = [[57, 62, 66], [57, 61, 64], [59, 62, 66], [57, 61, 66], [59, 62, 67], [57, 62, 66], [59, 62, 67], [57, 61, 64]];
+    const L1 = [78, 76, 74, 73, 71, 69, 71, 73];
+    const L2 = [74, 73, 71, 69, 67, 66, 67, 64];
+    const L3 = [74, 78, 81, 79, 78, 74, 78, 76, 74, 71, 74, 81, 79, 83, 81, 79];
+    const PLAN = [[], [1], [2, 1], [3, 2, 1], [1, 3, 2], [2, 1, 3], [3, 2, 1]];
+    const PAN = [-0.45, 0.45, 0];
+    function playCanon(k, t, S) {
+      if (k >= 112) {
+        if (k === 112) { strings(t, [50, 57, 62, 66, 69], 8 * S, 0.014); bass(t, 38, 8 * S, 0.09); violin(t, 74, 8 * S, 0.04, -0.3); violin(t, 78, 8 * S, 0.03, 0.3); }
+        return;
+      }
+      const cyc = Math.floor(k / 16), pos = k % 16;
+      if (pos % 2 === 0) { const b = pos / 2; bass(t, GROUND[b], 2 * S * 0.95, 0.08); strings(t, C_CH[b], 2 * S, 0.008); }
+      PLAN[cyc].forEach((line, v) => {
+        if (line === 3) violin(t, L3[pos], S, 0.032, PAN[v]);
+        else if (pos % 2 === 0) violin(t, (line === 1 ? L1 : L2)[pos / 2], 2 * S, 0.034, PAN[v]);
+      });
+    }
+
+    /* -- 3. Beethoven, Ode to Joy, in D: gentle first time, full band second time -- */
+    const O_A = [[66, 2], [66, 2], [67, 2], [69, 2], [69, 2], [67, 2], [66, 2], [64, 2], [62, 2], [62, 2], [64, 2], [66, 2]];
+    const O_E1 = [[66, 3], [64, 1], [64, 4]], O_E2 = [[64, 3], [62, 1], [62, 4]];
+    const O_B = [[64, 2], [64, 2], [66, 2], [62, 2], [64, 2], [66, 1], [67, 1], [66, 2], [62, 2], [64, 2], [66, 1], [67, 1], [66, 2], [64, 2], [62, 2], [64, 2], [57, 4]];
+    const oMel = {};
+    [...O_A, ...O_E1, ...O_A, ...O_E2, ...O_B, ...O_A, ...O_E2].reduce((k, [m, len]) => { oMel[k] = [len, m]; return k + len; }, 0);
+    const O_BARS = ['D', 'A', 'D', 'A', 'D', 'A', 'D', 'AD', 'A', 'AD', 'A', 'DA', 'D', 'A', 'D', 'AD'];
+    const O_SEG = { D: [[0, 8, 'D']], A: [[0, 8, 'A']], AD: [[0, 4, 'A'], [4, 4, 'D']], DA: [[0, 2, 'D'], [2, 6, 'A']] };
+    const O_CH = { D: { b: 38, c: [50, 54, 57, 62] }, A: { b: 45, c: [49, 52, 57, 61] } };
+    const chordAt = (bar, pos) => O_SEG[O_BARS[bar]].find(([p0, len]) => pos >= p0 && pos < p0 + len)[2];
+    function playOde(k, t, S) {
+      if (k >= 256) {
+        if (k === 256) { strings(t, [50, 54, 57, 62, 66], 8 * S, 0.016); bass(t, 38, 8 * S, 0.1); lead(t, 62, 8 * S, true); lead(t, 74, 8 * S, true); timp(t, 38, 0.3); cymbal(t, 0.09); }
+        return;
+      }
+      const full = k >= 128, kk = k % 128, bar = kk >> 3, pos = kk & 7;
+      if (!full) {
+        O_SEG[O_BARS[bar]].forEach(([p0, len, c]) => { if (pos === p0) { strings(t, O_CH[c].c, len * S, 0.01); bass(t, O_CH[c].b, len * S, 0.07); } });
+      } else {
+        const c = O_CH[chordAt(bar, pos)];
+        if (pos === 0 || pos === 4) bass(t, c.b, 2 * S, 0.1);
+        if (pos === 2 || pos === 6) { strings(t, c.c, 1.2 * S, 0.014); snare(t, 0.05); }
+        if (pos === 0) timp(t, c.b, 0.15);
+      }
+      const note = oMel[kk];
+      if (note) { lead(t, note[1], note[0] * S, full); if (full) violin(t, note[1] + 12, note[0] * S, 0.022, 0); }
+      if (k === 128) cymbal(t, 0.08);
+    }
+
+    const SONGS = [
+      { name: 'Graduation March', by: 'Elgar · Pomp and Circumstance', step: 60 / 70 / 2, len: 176, play: playMarch },
+      { name: 'Canon in D', by: 'Pachelbel', step: 0.5, len: 120, play: playCanon },
+      { name: 'Ode to Joy', by: 'Beethoven', step: 60 / 116 / 2, len: 264, play: playOde }
+    ];
+    const changed = () => { if (onChange) onChange(); };
+
     function schedule() {
-      while (next < ctx.currentTime + 0.15) {
-        const bar = Math.floor(step / 16), pos = step % 16, c = bar % 4;
-        if (pos === 0) strings(next, CHORDS[c], S16 * 16);
-        if (pos === 0 || pos === 6 || pos === 12) CHORDS[c].forEach((n) => ep(next, n, bar < 2 ? 0.032 : 0.026, 0.8));
-        if (bar >= 2 && (pos === 0 || pos === 6 || pos === 10)) bass(next, ROOTS[c]);
-        if (bar >= 2 && pos % 2 === 0) { const m = MEL[(bar - 2) % 8][pos / 2]; if (m) melody(next, m); }
-        if (bar >= 4) { if (pos % 2 === 0) hat(next, pos % 4 === 2 ? 0.035 : 0.018); if (pos === 4 || pos === 12) clap(next); }
-        if (bar >= 6 && (pos === 0 || pos === 8 || (bar % 2 === 1 && pos === 10))) kick(next);
-        next += S16; step++;
+      while (next < ctx.currentTime + 0.2) {
+        const S = SONGS[song];
+        S.play(tick, next, S.step);
+        next += S.step; tick++;
+        if (tick >= S.len) { tick = 0; song = (song + 1) % SONGS.length; next += 1.2; changed(); }   // short pause, then the next piece
       }
     }
     function start() {
@@ -720,37 +848,53 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
       master = ctx.createGain(); master.gain.value = 0.0001;
       const comp = ctx.createDynamicsCompressor(); master.connect(comp); comp.connect(ctx.destination);
       rev = ctx.createConvolver();
-      const len = Math.floor(ctx.sampleRate * 2.2), ir = ctx.createBuffer(2, len, ctx.sampleRate);
-      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.5); }
+      const len = Math.floor(ctx.sampleRate * 2.8), ir = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
       rev.buffer = ir;
-      const rg = ctx.createGain(); rg.gain.value = 0.32; rev.connect(rg); rg.connect(master);
-      noise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.25), ctx.sampleRate);
+      const rg = ctx.createGain(); rg.gain.value = 0.4; rev.connect(rg); rg.connect(master);
+      noise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 2.5), ctx.sampleRate);
       const nd = noise.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+      bus = newBus();
       ctx.resume();
       next = ctx.currentTime + 0.1;
-      master.gain.exponentialRampToValueAtTime(0.8, ctx.currentTime + 2.5);
+      master.gain.exponentialRampToValueAtTime(0.75, ctx.currentTime + 2);
       timer = setInterval(schedule, 25); schedule();
       document.addEventListener('visibilitychange', () => {
         if (muted) return;
         if (document.hidden) ctx.suspend(); else ctx.resume();
       });
+      changed();
       return true;
     }
+    function select(i) {                      // jump to a piece: fade out what is playing, start the new one
+      song = i; tick = 0;
+      if (ctx) {
+        const old = bus, now = ctx.currentTime;
+        [old.dry, old.wet].forEach((g) => { g.gain.setValueAtTime(1, now); g.gain.linearRampToValueAtTime(0.0001, now + 0.4); });
+        setTimeout(() => { try { old.dry.disconnect(); old.wet.disconnect(); } catch (e) {} }, 1500);
+        bus = newBus(); next = now + 0.25;
+      }
+      changed();
+    }
     function setMuted(m) {
-      muted = m; if (!ctx) return;
+      muted = m; changed(); if (!ctx) return;
       if (m) { master.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.15); setTimeout(() => { if (muted) ctx.suspend(); }, 600); }
-      else ctx.resume().then(() => master.gain.setTargetAtTime(0.8, ctx.currentTime, 0.4));
+      else ctx.resume().then(() => master.gain.setTargetAtTime(0.75, ctx.currentTime, 0.4));
     }
     function chime() {
       if (!ctx || muted) return;
       const t = ctx.currentTime + 0.02;
-      [67, 71, 74, 79, 83, 86].forEach((m, i) => ep(t + i * 0.06, m, 0.05, 0.9));
+      [67, 71, 74, 79, 83, 86].forEach((m, i) => celesta(t + i * 0.06, m, 0.05));
     }
     function blip() {
       if (!ctx || muted) return;
-      ep(ctx.currentTime + 0.01, [74, 79, 83, 86][(Math.random() * 4) | 0], 0.05, 0.7);
+      celesta(ctx.currentTime + 0.01, [79, 83, 86, 91][(Math.random() * 4) | 0], 0.05);
     }
-    return { start, setMuted, chime, blip, get muted() { return muted; }, get on() { return !!ctx; } };
+    return {
+      start, setMuted, select, chime, blip, songs: SONGS.map(({ name, by }) => ({ name, by })),
+      get muted() { return muted; }, get on() { return !!ctx; }, get song() { return song; },
+      set onChange(fn) { onChange = fn; }
+    };
   })();
 
   /* ---------- fx: cap toss, confetti, flower petals ---------- */
@@ -1020,15 +1164,28 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
     $('#tossBtn').addEventListener('click', () => { FX.burst('caps'); Music.chime(); });
     $('#petalBtn').addEventListener('click', () => { FX.burst('petals', 160); Music.chime(); });
 
-    const soundBtn = $('#soundBtn');
-    soundBtn.addEventListener('click', () => {
-      if (!Music.on) { Music.start(); }
-      else Music.setMuted(!Music.muted);
-      const on = !Music.muted;
-      soundBtn.setAttribute('aria-pressed', String(on));
+    const soundBtn = $('#soundBtn'), tunes = $('#tunes');
+    function renderMusic() {
+      const on = Music.on && !Music.muted;
       $('#soundIcon').setAttribute('href', on ? '#i-sound-on' : '#i-sound-off');
       $('#soundTxt').textContent = on ? 'Music' : 'Muted';
+      tunes.querySelectorAll('.tune[data-song]').forEach((b) => b.setAttribute('aria-current', String(on && b.dataset.song === String(Music.song))));
+    }
+    function showTunes(open) { tunes.hidden = !open; soundBtn.setAttribute('aria-expanded', String(open)); }
+    Music.onChange = renderMusic;
+    soundBtn.addEventListener('click', () => { renderMusic(); showTunes(tunes.hidden); });
+    tunes.addEventListener('click', (e) => {
+      const b = e.target.closest('.tune'); if (!b) return;
+      if (b.dataset.song === 'off') Music.setMuted(true);
+      else {
+        if (!Music.on) Music.start();
+        Music.select(+b.dataset.song);
+        if (Music.muted) Music.setMuted(false);
+      }
+      renderMusic(); setTimeout(() => showTunes(false), 220);
     });
+    document.addEventListener('click', (e) => { if (!tunes.hidden && !e.target.closest('#tunes, #soundBtn')) showTunes(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !tunes.hidden) { showTunes(false); soundBtn.focus(); } });
   });
 
   /* ---------- caps react to taps and to where you are on the page ---------- */
@@ -1036,7 +1193,7 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
     if (reduce) return;
     document.addEventListener('click', (e) => {
       if (!intro.classList.contains('gone')) return;
-      if (e.target.closest('a, button, input, select, textarea, label, [role="button"], .dock')) return;
+      if (e.target.closest('a, button, input, select, textarea, label, [role="button"], .dock, .tunes')) return;
       if (window.getSelection && String(window.getSelection())) return;
       FX.tap(e.clientX, e.clientY); Music.blip();
     });
