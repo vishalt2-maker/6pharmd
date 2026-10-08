@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Kalam:wght@400;700&family=Mukta:wght@400;500;600;700&family=Baloo+Tamma+2:wght@600;800&family=Noto+Sans+Kannada:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Kalam:wght@400;700&family=Mukta:wght@400;500;600;700&display=swap">
 <script>document.documentElement.className += ' js';</script>
 <style>
 /* Concept: pharmacy packaging meets an Indian celebration.
@@ -441,6 +441,16 @@ body.has-live .lang{top:calc(62px + env(safe-area-inset-top,0px))}
 .note-card b{display:block;margin-top:10px;font-size:14px;color:var(--ink-2)}
 .wishes .chip-btn.solid{background:var(--royal);border-color:var(--royal);color:#fff}
 .wishes .btn-row{margin-top:22px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sky{position:relative;height:300px;margin-top:24px;border-radius:24px;overflow:hidden;background:radial-gradient(120% 90% at 50% 110%,#3B2C7A 0%,#1E1A4A 55%,#141236 100%)}
+.sky::before{content:"";position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 70%,#FFF6D8,transparent),radial-gradient(1px 1px at 85% 60%,#fff,transparent),radial-gradient(1px 1px at 10% 80%,#fff,transparent);background-size:200px 200px;opacity:.7}
+.lantern{position:absolute;left:var(--x);bottom:-110px;display:grid;justify-items:center;gap:6px;pointer-events:none;animation:rise var(--dur) linear forwards}
+.lantern i{display:block;width:30px;height:40px;border-radius:12px 12px 16px 16px;background:linear-gradient(180deg,#FFD27A,#FF8A2A 70%,#E8650F);box-shadow:0 0 22px 6px rgba(255,170,60,.5),inset 0 -8px 10px rgba(255,240,180,.6)}
+.lantern span{max-width:190px;padding:4px 10px 3px;border-radius:10px;background:rgba(255,255,255,.14);color:#FFF4D6;font-family:var(--f-hand);font-size:15px;line-height:1.25;text-align:center}
+@keyframes rise{0%{transform:translate(0,0) scale(var(--s));opacity:0}8%{opacity:1}50%{transform:translate(var(--sw),-210px) scale(var(--s))}88%{opacity:1}100%{transform:translate(0,-440px) scale(calc(var(--s) * .7));opacity:0}}
+.wish-form{display:flex;gap:10px;margin-top:16px;max-width:560px}
+.wish-form input{flex:1;min-width:0;min-height:50px;padding:0 18px;border:2px solid rgba(30,18,56,.18);border-radius:999px;background:#fff;color:var(--ink);font:500 16px var(--f-body);-webkit-user-select:text;user-select:text}
+.wish-share{display:inline-block;margin-top:12px;font-weight:600;color:var(--royal-deep)}
 .lb{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:rgba(20,16,40,.9)}
 .lb figure{margin:0;max-width:min(920px,100%);display:grid;gap:10px;justify-items:center}
 .lb img{max-height:78vh;width:auto;border-radius:8px}
@@ -511,11 +521,6 @@ body.after .after-note{display:block}
 </div>
 
 <canvas id="fx" aria-hidden="true"></canvas>
-<div class="lang" id="lang" role="group" aria-label="Language">
-  <button type="button" data-lang="en" aria-pressed="true">EN</button>
-  <button type="button" data-lang="kn" aria-pressed="false">ಕನ್ನಡ</button>
-  <button type="button" data-lang="hi" aria-pressed="false">हिंदी</button>
-</div>
 <div class="live-bar" id="liveBar" role="status" hidden><span class="dot" aria-hidden="true"></span><span id="liveText"></span><a class="live-watch" id="liveWatch" target="_blank" rel="noopener" hidden data-i18n="watch">Watch live</a></div>
 
 <main id="main">
@@ -657,11 +662,11 @@ body.after .after-note{display:block}
       <h2 data-i18n="venue">Venue</h2>
       <p class="venue-name">Rashtra Kavi Kuvempu Auditorium</p>
       <span class="floor" data-i18n="floor">6th floor</span>
-      <address id="addr">EWIT Campus, East West College of Pharmacy<br>No. 63, Near BEL Layout, Off Magadi Road<br>Vishwaneedam Post, Anjananagar<br>Bengaluru – 560091</address>
+      <address id="addr">EWIT Campus, East West College of Pharmacy<br>No. 63, Near BEL Layout, Off Magadi Road<br>Vishwaneedam Post, Anjananagar<br>Bengaluru – 560091<br><b>Nearest bus stop: Anjana Nagar</b></address>
       <div class="reach">
         <h3 data-i18n="reach">How to reach</h3>
         <ul>
-          <li data-i18n="r1">Bus: get off at Bharath Nagara 1st Phase stop, about a 600 m walk.</li>
+          <li data-i18n="r1"><b>Bus: get off at Anjana Nagar bus stop</b>, the main stop for the campus. Bharath Nagara 1st Phase stop is also close, about a 600 m walk.</li>
           <li data-i18n="r2">Metro: Jnana Bharathi station (Purple Line), then a cab, auto or the feeder bus towards Bharath Nagar.</li>
           <li data-i18n="r3">Cab or auto: search “East West College of Pharmacy” in Uber, Ola or Rapido.</li>
           <li data-i18n="r4">The auditorium is on the 6th floor. Please arrive by 9:45 AM.</li>
@@ -727,23 +732,20 @@ body.after .after-note{display:block}
 
     <div class="block-head"><h3 data-i18n="gradsTitle">The graduates</h3><p data-i18n="gradsSub">Tap a name to toss a cap for them.</p></div>
     <ul class="names" id="names" hidden></ul>
-    <div class="invite-gen" id="inviteGen" hidden>
-      <label for="gradSel"><b data-i18n="genTitle">Graduates: send your family their own invitation</b></label>
-      <select id="gradSel"></select>
-      <div class="btn-row">
-        <a class="chip-btn solid" id="waMine" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg><span data-i18n="sendWa">Send on WhatsApp</span></a>
-        <button class="chip-btn" id="copyMine" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="copyMine">Copy my link</span></button>
-      </div>
-    </div>
   </div>
 </section>
 
 <!-- ============ Wishes ============ -->
 <section class="sec wishes scallop" id="wishes">
   <div class="wrap">
-    <div class="rv"><h2 data-i18n="wishTitle">Wishes for the batch</h2><p class="hand sub" data-i18n="wishSub">from family, friends and teachers</p></div>
-    <div class="notes" id="notes"></div>
-    <div class="btn-row"><a class="chip-btn solid" id="wishBtn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg><span data-i18n="sendWish">Send a wish</span></a></div>
+    <div class="rv"><h2>Light a wish lantern</h2><p class="hand sub">Write a wish for the batch and watch it fly</p></div>
+    <div class="sky" id="sky" aria-hidden="true"></div>
+    <form class="wish-form" id="wishForm">
+      <label class="sr" for="wishText">Your wish for the batch</label>
+      <input id="wishText" maxlength="80" autocomplete="off" placeholder="Congratulations, doctors!">
+      <button class="chip-btn solid" type="submit">Release</button>
+    </form>
+    <a class="wish-share" id="wishShare" target="_blank" rel="noopener" hidden>Also send your wish to the batch on WhatsApp ↗</a>
   </div>
 </section>
 
@@ -798,8 +800,8 @@ body.after .after-note{display:block}
   const START = Date.UTC(2026, 10, 21, 4, 30);   // 21 Nov 2026, 10:00 AM IST
   const GRADUATES = [
     'Vishal T', 'Radhika G S', 'Mohan M', 'Amara Yousuf Wani', 'Vaishnavi V Mesta', 'Dharshan Gowda H A', 'Chandini J',
-    'Nikitha P', 'Banylla Wankhar', 'Phibanroi Mukim', 'Adbul Akhir Sheikh', 'Dontireddy Sai Jyotsna', 'Jeevitha M',
-    'Santhasivam D', 'Tejas R', 'Lognathan R', 'Rahal Abdou', 'Pritam Baidya', 'Abyay Dash', 'Md Kaif'
+    'Nikitha P', 'Banylla Wankhar', 'Phibanroi Mukim', 'Abdul Akhir Sheikh', 'Dontireddy Sai Jyotsna', 'Jeevitha M',
+    'Santhasivam D', 'Tejas R', 'Loganathan R', 'Rahal Abdou', 'Pritam Baidya', 'Abyay Dash', 'Md Kaif'
   ];
   // Photos: put files in site/assets/photos/ and write the file name in src, e.g. 'assets/photos/day-one.jpg'
   const MEMORIES = [
@@ -1036,70 +1038,8 @@ body.after .after-note{display:block}
   }
 
 
-  /* ---------- languages: English, Kannada, Hindi (translations are drafts; please have a native speaker check) ---------- */
+  /* ---------- page text (English) ---------- */
   const T = {
-    kn: {
-      introTitle: 'ನಿಮಗೊಂದು ಆಹ್ವಾನ', tapOpen: 'ತೆರೆಯಲು ಒತ್ತಿ', to: 'ಇವರಿಗೆ,', you: 'ನೀವು ಮತ್ತು ನಿಮ್ಮ ಕುಟುಂಬ', family: '{n} ಅವರ ಕುಟುಂಬ', personal: '{n} ಅವರ ಕುಟುಂಬಕ್ಕೆ ವಿಶೇಷ ಆಹ್ವಾನ',
-      note: '…ನೀವು ನಮ್ಮೊಂದಿಗಿರಬೇಕೆಂಬುದು ನಮ್ಮ ಆಸೆ', sat: 'ಶನಿವಾರ', onwards: 'ಬೆಳಿಗ್ಗೆ 10:00ರಿಂದ', registerAttend: 'ನೋಂದಾಯಿಸಿ', register: 'ನೋಂದಾಯಿಸಿ',
-      toss: 'ಟೋಪಿ ಹಾರಿಸಿ', tapHint: 'ಅಥವಾ ಎಲ್ಲಿಯಾದರೂ ಒತ್ತಿ', untilDocs: 'ನಾವು ಅಧಿಕೃತವಾಗಿ ಡಾಕ್ಟರ್ ಆಫ್ ಫಾರ್ಮಸಿ ಆಗುವವರೆಗೆ',
-      days: 'ಇನ್ನು {n} ದಿನಗಳು', day1: 'ಇನ್ನು 1 ದಿನ', almost: 'ಇನ್ನೇನು ಬಂದೇ ಬಿಟ್ಟಿತು!', today: 'ಇಂದೇ ಆ ದಿನ!', thanksCame: 'ಬಂದಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು!',
-      m30: 'ಇನ್ನು ಒಂದು ತಿಂಗಳಿಗಿಂತ ಕಡಿಮೆ!', m7: 'ಕೊನೆಯ ವಾರ!', m1: 'ನಾಳೆಯೇ!',
-      greet: 'ಪ್ರೀತಿಯ ಕುಟುಂಬ ಮತ್ತು ಸ್ನೇಹಿತರೇ,',
-      letter1: 'ಆರು ವರ್ಷಗಳ ಹಿಂದೆ ನಾವು ಈಸ್ಟ್ ವೆಸ್ಟ್ ಕಾಲೇಜ್ ಆಫ್ ಫಾರ್ಮಸಿಗೆ ಕಾಲಿಟ್ಟಾಗ, ಮಾತ್ರೆ ಮತ್ತು ಕ್ಯಾಪ್ಸೂಲ್ ನಡುವಿನ ವ್ಯತ್ಯಾಸ ಬಿಟ್ಟರೆ ನಮಗೆ ಹೆಚ್ಚೇನೂ ಗೊತ್ತಿರಲಿಲ್ಲ. ಅಂದಿನಿಂದ ಪ್ರಾಯೋಗಿಕ ತರಗತಿಗಳು, ಒಂದರ ನಂತರ ಒಂದು ವೈವಾ, ಕೇಸ್ ಪ್ರೆಸೆಂಟೇಶನ್‌ಗಳು ಮತ್ತು ಆಸ್ಪತ್ರೆಯ ವಾರ್ಡ್‌ಗಳಲ್ಲಿ ಒಂದು ವರ್ಷದ ಇಂಟರ್ನ್‌ಶಿಪ್.',
-      letter2: '<b>ನವೆಂಬರ್ 21</b>ರಂದು ನಾವು <b>ಡಾಕ್ಟರ್ ಆಫ್ ಫಾರ್ಮಸಿ</b> ಪದವಿ ಪಡೆಯುತ್ತಿದ್ದೇವೆ. ನಾವು ಫಾರ್ಮಸಿಸ್ಟ್ ಪ್ರಮಾಣವಚನ ಸ್ವೀಕರಿಸಿ ಟೋಪಿಗಳನ್ನು ಹಾರಿಸುವಾಗ ನೀವು ಅಲ್ಲಿದ್ದರೆ ನಮಗೆ ತುಂಬಾ ಸಂತೋಷ.',
-      sign: 'ಪ್ರೀತಿಯಿಂದ,<br>ಫಾರ್ಮ್ ಡಿ ಬ್ಯಾಚ್ 2020–2026', chief: 'ಮುಖ್ಯ ಅತಿಥಿಗಳು', parents: 'ನಮ್ಮ ಪೋಷಕರು',
-      parentsTxt: 'ಪ್ರತಿಯೊಬ್ಬ ಪದವೀಧರನ ಹಿಂದೆ ಎಂದೂ ನಂಬಿಕೆ ಕಳೆದುಕೊಳ್ಳದ ಒಂದು ಕುಟುಂಬವಿದೆ. ಇಂದಿನ ದಿನ ನಮ್ಮಷ್ಟೇ ನಿಮ್ಮದೂ ಹೌದು.',
-      petals: 'ಅವರ ಮೇಲೆ ಹೂಮಳೆ ಸುರಿಸಿ', presided: 'ಅಧ್ಯಕ್ಷತೆ', presence: 'ಉಪಸ್ಥಿತಿ', principal: 'ಪ್ರಾಂಶುಪಾಲರು, ಈಸ್ಟ್ ವೆಸ್ಟ್ ಕಾಲೇಜ್ ಆಫ್ ಫಾರ್ಮಸಿ',
-      dean: 'ಡೀನ್ (ಆರ್ ಅಂಡ್ ಡಿ)', hod: 'ಮುಖ್ಯಸ್ಥರು, ಫಾರ್ಮಸಿ ಪ್ರಾಕ್ಟೀಸ್ ವಿಭಾಗ', programme: 'ಕಾರ್ಯಕ್ರಮ', tentative: 'ತಾತ್ಕಾಲಿಕ',
-      p1: 'ಆಗಮನ ಮತ್ತು ಆಸನ', p2: 'ದೀಪ ಬೆಳಗಿಸುವುದು ಮತ್ತು ಪ್ರಾರ್ಥನೆ', p3: 'ಸ್ವಾಗತ ಭಾಷಣ', p4: 'ಪ್ರಾಂಶುಪಾಲರು ಮತ್ತು ಡೀನ್ ಅವರ ಭಾಷಣ',
-      p5: 'ಪೋಷಕರಿಗೆ ಸನ್ಮಾನ', p6: 'ಫಾರ್ಮಸಿಸ್ಟ್ ಪ್ರಮಾಣವಚನ', p7: 'ಪದವೀಧರರ ನಡಿಗೆ ಮತ್ತು ಟೋಪಿ ಹಾರಿಸುವುದು', p8: 'ವಂದನಾರ್ಪಣೆ ಮತ್ತು ಗ್ರೂಪ್ ಫೋಟೋ', p9: 'ಊಟ',
-      n5: 'ಕರವಸ್ತ್ರ ಜೊತೆಗಿರಲಿ', n6: 'ಮಹತ್ವದ ಕ್ಷಣ', n7: 'ಟೋಪಿ ಮೇಲೆ!', venue: 'ಸ್ಥಳ', floor: '6ನೇ ಮಹಡಿ', directions: 'ದಾರಿ ನೋಡಿ', copyAddr: 'ವಿಳಾಸ ನಕಲಿಸಿ',
-      reach: 'ತಲುಪುವುದು ಹೇಗೆ', r1: 'ಬಸ್: ಭಾರತ್ ನಗರ 1ನೇ ಹಂತ ನಿಲ್ದಾಣದಲ್ಲಿ ಇಳಿಯಿರಿ, ಸುಮಾರು 600 ಮೀ ನಡಿಗೆ.',
-      r2: 'ಮೆಟ್ರೋ: ಜ್ಞಾನಭಾರತಿ ನಿಲ್ದಾಣ (ನೇರಳೆ ಮಾರ್ಗ), ನಂತರ ಕ್ಯಾಬ್, ಆಟೋ ಅಥವಾ ಭಾರತ್ ನಗರದ ಕಡೆ ಫೀಡರ್ ಬಸ್.',
-      r3: 'ಕ್ಯಾಬ್ ಅಥವಾ ಆಟೋ: ಉಬರ್, ಓಲಾ ಅಥವಾ ರ್ಯಾಪಿಡೋದಲ್ಲಿ “East West College of Pharmacy” ಎಂದು ಹುಡುಕಿ.',
-      r4: 'ಸಭಾಂಗಣ 6ನೇ ಮಹಡಿಯಲ್ಲಿದೆ. ದಯವಿಟ್ಟು ಬೆಳಿಗ್ಗೆ 9:45ರೊಳಗೆ ಬನ್ನಿ.', coming: 'ಬರುತ್ತೀರಾ?',
-      rsvpLead: 'ನಿಮ್ಮೊಂದಿಗೆ ಬರುವ ಎಲ್ಲರನ್ನೂ ದಯವಿಟ್ಟು ನೋಂದಾಯಿಸಿ, ಇದರಿಂದ ನಾವು ಆಸನ ಮತ್ತು ಊಟದ ವ್ಯವಸ್ಥೆ ಮಾಡಬಹುದು. ಒಂದೇ ನಿಮಿಷ ಸಾಕು.',
-      onePer: 'ಒಂದು ಮೊಬೈಲ್ ಸಂಖ್ಯೆಗೆ ಒಂದು ನೋಂದಣಿ.', closed: 'ನೋಂದಣಿ ಮುಗಿದಿದೆ. ಬಂದ ಎಲ್ಲರಿಗೂ ಧನ್ಯವಾದಗಳು!', questions: 'ಏನಾದರೂ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?',
-      call: 'ಕರೆ ಮಾಡಿ', saveDate: 'ದಿನಾಂಕ ನೆನಪಿಡಿ', memTitle: 'ನೆನಪಿನ ಗೋಡೆ', memSub: 'ಚಿತ್ರಗಳಲ್ಲಿ ಆರು ವರ್ಷಗಳು. ದೊಡ್ಡದಾಗಿ ನೋಡಲು ಫೋಟೋ ಒತ್ತಿ.',
-      soon: 'ಫೋಟೋ ಶೀಘ್ರದಲ್ಲೇ', groupPhoto: 'ಗ್ರೂಪ್ ಫೋಟೋ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ', tnTitle: 'ಅಂದು ಮತ್ತು ಇಂದು', tnSub: 'ಸ್ಲೈಡರ್ ಎಳೆಯಿರಿ: 2020ರ ಮೊದಲ ದಿನ ಮತ್ತು ಪದವಿ ದಿನ.',
-      gradsTitle: 'ಪದವೀಧರರು', gradsSub: 'ಅವರಿಗಾಗಿ ಟೋಪಿ ಹಾರಿಸಲು ಹೆಸರನ್ನು ಒತ್ತಿ.', genTitle: 'ಪದವೀಧರರೇ: ನಿಮ್ಮ ಕುಟುಂಬಕ್ಕೆ ಅವರದೇ ಆಹ್ವಾನ ಕಳುಹಿಸಿ',
-      pick: 'ನಿಮ್ಮ ಹೆಸರು ಆಯ್ಕೆಮಾಡಿ', tnThen: 'ಮೊದಲ ದಿನ', tnNow: 'ಪದವಿ ದಿನ', sendWa: 'ವಾಟ್ಸಾಪ್‌ನಲ್ಲಿ ಕಳುಹಿಸಿ', copyMine: 'ನನ್ನ ಲಿಂಕ್ ನಕಲಿಸಿ', wishTitle: 'ಬ್ಯಾಚ್‌ಗೆ ಶುಭ ಹಾರೈಕೆಗಳು',
-      wishSub: 'ಕುಟುಂಬ, ಸ್ನೇಹಿತರು ಮತ್ತು ಶಿಕ್ಷಕರಿಂದ', sendWish: 'ಶುಭಾಶಯ ಕಳುಹಿಸಿ', firstWish: 'ಮೊದಲ ಶುಭಾಶಯ ನಿಮ್ಮದಾಗಲಿ!',
-      seeYou: 'ನವೆಂಬರ್ 21ರಂದು ಭೇಟಿಯಾಗೋಣ!', shareWa: 'ವಾಟ್ಸಾಪ್‌ನಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳಿ', copyLink: 'ಲಿಂಕ್ ನಕಲಿಸಿ', map: 'ನಕ್ಷೆ', share: 'ಹಂಚಿ',
-      watch: 'ನೇರ ಪ್ರಸಾರ ನೋಡಿ', now: 'ಈಗ ನಡೆಯುತ್ತಿದೆ: {x}', startsToday: 'ಇಂದು ಬೆಳಿಗ್ಗೆ 10:00ಕ್ಕೆ ಆರಂಭ', afterBar: 'ನಮ್ಮೊಂದಿಗೆ ಸಂಭ್ರಮಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು!',
-      capsFor: '{n} ಅವರಿಗಾಗಿ ಟೋಪಿ ಮೇಲೆ!', music: 'ಸಂಗೀತ', muted: 'ಮ್ಯೂಟ್'
-    },
-    hi: {
-      introTitle: 'आपके लिए एक निमंत्रण', tapOpen: 'खोलने के लिए टैप करें', to: 'सेवा में,', you: 'आप और आपका परिवार', family: '{n} का परिवार', personal: '{n} के परिवार के लिए ख़ास निमंत्रण',
-      note: '…और हम चाहते हैं कि आप भी वहाँ हों', sat: 'शनिवार', onwards: 'सुबह 10:00 बजे से', registerAttend: 'रजिस्टर करें', register: 'रजिस्टर करें',
-      toss: 'टोपियाँ उछालें', tapHint: 'या कहीं भी टैप करें', untilDocs: 'जब तक हम आधिकारिक रूप से डॉक्टर ऑफ़ फ़ार्मेसी नहीं बन जाते',
-      days: 'बस {n} दिन बाकी', day1: 'बस 1 दिन बाकी', almost: 'बस पहुँच ही गए!', today: 'आज ही है!', thanksCame: 'आने के लिए धन्यवाद!',
-      m30: 'एक महीने से भी कम बाकी!', m7: 'आख़िरी हफ़्ता!', m1: 'कल ही है!',
-      greet: 'प्रिय परिवार और मित्रों,',
-      letter1: 'छह साल पहले जब हमने ईस्ट वेस्ट कॉलेज ऑफ़ फ़ार्मेसी में कदम रखा, तब हमें टैबलेट और कैप्सूल के फ़र्क़ से ज़्यादा कुछ नहीं पता था। तब से प्रैक्टिकल, एक के बाद एक वाइवा, केस प्रेज़ेंटेशन और अस्पताल के वार्डों में पूरे एक साल की इंटर्नशिप।',
-      letter2: '<b>21 नवंबर</b> को हम <b>डॉक्टर ऑफ़ फ़ार्मेसी</b> बनेंगे। जब हम फ़ार्मासिस्ट की शपथ लें और अपनी टोपियाँ हवा में उछालें, तब आपका वहाँ होना हमारे लिए बहुत मायने रखेगा।',
-      sign: 'प्यार सहित,<br>फ़ार्म डी बैच 2020–2026', chief: 'मुख्य अतिथि', parents: 'हमारे माता-पिता',
-      parentsTxt: 'हर ग्रेजुएट के पीछे एक परिवार होता है जिसने कभी भरोसा नहीं छोड़ा। आज का दिन जितना हमारा है, उतना ही आपका भी।',
-      petals: 'उन पर फूल बरसाएँ', presided: 'अध्यक्षता', presence: 'उपस्थिति', principal: 'प्राचार्य, ईस्ट वेस्ट कॉलेज ऑफ़ फ़ार्मेसी',
-      dean: 'डीन (आर एंड डी)', hod: 'विभागाध्यक्ष, फ़ार्मेसी प्रैक्टिस विभाग', programme: 'कार्यक्रम', tentative: 'संभावित',
-      p1: 'आगमन और बैठक', p2: 'दीप प्रज्वलन और प्रार्थना', p3: 'स्वागत भाषण', p4: 'प्राचार्य और डीन का संबोधन',
-      p5: 'माता-पिता का सम्मान', p6: 'फ़ार्मासिस्ट की शपथ', p7: 'ग्रेजुएट्स की वॉक और टोपी उछाल', p8: 'धन्यवाद ज्ञापन और ग्रुप फ़ोटो', p9: 'दोपहर का भोजन',
-      n5: 'रूमाल साथ रखें', n6: 'सबसे ख़ास पल', n7: 'टोपियाँ ऊपर!', venue: 'स्थान', floor: 'छठी मंज़िल', directions: 'रास्ता देखें', copyAddr: 'पता कॉपी करें',
-      reach: 'कैसे पहुँचें', r1: 'बस: भारत नगर फ़र्स्ट फ़ेज़ स्टॉप पर उतरें, लगभग 600 मीटर पैदल।',
-      r2: 'मेट्रो: ज्ञानभारती स्टेशन (पर्पल लाइन), फिर कैब, ऑटो या भारत नगर की ओर फ़ीडर बस।',
-      r3: 'कैब या ऑटो: उबर, ओला या रैपिडो में “East West College of Pharmacy” खोजें।',
-      r4: 'ऑडिटोरियम छठी मंज़िल पर है। कृपया सुबह 9:45 तक पहुँचें।', coming: 'आ रहे हैं?',
-      rsvpLead: 'कृपया अपने साथ आने वाले सभी लोगों का रजिस्ट्रेशन करें, ताकि हम बैठने और भोजन की व्यवस्था कर सकें। बस एक मिनट लगेगा।',
-      onePer: 'एक मोबाइल नंबर से एक रजिस्ट्रेशन।', closed: 'रजिस्ट्रेशन बंद हो चुका है। आने वाले सभी लोगों का धन्यवाद!', questions: 'कोई सवाल?',
-      call: 'कॉल करें', saveDate: 'तारीख़ याद रखें', memTitle: 'यादों की दीवार', memSub: 'तस्वीरों में छह साल। बड़ा देखने के लिए फ़ोटो पर टैप करें।',
-      soon: 'फ़ोटो जल्द ही', groupPhoto: 'ग्रुप फ़ोटो डाउनलोड करें', tnTitle: 'तब और अब', tnSub: 'स्लाइडर खिसकाएँ: 2020 का पहला दिन बनाम ग्रेजुएशन का दिन।',
-      gradsTitle: 'ग्रेजुएट्स', gradsSub: 'किसी नाम पर टैप करें और उनके लिए टोपी उछालें।', genTitle: 'ग्रेजुएट्स: अपने परिवार को उनका अपना निमंत्रण भेजें',
-      pick: 'अपना नाम चुनें', tnThen: 'पहला दिन', tnNow: 'ग्रेजुएशन का दिन', sendWa: 'व्हाट्सऐप पर भेजें', copyMine: 'मेरा लिंक कॉपी करें', wishTitle: 'बैच के लिए शुभकामनाएँ',
-      wishSub: 'परिवार, दोस्तों और शिक्षकों की ओर से', sendWish: 'शुभकामना भेजें', firstWish: 'पहली शुभकामना आपकी हो सकती है!',
-      seeYou: '21 तारीख़ को मिलते हैं!', shareWa: 'व्हाट्सऐप पर शेयर करें', copyLink: 'लिंक कॉपी करें', map: 'नक्शा', share: 'शेयर',
-      watch: 'लाइव देखें', now: 'अभी चल रहा है: {x}', startsToday: 'आज सुबह 10:00 बजे शुरू', afterBar: 'हमारे साथ जश्न मनाने के लिए धन्यवाद!',
-      capsFor: '{n} के लिए टोपियाँ ऊपर!', music: 'संगीत', muted: 'म्यूट'
-    },
     en: {
       you: 'You &amp; your family', family: '{n}’s family', personal: 'A special invitation for {n}’s family',
       days: '{n} days to go', day1: '1 day to go', almost: 'Almost there!', today: 'It’s today!', thanksCame: 'Thank you for coming!',
@@ -1127,11 +1067,8 @@ body.after .after-note{display:block}
     langListeners.forEach((fn) => safe(fn));
   }
   safe(() => {
-    let saved = 'en'; try { saved = localStorage.getItem('lang') || 'en'; } catch (e) {}
-    document.querySelectorAll('#lang button').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
-    setLang(saved);
-    let ticking = false;
-    addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { $('#lang').classList.toggle('tucked', scrollY > 260 && intro.classList.contains('gone')); ticking = false; }); }, { passive: true });
+    try { localStorage.removeItem('lang'); } catch (e) {}
+    setLang('en');
   });
 
   /* ---------- toran (marigold & mango-leaf garland) that swings as you scroll ---------- */
@@ -1249,7 +1186,7 @@ body.after .after-note{display:block}
     $('#waVishal').href = 'https://wa.me/919481954900?text=' + encodeURIComponent('Hi Vishal, I have a question about the Pharm D Graduation Day on 21 Nov.');
     $('#waShare').href = 'https://wa.me/?text=' + encodeURIComponent(SHARE_TEXT + ' ' + SITE);
 
-    $('#copyAddr').addEventListener('click', () => copy('Rashtra Kavi Kuvempu Auditorium, 6th Floor, EWIT Campus, East West College of Pharmacy, No. 63, Near BEL Layout, Off Magadi Road, Vishwaneedam Post, Anjananagar, Bengaluru 560091', 'Address copied'));
+    $('#copyAddr').addEventListener('click', () => copy('Rashtra Kavi Kuvempu Auditorium, 6th Floor, EWIT Campus, East West College of Pharmacy, No. 63, Near BEL Layout, Off Magadi Road, Vishwaneedam Post, Anjananagar, Bengaluru 560091 (nearest bus stop: Anjana Nagar)', 'Address copied'));
     $('#copyLink').addEventListener('click', () => copy(SITE, 'Link copied'));
     $('#shareBtn').addEventListener('click', () => {
       if (navigator.share) {
@@ -1328,21 +1265,6 @@ body.after .after-note{display:block}
       $('#addrName').innerHTML = who ? '' : tr('you');
       if (who) $('#addrName').textContent = tr('family', { n: who });
       const p = $('#personal'); p.hidden = !who; if (who) p.textContent = tr('personal', { n: who });
-      const sel = $('#gradSel'), first = sel.options[0]; if (first) first.textContent = tr('pick');
-    }
-    const sel = $('#gradSel'), gen = $('#inviteGen');
-    if (GRADUATES.length) {
-      sel.innerHTML = '<option value=""></option>' + GRADUATES.map((n) => `<option value="${slug(n)}">${n.replace(/</g, '')}</option>`).join('');
-      gen.hidden = false;
-      const link = () => SITE + '#' + sel.value;
-      const update = () => {
-        const ok = !!sel.value, wa = $('#waMine');
-        wa.href = ok ? 'https://wa.me/?text=' + encodeURIComponent(SHARE_TEXT + ' Your personal invitation: ' + link()) : '#';
-        wa.style.opacity = $('#copyMine').style.opacity = ok ? '' : '.5';
-      };
-      sel.addEventListener('change', update); update();
-      $('#waMine').addEventListener('click', (e) => { if (!sel.value) { e.preventDefault(); sel.focus(); } });
-      $('#copyMine').addEventListener('click', () => { if (!sel.value) { sel.focus(); return; } copy(link(), 'Link copied'); });
     }
     paint(); langListeners.push(paint);
   });
@@ -1386,21 +1308,34 @@ body.after .after-note{display:block}
     range.addEventListener('input', () => tn.style.setProperty('--pos', range.value + '%'));
   });
 
-  /* ---------- wishes wall ---------- */
+  /* ---------- wish lanterns ---------- */
   safe(() => {
-    const notes = $('#notes'), colors = ['#FFF3B0', '#FFE0EC', '#DDF4FF', '#E2F7E1', '#EDE3FF'];
-    function render() {
-      notes.innerHTML = '';
-      const list = WISHES.length ? WISHES : [{ text: tr('firstWish'), from: '' }];
-      list.forEach((w, i) => {
-        const d = document.createElement('div'); d.className = 'note-card'; d.style.cssText = `--nc:${colors[i % colors.length]};--r:${[-1.5, 1.2, -0.6, 1.8][i % 4]}deg`;
-        const p = document.createElement('p'); p.textContent = w.text; d.append(p);
-        if (w.from) { const b = document.createElement('b'); b.textContent = '— ' + w.from; d.append(b); }
-        notes.append(d);
-      });
+    const sky = $('#sky'), form = $('#wishForm'), input = $('#wishText'), share = $('#wishShare');
+    function lantern(text, big) {
+      const el = document.createElement('div');
+      el.className = 'lantern';
+      el.style.cssText = `--x:${big ? 38 : rnd(6, 84).toFixed(0)}%;--dur:${big ? 12 : rnd(9, 14).toFixed(1)}s;--s:${big ? 1.15 : rnd(0.55, 1).toFixed(2)};--sw:${rnd(-30, 30) | 0}px`;
+      el.innerHTML = '<i></i>';
+      if (text) { const sp = document.createElement('span'); sp.textContent = text; el.append(sp); }
+      el.addEventListener('animationend', () => el.remove());
+      sky.append(el);
     }
-    render(); langListeners.push(render);
-    $('#wishBtn').href = 'https://wa.me/919481954900?text=' + encodeURIComponent('My wish for Pharm D Batch 2020–26: ');
+    let wi = 0;
+    setInterval(() => {
+      if (document.hidden || reduce) return;
+      const r = sky.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight || sky.childElementCount > 8) return;
+      const w = WISHES.length && Math.random() < 0.5 ? WISHES[wi++ % WISHES.length] : null;
+      lantern(w ? w.text + (w.from ? ' — ' + w.from : '') : '');
+    }, 1500);
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const t = input.value.trim();
+      if (!t) { input.focus(); return; }
+      lantern(t, true); input.value = ''; input.blur();
+      share.href = 'https://wa.me/919481954900?text=' + encodeURIComponent('My wish for Pharm D Batch 2020–26: ' + t);
+      share.hidden = false; Music.chime(); toast('Your wish is on its way!');
+    });
   });
 
   /* ---------- on the day: live banner, then "after" mode ---------- */
