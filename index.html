@@ -442,12 +442,18 @@ body.has-live .lang{top:calc(62px + env(safe-area-inset-top,0px))}
 .wishes .chip-btn.solid{background:var(--royal);border-color:var(--royal);color:#fff}
 .wishes .btn-row{margin-top:22px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.sky{position:relative;height:300px;margin-top:24px;border-radius:24px;overflow:hidden;background:radial-gradient(120% 90% at 50% 110%,#3B2C7A 0%,#1E1A4A 55%,#141236 100%)}
+.wishes-stage{position:relative;height:210vh;background:#F1ECFF}
+.sky-pin{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.sky{position:absolute;inset:0;clip-path:inset(calc((1 - var(--p,0)) * 18%) calc((1 - var(--p,0)) * 6%) round calc((1 - var(--p,0)) * 28px));overflow:hidden;background:radial-gradient(120% 90% at 50% 110%,#3B2C7A 0%,#1E1A4A 55%,#141236 100%)}
 .sky::before{content:"";position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 70%,#FFF6D8,transparent),radial-gradient(1px 1px at 85% 60%,#fff,transparent),radial-gradient(1px 1px at 10% 80%,#fff,transparent);background-size:200px 200px;opacity:.7}
+.sky-ui{position:absolute;left:0;right:0;bottom:calc(var(--dock-h) + 40px + env(safe-area-inset-bottom,0px));max-width:720px;margin:0 auto;padding-inline:20px;color:#fff;opacity:var(--p,0);transform:translateY(calc((1 - var(--p,0)) * 40px));pointer-events:var(--pe,none)}
+.sky-ui h2{font-size:clamp(36px,9vw,64px);color:#fff}
+.sky-ui .hand{color:var(--gold-text);font-size:20px;margin-top:4px}
+.sky-ui .wish-share{color:var(--gold-text)}
 .lantern{position:absolute;left:var(--x);bottom:-110px;display:grid;justify-items:center;gap:6px;pointer-events:none;animation:rise var(--dur) linear forwards}
 .lantern i{display:block;width:30px;height:40px;border-radius:12px 12px 16px 16px;background:linear-gradient(180deg,#FFD27A,#FF8A2A 70%,#E8650F);box-shadow:0 0 22px 6px rgba(255,170,60,.5),inset 0 -8px 10px rgba(255,240,180,.6)}
 .lantern span{max-width:170px;padding:4px 10px 3px;border-radius:10px;background:rgba(255,255,255,.14);color:#FFF4D6;font-family:var(--f-hand);font-size:15px;line-height:1.25;text-align:center}
-@keyframes rise{0%{transform:translate(0,0) scale(var(--s));opacity:0}8%{opacity:1}50%{transform:translate(var(--sw),-210px) scale(var(--s))}88%{opacity:1}100%{transform:translate(0,-440px) scale(calc(var(--s) * .7));opacity:0}}
+@keyframes rise{0%{transform:translate(0,0) scale(var(--s));opacity:0}8%{opacity:1}50%{transform:translate(var(--sw),calc(var(--rise,440px) * -.5)) scale(var(--s))}88%{opacity:1}100%{transform:translate(0,calc(var(--rise,440px) * -1)) scale(calc(var(--s) * .7));opacity:0}}
 .wish-form{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;max-width:620px}
 .wish-form #wishText{flex:1 1 100%}
 .wish-form #wishFrom{flex:1 1 180px}
@@ -753,18 +759,21 @@ body.after .after-note{display:block}
 </section>
 
 <!-- ============ Wishes ============ -->
-<section class="sec wishes scallop" id="wishes">
-  <div class="wrap">
-    <div class="rv"><h2>Light a wish lantern</h2><p class="hand sub">Write a wish for the batch and watch it fly</p></div>
+<section class="wishes-stage" id="wishes">
+  <div class="sky-pin">
     <div class="sky" id="sky" aria-hidden="true"></div>
-    <form class="wish-form" id="wishForm">
-      <label class="sr" for="wishText">Your wish for the batch</label>
-      <input id="wishText" maxlength="80" autocomplete="off" placeholder="Your wish, e.g. Congratulations, doctors!">
-      <label class="sr" for="wishFrom">Your name (optional)</label>
-      <input id="wishFrom" maxlength="40" autocomplete="name" placeholder="Your name (optional)">
-      <button class="chip-btn solid" type="submit">Release</button>
-    </form>
-    <a class="wish-share" id="wishShare" target="_blank" rel="noopener" hidden>Also send your wish to the batch on WhatsApp ↗</a>
+    <div class="sky-ui">
+      <h2>Light a wish lantern</h2>
+      <p class="hand">Write a wish for the batch and watch it fly</p>
+      <form class="wish-form" id="wishForm">
+        <label class="sr" for="wishText">Your wish for the batch</label>
+        <input id="wishText" maxlength="80" autocomplete="off" placeholder="Your wish, e.g. Congratulations, doctors!">
+        <label class="sr" for="wishFrom">Your name (optional)</label>
+        <input id="wishFrom" maxlength="40" autocomplete="name" placeholder="Your name (optional)">
+        <button class="chip-btn solid" type="submit">Release</button>
+      </form>
+      <a class="wish-share" id="wishShare" target="_blank" rel="noopener" hidden>Also send your wish to the batch on WhatsApp ↗</a>
+    </div>
   </div>
 </section>
 
@@ -1389,6 +1398,16 @@ body.after .after-note{display:block}
   /* ---------- wish lanterns: everyone's wishes keep floating up (stored in a Google Sheet via WISH_API) ---------- */
   safe(() => {
     const sky = $('#sky'), form = $('#wishForm'), input = $('#wishText'), from = $('#wishFrom'), share = $('#wishShare');
+    const stage = $('#wishes'), ui = $('.sky-ui');
+    let zoom = 0;
+    function onScroll() {                           // sky grows from a card to the full screen as you arrive
+      const top = stage.getBoundingClientRect().top, H = innerHeight;
+      zoom = reduce ? 1 : Math.max(0, Math.min(1, (H * 0.6 - top) / H));
+      sky.style.setProperty('--p', zoom.toFixed(3)); ui.style.setProperty('--p', zoom.toFixed(3));
+      ui.style.setProperty('--pe', zoom > 0.6 ? 'auto' : 'none');
+      sky.style.setProperty('--rise', (sky.clientHeight + 160) + 'px');
+    }
+    addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
     let shared = WISHES.slice(), wi = 0, lastSent = 0;
     function lantern(text, big) {
       const el = document.createElement('div');
@@ -1408,7 +1427,7 @@ body.after .after-note{display:block}
     setInterval(() => {                                   // keeps cycling through every wish, over and over
       if (document.hidden || reduce) return;
       const r = sky.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight || sky.childElementCount > 8) return;
+      if (r.bottom < 0 || r.top > innerHeight || sky.childElementCount > (zoom > 0.8 ? 14 : 8)) return;
       const w = shared.length && Math.random() < 0.75 ? shared[wi++ % shared.length] : null;
       lantern(w ? label(w) : '');
     }, 1500);
