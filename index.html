@@ -446,9 +446,11 @@ body.has-live .lang{top:calc(62px + env(safe-area-inset-top,0px))}
 .sky::before{content:"";position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 70%,#FFF6D8,transparent),radial-gradient(1px 1px at 85% 60%,#fff,transparent),radial-gradient(1px 1px at 10% 80%,#fff,transparent);background-size:200px 200px;opacity:.7}
 .lantern{position:absolute;left:var(--x);bottom:-110px;display:grid;justify-items:center;gap:6px;pointer-events:none;animation:rise var(--dur) linear forwards}
 .lantern i{display:block;width:30px;height:40px;border-radius:12px 12px 16px 16px;background:linear-gradient(180deg,#FFD27A,#FF8A2A 70%,#E8650F);box-shadow:0 0 22px 6px rgba(255,170,60,.5),inset 0 -8px 10px rgba(255,240,180,.6)}
-.lantern span{max-width:190px;padding:4px 10px 3px;border-radius:10px;background:rgba(255,255,255,.14);color:#FFF4D6;font-family:var(--f-hand);font-size:15px;line-height:1.25;text-align:center}
+.lantern span{max-width:170px;padding:4px 10px 3px;border-radius:10px;background:rgba(255,255,255,.14);color:#FFF4D6;font-family:var(--f-hand);font-size:15px;line-height:1.25;text-align:center}
 @keyframes rise{0%{transform:translate(0,0) scale(var(--s));opacity:0}8%{opacity:1}50%{transform:translate(var(--sw),-210px) scale(var(--s))}88%{opacity:1}100%{transform:translate(0,-440px) scale(calc(var(--s) * .7));opacity:0}}
-.wish-form{display:flex;gap:10px;margin-top:16px;max-width:560px}
+.wish-form{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;max-width:620px}
+.wish-form #wishText{flex:1 1 100%}
+.wish-form #wishFrom{flex:1 1 180px}
 .wish-form input{flex:1;min-width:0;min-height:50px;padding:0 18px;border:2px solid rgba(30,18,56,.18);border-radius:999px;background:#fff;color:var(--ink);font:500 16px var(--f-body);-webkit-user-select:text;user-select:text}
 .wish-share{display:inline-block;margin-top:12px;font-weight:600;color:var(--royal-deep)}
 .lb{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:rgba(20,16,40,.9)}
@@ -742,7 +744,9 @@ body.after .after-note{display:block}
     <div class="sky" id="sky" aria-hidden="true"></div>
     <form class="wish-form" id="wishForm">
       <label class="sr" for="wishText">Your wish for the batch</label>
-      <input id="wishText" maxlength="80" autocomplete="off" placeholder="Congratulations, doctors!">
+      <input id="wishText" maxlength="80" autocomplete="off" placeholder="Your wish, e.g. Congratulations, doctors!">
+      <label class="sr" for="wishFrom">Your name (optional)</label>
+      <input id="wishFrom" maxlength="40" autocomplete="name" placeholder="Your name (optional)">
       <button class="chip-btn solid" type="submit">Release</button>
     </form>
     <a class="wish-share" id="wishShare" target="_blank" rel="noopener" hidden>Also send your wish to the batch on WhatsApp ↗</a>
@@ -812,6 +816,7 @@ body.after .after-note{display:block}
   const THEN_NOW = { then: '', now: '' };          // two photos for the slider
   const GROUP_PHOTO = '';                         // shown as a download after the event
   const STREAM_URL = '';                          // YouTube live link on the day, e.g. 'https://youtube.com/live/...'
+  const WISH_API = '';                           // Google Apps Script web-app URL that stores wishes (see design/wishes-apps-script.gs)
   const WISHES = [];                              // e.g. [{ text: 'So proud of you all!', from: 'Radhika’s mother' }]
   const PROGRAMME = [                             // IST times for the live banner on the day
     ['9:45', 'p1'], ['10:00', 'p2'], ['10:15', 'p3'], ['10:30', 'p4'], ['11:00', 'p5'], ['11:30', 'p6'], ['11:45', 'p7'], ['12:45', 'p8'], ['13:00', 'p9'], ['14:30', null]
@@ -1308,33 +1313,44 @@ body.after .after-note{display:block}
     range.addEventListener('input', () => tn.style.setProperty('--pos', range.value + '%'));
   });
 
-  /* ---------- wish lanterns ---------- */
+  /* ---------- wish lanterns: everyone's wishes keep floating up (stored in a Google Sheet via WISH_API) ---------- */
   safe(() => {
-    const sky = $('#sky'), form = $('#wishForm'), input = $('#wishText'), share = $('#wishShare');
+    const sky = $('#sky'), form = $('#wishForm'), input = $('#wishText'), from = $('#wishFrom'), share = $('#wishShare');
+    let shared = WISHES.slice(), wi = 0, lastSent = 0;
     function lantern(text, big) {
       const el = document.createElement('div');
       el.className = 'lantern';
-      el.style.cssText = `--x:${big ? 38 : rnd(6, 84).toFixed(0)}%;--dur:${big ? 12 : rnd(9, 14).toFixed(1)}s;--s:${big ? 1.15 : rnd(0.55, 1).toFixed(2)};--sw:${rnd(-30, 30) | 0}px`;
+      el.style.cssText = `--x:${big ? 30 : (text ? rnd(4, 48) : rnd(6, 88)).toFixed(0)}%;--dur:${big ? 12 : rnd(10, 14).toFixed(1)}s;--s:${big ? 1.15 : rnd(0.65, 1).toFixed(2)};--sw:${rnd(-30, 30) | 0}px`;
       el.innerHTML = '<i></i>';
       if (text) { const sp = document.createElement('span'); sp.textContent = text; el.append(sp); }
       el.addEventListener('animationend', () => el.remove());
       sky.append(el);
     }
-    let wi = 0;
-    setInterval(() => {
+    const label = (w) => w.text + (w.from ? ' — ' + w.from : '');
+    function load() {
+      if (!WISH_API) return;
+      fetch(WISH_API).then((r) => r.json()).then((d) => { if (d && Array.isArray(d.wishes)) shared = d.wishes.concat(WISHES); }).catch(() => {});
+    }
+    load(); setInterval(load, 60000);
+    setInterval(() => {                                   // keeps cycling through every wish, over and over
       if (document.hidden || reduce) return;
       const r = sky.getBoundingClientRect();
       if (r.bottom < 0 || r.top > innerHeight || sky.childElementCount > 8) return;
-      const w = WISHES.length && Math.random() < 0.5 ? WISHES[wi++ % WISHES.length] : null;
-      lantern(w ? w.text + (w.from ? ' — ' + w.from : '') : '');
+      const w = shared.length && Math.random() < 0.75 ? shared[wi++ % shared.length] : null;
+      lantern(w ? label(w) : '');
     }, 1500);
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const t = input.value.trim();
-      if (!t) { input.focus(); return; }
-      lantern(t, true); input.value = ''; input.blur();
-      share.href = 'https://wa.me/919481954900?text=' + encodeURIComponent('My wish for Pharm D Batch 2020–26: ' + t);
-      share.hidden = false; Music.chime(); toast('Your wish is on its way!');
+      const w = { text: input.value.trim().slice(0, 80), from: from.value.trim().slice(0, 40) };
+      if (!w.text) { input.focus(); return; }
+      if (Date.now() - lastSent < 20000) { toast('Your last lantern is still rising. Try again in a few seconds.'); return; }
+      lastSent = Date.now();
+      lantern(label(w), true); input.value = ''; input.blur();
+      shared.push(w);
+      if (WISH_API) fetch(WISH_API, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(w) }).catch(() => {});
+      share.href = 'https://wa.me/919481954900?text=' + encodeURIComponent('My wish for Pharm D Batch 2020–26: ' + label(w));
+      share.hidden = false; Music.chime();
+      toast(WISH_API ? 'Your lantern is in the sky for everyone to see!' : 'Your wish is on its way!');
     });
   });
 
