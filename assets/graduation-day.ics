@@ -1,0 +1,24 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//6pharmd.fun//Graduation Day//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:pharmd-graduation-2026@6pharmd.fun
+DTSTAMP:20261009T000000Z
+DTSTART:20261121T043000Z
+DTEND:20261121T083000Z
+SUMMARY:Pharm D Graduation Day – EWCP Batch 2020–26
+LOCATION:Rashtra Kavi Kuvempu Auditorium\, 6th Floor\, EWIT Campus\, East W
+ est College of Pharmacy\, No. 63\, Near BEL Layout\, Off Magadi Road\, Anj
+ ananagar\, Bengaluru 560091
+DESCRIPTION:Arrive by 9:45 AM. Register: https://gyanank.com/i/am2e7wwz\nIn
+ vitation: https://6pharmd.fun/
+URL:https://6pharmd.fun/
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Pharm D Graduation Day is tomorrow
+END:VALARM
+END:VEVENT
+END:VCALENDAR
