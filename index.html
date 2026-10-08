@@ -453,6 +453,21 @@ body.has-live .lang{top:calc(62px + env(safe-area-inset-top,0px))}
 .wish-form #wishFrom{flex:1 1 180px}
 .wish-form input{flex:1;min-width:0;min-height:50px;padding:0 18px;border:2px solid rgba(30,18,56,.18);border-radius:999px;background:#fff;color:var(--ink);font:500 16px var(--f-body);-webkit-user-select:text;user-select:text}
 .wish-share{display:inline-block;margin-top:12px;font-weight:600;color:var(--royal-deep)}
+.pf{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:16px;background:rgba(20,16,40,.6)}
+.pf-card{position:relative;width:min(420px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:28px 22px 20px;border-radius:24px;background:#fff;color:var(--ink);text-align:center;box-shadow:0 30px 60px -20px rgba(20,16,40,.6);animation:pfIn .35s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pfIn{from{opacity:0;transform:translateY(20px) scale(.96)}}
+.pf-x{position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;border-radius:50%;background:#F2F0F8;color:var(--ink);font:800 22px/1 var(--f-body)}
+.pf-photo{display:grid;place-items:center;width:132px;height:132px;margin:0 auto 14px;border-radius:50%;overflow:hidden;background:var(--c,var(--royal));color:#fff;font:800 46px/1 var(--f-display);border:5px solid #fff;box-shadow:0 0 0 3px var(--marigold)}
+.pf-photo img{width:100%;height:100%;object-fit:cover}
+.pf-card h3{font-size:28px}
+.pf-role{margin-top:2px;color:var(--ink-2);font-weight:600;font-size:15px}
+.pf-info{display:grid;gap:10px;margin:18px 0 0;text-align:left}
+.pf-info div{padding:10px 14px;border-radius:14px;background:#F6F4FC}
+.pf-info dt{font:700 12px/1.2 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.pf-info dd{margin:3px 0 0;font-size:16px}
+.pf-info dd.empty{color:#9A93B0;font-style:italic}
+.pf-nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+.pf-nav .chip-btn{color:var(--ink);min-height:44px}
 .lb{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:rgba(20,16,40,.9)}
 .lb figure{margin:0;max-width:min(920px,100%);display:grid;gap:10px;justify-items:center}
 .lb img{max-height:78vh;width:auto;border-radius:8px}
@@ -732,7 +747,7 @@ body.after .after-note{display:block}
       <input type="range" id="tnRange" min="0" max="100" value="50" aria-label="Compare 2020 and 2026 photos">
     </div>
 
-    <div class="block-head"><h3 data-i18n="gradsTitle">The graduates</h3><p data-i18n="gradsSub">Tap a name to toss a cap for them.</p></div>
+    <div class="block-head"><h3 data-i18n="gradsTitle">The graduates</h3><p data-i18n="gradsSub">Tap a name to meet them.</p></div>
     <ul class="names" id="names" hidden></ul>
   </div>
 </section>
@@ -754,6 +769,16 @@ body.after .after-note{display:block}
 </section>
 
 </main>
+<div class="pf" id="pf" role="dialog" aria-modal="true" aria-labelledby="pfName" hidden>
+  <div class="pf-card">
+    <button class="pf-x" type="button" id="pfClose" aria-label="Close">×</button>
+    <div class="pf-photo" id="pfPhoto"></div>
+    <h3 id="pfName"></h3>
+    <p class="pf-role">Doctor of Pharmacy · Batch 2020–2026</p>
+    <dl class="pf-info" id="pfInfo"></dl>
+    <div class="pf-nav"><button class="chip-btn" type="button" id="pfPrev">‹ Previous</button><button class="chip-btn" type="button" id="pfNext">Next ›</button></div>
+  </div>
+</div>
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo" hidden>
   <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
   <button class="x" type="button" id="lbClose" aria-label="Close">×</button>
@@ -807,6 +832,29 @@ body.after .after-note{display:block}
     'Nikitha P', 'Banylla Wankhar', 'Phibanroi Mukim', 'Abdul Akhir Sheikh', 'Dontireddy Sai Jyotsna', 'Jeevitha M',
     'Santhasivam D', 'Tejas R', 'Loganathan R', 'Rahal Abdou', 'Pritam Baidya', 'Abyay Dash', 'Md Kaif'
   ];
+  // Profiles shown when a name is tapped. photo: 'assets/photos/vishal-t.jpg' etc. Empty fields show “To be added”.
+  const PROFILES = {
+    'Vishal T': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Radhika G S': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Mohan M': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Amara Yousuf Wani': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Vaishnavi V Mesta': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Dharshan Gowda H A': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Chandini J': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Nikitha P': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Banylla Wankhar': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Phibanroi Mukim': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Abdul Akhir Sheikh': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Dontireddy Sai Jyotsna': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Jeevitha M': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Santhasivam D': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Tejas R': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Loganathan R': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Rahal Abdou': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Pritam Baidya': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Abyay Dash': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Md Kaif': { photo: '', hometown: '', favourite: '', next: '', note: '' }
+  };
   // Photos: put files in site/assets/photos/ and write the file name in src, e.g. 'assets/photos/day-one.jpg'
   const MEMORIES = [
     { caption: 'Day one, 2020', src: '' }, { caption: 'First practical', src: '' }, { caption: 'Exam season', src: '' },
@@ -1246,22 +1294,47 @@ body.after .after-note{display:block}
     [document.querySelector('.prog-list li:nth-child(7)'), document.querySelector('.foot-big')].forEach((t) => t && io.observe(t));
   });
 
-  /* ---------- graduate names: tap to toss a cap for them ---------- */
-  const slug = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  /* ---------- graduate names (random order each visit) + profile cards ---------- */
   safe(() => {
     if (!GRADUATES.length) return;
-    const list = $('#names'), cols = ['var(--royal)', 'var(--peacock)', 'var(--indigo)', 'var(--orange)', 'var(--leaf)'];
-    GRADUATES.forEach((name, i) => {
+    const list = $('#names'), pf = $('#pf'), cols = ['var(--royal)', 'var(--peacock)', 'var(--indigo)', 'var(--orange)', 'var(--leaf)'];
+    const order = GRADUATES.slice();
+    for (let i = order.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [order[i], order[j]] = [order[j], order[i]]; }
+    const initials = (n) => n.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+    const colorOf = (n) => cols[GRADUATES.indexOf(n) % cols.length];
+    let cur = 0, lastFocus = null;
+    function show(i) {
+      cur = (i + order.length) % order.length;
+      const n = order[cur], p = PROFILES[n] || {};
+      const ph = $('#pfPhoto'); ph.style.setProperty('--c', colorOf(n)); ph.textContent = '';
+      if (p.photo) { const img = document.createElement('img'); img.src = p.photo; img.alt = n; ph.append(img); } else ph.textContent = initials(n);
+      $('#pfName').textContent = n;
+      const info = $('#pfInfo'); info.innerHTML = '';
+      [['Hometown', p.hometown], ['Favourite subject', p.favourite], ['What’s next', p.next], ['A word for the families', p.note]].forEach(([k, v]) => {
+        const d = document.createElement('div'), dt = document.createElement('dt'), dd = document.createElement('dd');
+        dt.textContent = k; dd.textContent = v || 'To be added'; if (!v) dd.className = 'empty';
+        d.append(dt, dd); info.append(d);
+      });
+    }
+    function open(i) { lastFocus = document.activeElement; show(i); pf.hidden = false; document.body.classList.add('locked'); $('#pfClose').focus(); }
+    function close() { pf.hidden = true; document.body.classList.remove('locked'); if (lastFocus) lastFocus.focus(); }
+    order.forEach((name, i) => {
       const li = document.createElement('li');
-      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'name-btn'; btn.style.setProperty('--c', cols[i % cols.length]);
-      const a = document.createElement('span'); a.textContent = name.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'name-btn'; btn.style.setProperty('--c', colorOf(name));
+      const a = document.createElement('span'); a.textContent = initials(name);
       const b = document.createElement('span'); b.textContent = name;
       btn.append(a, b); li.append(btn); list.append(li);
-      btn.addEventListener('click', () => { const r = btn.getBoundingClientRect(); FX.named(r.left + r.width / 2, r.top, name); Music.chime(); toast(tr('capsFor', { n: name })); });
+      btn.addEventListener('click', () => { const r = btn.getBoundingClientRect(); FX.named(r.left + r.width / 2, r.top, name); Music.chime(); open(i); });
     });
+    $('#pfClose').addEventListener('click', close);
+    $('#pfPrev').addEventListener('click', () => show(cur - 1));
+    $('#pfNext').addEventListener('click', () => show(cur + 1));
+    pf.addEventListener('click', (e) => { if (e.target === pf) close(); });
+    document.addEventListener('keydown', (e) => { if (pf.hidden) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1); });
     list.hidden = false;
   });
 
+  const slug = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   /* ---------- personal invitations: 6pharmd.fun/#vishal-t ---------- */
   safe(() => {
     const byslug = Object.fromEntries(GRADUATES.map((n) => [slug(n), n]));
