@@ -461,7 +461,7 @@ body.in-sky .sky-ui{bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 .sky-ui .wish-share{color:var(--gold-text)}
 .lantern{--k:calc(.8 + var(--p,0) * 1.1);position:absolute;left:var(--x);bottom:-150px;display:grid;justify-items:center;gap:6px;pointer-events:none;animation:rise var(--dur) linear forwards}
 .lantern i{display:block;width:calc(30px * var(--k));height:calc(40px * var(--k));border-radius:12px 12px 16px 16px;background:linear-gradient(180deg,#FFD27A,#FF8A2A 70%,#E8650F);box-shadow:0 0 22px 6px rgba(255,170,60,.5),inset 0 -8px 10px rgba(255,240,180,.6)}
-.lantern span{width:max-content;max-width:min(170px,44vw);padding:4px 10px 3px;border-radius:10px;background:rgba(255,255,255,.14);color:#FFF4D6;font-family:var(--f-hand);font-size:15px;line-height:1.25;text-align:center}
+.lantern span{width:max-content;max-width:min(260px,64vw);padding:6px 14px 5px;border-radius:12px;background:rgba(20,16,50,.45);color:#FFF4D6;font-family:var(--f-hand);font-weight:700;font-size:calc(16px + 8px * var(--p,0));line-height:1.25;text-align:center;text-shadow:0 1px 8px rgba(255,170,60,.45)}
 @keyframes rise{0%{transform:translate(-50%,0) scale(var(--s));opacity:0}8%{opacity:1}50%{transform:translate(calc(-50% + var(--sw)),calc(var(--rise,440px) * -.5)) scale(var(--s))}88%{opacity:1}100%{transform:translate(-50%,calc(var(--rise,440px) * -1)) scale(calc(var(--s) * .75));opacity:0}}
 .wish-form{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;max-width:620px}
 .wish-form #wishText{flex:1 1 100%}
@@ -1431,7 +1431,7 @@ body.after .after-note{display:block}
     function lantern(text, big) {
       const el = document.createElement('div');
       el.className = 'lantern';
-      el.style.cssText = `--x:${big ? 50 : (text ? rnd(26, 74) : rnd(8, 92)).toFixed(0)}%;--dur:${big ? 12 : rnd(10, 14).toFixed(1)}s;--s:${big ? 1.15 : rnd(0.65, 1).toFixed(2)};--sw:${rnd(-30, 30) | 0}px`;
+      el.style.cssText = `--x:${big ? 50 : (text ? rnd(34, 66) : rnd(8, 92)).toFixed(0)}%;--dur:${big ? 12 : rnd(10, 14).toFixed(1)}s;--s:${big ? 1.15 : (text ? rnd(0.9, 1) : rnd(0.65, 1)).toFixed(2)};--sw:${rnd(-30, 30) | 0}px`;
       el.innerHTML = '<i></i>';
       if (text) { const sp = document.createElement('span'); sp.textContent = text; el.append(sp); }
       el.addEventListener('animationend', () => el.remove());
