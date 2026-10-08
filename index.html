@@ -311,16 +311,7 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
 .toast{position:fixed;z-index:45;left:50%;bottom:calc(var(--dock-h) + 30px + env(safe-area-inset-bottom,0px));max-width:calc(100% - 32px);padding:10px 16px 8px;border-radius:12px;background:var(--ink);color:#fff;font-weight:600;text-align:center;overflow-wrap:anywhere;opacity:0;pointer-events:none;transform:translate(-50%,16px);transition:opacity .25s ease,transform .25s ease}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 #fx{position:fixed;inset:0;z-index:50;width:100%;height:100%;pointer-events:none}
-.lyrics{position:fixed;inset:0;z-index:30;pointer-events:none;overflow:hidden}
-.lyric{position:absolute;left:0;top:0;white-space:nowrap;font:700 var(--fs)/1.1 var(--f-hand);color:var(--lc);opacity:0;will-change:transform,opacity;animation:lyric var(--dur) cubic-bezier(.2,.8,.2,1) forwards}
-.lyric.bold{font-family:var(--f-display);font-weight:800}
-@keyframes lyric{
-  0%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(.55)}
-  14%{opacity:var(--o);transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1.08)}
-  22%{opacity:var(--o);transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1)}
-  78%{opacity:var(--o)}
-  100%{opacity:0;transform:translate(calc(var(--x) + var(--dx)),calc(var(--y) - 70px)) rotate(var(--r)) scale(1)}
-}
+
 
 /* ---------- reveal ---------- */
 .rv{transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
@@ -418,7 +409,6 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
 </div>
 
 <canvas id="fx" aria-hidden="true"></canvas>
-<div class="lyrics" id="lyrics" aria-hidden="true"></div>
 
 <main id="main">
 
@@ -1033,45 +1023,6 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
       io.unobserve(e.target); FX.burst('caps'); Music.chime();
     }), { threshold: 0.6 });
     [document.querySelector('.prog-list li:nth-child(7)'), document.querySelector('.foot-big')].forEach((t) => t && io.observe(t));
-  });
-
-  /* ---------- lines that pop in and drift across the page ---------- */
-  safe(() => {
-    if (reduce) return;
-    const LINES = ['We did it!', 'Class of 2026', 'Six years, one batch', 'From students to doctors', 'Thank you, Mom & Dad', 'Caps up!',
-      'Doctors of Pharmacy', '℞ for happiness', 'No more vivas!', 'Internship: survived', 'Proud moment', 'Late nights, bright futures',
-      'Here’s to the next chapter', 'Batch 2020–26 forever', 'See you on 21 · 11', 'Pharm D, done!'];
-    const layer = $('#lyrics');
-    let n = (Math.random() * LINES.length) | 0, live = 0;
-    const lum = (c) => {
-      const m = c.match(/[\d.]+/g); if (!m) return 1;
-      const [r, g, b] = m.slice(0, 3).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
-      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    };
-    const bgAt = (el) => {                  // colour actually behind a point, so the text stays faintly visible
-      for (; el && el !== document.documentElement; el = el.parentElement) {
-        const c = getComputedStyle(el).backgroundColor;
-        if (c && c !== 'transparent' && !/rgba\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(c)) return c;
-      }
-      return 'rgb(255, 255, 255)';
-    };
-    function spawn() {
-      if (document.hidden || !intro.classList.contains('gone')) return;
-      const W = innerWidth, H = innerHeight, small = W < 700;
-      if (live >= (small ? 3 : 6)) return;
-      const text = LINES[n++ % LINES.length], fs = small ? rnd(17, 22) : rnd(20, 30), w = text.length * fs * 0.52;
-      const x = rnd(12, Math.max(14, W - w - 12)), y = rnd(H * 0.12, H - 150);
-      const dark = lum(bgAt(document.elementFromPoint(Math.min(W - 1, x + w / 2), Math.min(H - 1, y + fs / 2)))) < 0.3;
-      const el = document.createElement('span');
-      el.className = 'lyric' + (Math.random() < 0.35 ? ' bold' : '');
-      el.textContent = text;
-      el.style.cssText = `--x:${x | 0}px;--y:${y | 0}px;--r:${rnd(-7, 7).toFixed(1)}deg;--dx:${rnd(-30, 30) | 0}px;--fs:${fs | 0}px;` +
-        `--o:${(dark ? rnd(0.3, 0.42) : rnd(0.22, 0.32)).toFixed(2)};--lc:${dark ? '#FFFFFF' : '#18298A'};--dur:${rnd(6, 8.5).toFixed(1)}s`;
-      live++;
-      el.addEventListener('animationend', () => { el.remove(); live--; });
-      layer.appendChild(el);
-    }
-    setInterval(spawn, innerWidth < 700 ? 1500 : 1000);
   });
 
   /* ---------- graduate names ---------- */
