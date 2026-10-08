@@ -447,13 +447,19 @@ body.has-live .lang{top:calc(62px + env(safe-area-inset-top,0px))}
 .sky{position:absolute;inset:0;clip-path:inset(calc((1 - var(--p,0)) * 18%) calc((1 - var(--p,0)) * 6%) round calc((1 - var(--p,0)) * 28px));overflow:hidden;background:radial-gradient(120% 90% at 50% 110%,#3B2C7A 0%,#1E1A4A 55%,#141236 100%)}
 .sky::before{content:"";position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 70%,#FFF6D8,transparent),radial-gradient(1px 1px at 85% 60%,#fff,transparent),radial-gradient(1px 1px at 10% 80%,#fff,transparent);background-size:200px 200px;opacity:.7}
 .sky-ui{position:absolute;left:0;right:0;bottom:calc(var(--dock-h) + 40px + env(safe-area-inset-bottom,0px));max-width:720px;margin:0 auto;padding-inline:20px;color:#fff;opacity:var(--p,0);transform:translateY(calc((1 - var(--p,0)) * 40px));pointer-events:var(--pe,none)}
-.sky-ui h2{font-size:clamp(36px,9vw,64px);color:#fff}
+.sky-ui{text-align:center}
+.wish-open{display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:4px 24px 0;border:0;border-radius:999px;background:var(--marigold);color:var(--ink);font:800 18px/1 var(--f-display);box-shadow:0 0 30px 4px rgba(255,170,60,.45),0 10px 24px -10px rgba(0,0,0,.6);animation:glowPulse 2.4s ease-in-out infinite}
+.mini-lantern{width:14px;height:19px;margin-top:-3px;border-radius:6px 6px 8px 8px;background:linear-gradient(180deg,#FFD27A,#E8650F);box-shadow:0 0 8px 2px rgba(255,140,40,.6)}
+@keyframes glowPulse{50%{box-shadow:0 0 44px 10px rgba(255,170,60,.6),0 10px 24px -10px rgba(0,0,0,.6)}}
+.wish-panel{position:relative;padding:22px 18px 18px;border-radius:24px;background:rgba(20,16,50,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);text-align:left;animation:pfIn .35s cubic-bezier(.2,1.3,.4,1)}
+.wish-x{position:absolute;top:8px;right:8px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font:800 22px/1 var(--f-body)}
+.sky-ui h2{font-size:clamp(30px,8vw,52px);color:#fff;padding-right:40px}
 .sky-ui .hand{color:var(--gold-text);font-size:20px;margin-top:4px}
 .sky-ui .wish-share{color:var(--gold-text)}
-.lantern{position:absolute;left:var(--x);bottom:-110px;display:grid;justify-items:center;gap:6px;pointer-events:none;animation:rise var(--dur) linear forwards}
-.lantern i{display:block;width:30px;height:40px;border-radius:12px 12px 16px 16px;background:linear-gradient(180deg,#FFD27A,#FF8A2A 70%,#E8650F);box-shadow:0 0 22px 6px rgba(255,170,60,.5),inset 0 -8px 10px rgba(255,240,180,.6)}
-.lantern span{max-width:170px;padding:4px 10px 3px;border-radius:10px;background:rgba(255,255,255,.14);color:#FFF4D6;font-family:var(--f-hand);font-size:15px;line-height:1.25;text-align:center}
-@keyframes rise{0%{transform:translate(0,0) scale(var(--s));opacity:0}8%{opacity:1}50%{transform:translate(var(--sw),calc(var(--rise,440px) * -.5)) scale(var(--s))}88%{opacity:1}100%{transform:translate(0,calc(var(--rise,440px) * -1)) scale(calc(var(--s) * .7));opacity:0}}
+.lantern{--k:calc(.8 + var(--p,0) * 1.1);position:absolute;left:var(--x);bottom:-150px;display:grid;justify-items:center;gap:6px;pointer-events:none;animation:rise var(--dur) linear forwards}
+.lantern i{display:block;width:calc(30px * var(--k));height:calc(40px * var(--k));border-radius:12px 12px 16px 16px;background:linear-gradient(180deg,#FFD27A,#FF8A2A 70%,#E8650F);box-shadow:0 0 22px 6px rgba(255,170,60,.5),inset 0 -8px 10px rgba(255,240,180,.6)}
+.lantern span{width:max-content;max-width:min(170px,44vw);padding:4px 10px 3px;border-radius:10px;background:rgba(255,255,255,.14);color:#FFF4D6;font-family:var(--f-hand);font-size:15px;line-height:1.25;text-align:center}
+@keyframes rise{0%{transform:translate(-50%,0) scale(var(--s));opacity:0}8%{opacity:1}50%{transform:translate(calc(-50% + var(--sw)),calc(var(--rise,440px) * -.5)) scale(var(--s))}88%{opacity:1}100%{transform:translate(-50%,calc(var(--rise,440px) * -1)) scale(calc(var(--s) * .75));opacity:0}}
 .wish-form{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;max-width:620px}
 .wish-form #wishText{flex:1 1 100%}
 .wish-form #wishFrom{flex:1 1 180px}
@@ -763,6 +769,9 @@ body.after .after-note{display:block}
   <div class="sky-pin">
     <div class="sky" id="sky" aria-hidden="true"></div>
     <div class="sky-ui">
+      <button class="wish-open" id="wishOpen" type="button" aria-expanded="false" aria-controls="wishPanel"><i class="mini-lantern" aria-hidden="true"></i>Light a wish lantern</button>
+      <div class="wish-panel" id="wishPanel" hidden>
+      <button class="wish-x" id="wishClose" type="button" aria-label="Close">×</button>
       <h2>Light a wish lantern</h2>
       <p class="hand">Write a wish for the batch and watch it fly</p>
       <form class="wish-form" id="wishForm">
@@ -772,6 +781,7 @@ body.after .after-note{display:block}
         <input id="wishFrom" maxlength="40" autocomplete="name" placeholder="Your name (optional)">
         <button class="chip-btn solid" type="submit">Release</button>
       </form>
+      </div>
       <a class="wish-share" id="wishShare" target="_blank" rel="noopener" hidden>Also send your wish to the batch on WhatsApp ↗</a>
     </div>
   </div>
@@ -1408,11 +1418,15 @@ body.after .after-note{display:block}
       sky.style.setProperty('--rise', (sky.clientHeight + 160) + 'px');
     }
     addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+    const openBtn = $('#wishOpen'), panel = $('#wishPanel');
+    function showPanel(open) { panel.hidden = !open; openBtn.hidden = open; openBtn.setAttribute('aria-expanded', String(open)); if (open) input.focus(); }
+    openBtn.addEventListener('click', () => showPanel(true));
+    $('#wishClose').addEventListener('click', () => { showPanel(false); openBtn.focus(); });
     let shared = WISHES.slice(), wi = 0, lastSent = 0;
     function lantern(text, big) {
       const el = document.createElement('div');
       el.className = 'lantern';
-      el.style.cssText = `--x:${big ? 30 : (text ? rnd(4, 48) : rnd(6, 88)).toFixed(0)}%;--dur:${big ? 12 : rnd(10, 14).toFixed(1)}s;--s:${big ? 1.15 : rnd(0.65, 1).toFixed(2)};--sw:${rnd(-30, 30) | 0}px`;
+      el.style.cssText = `--x:${big ? 50 : (text ? rnd(26, 74) : rnd(8, 92)).toFixed(0)}%;--dur:${big ? 12 : rnd(10, 14).toFixed(1)}s;--s:${big ? 1.15 : rnd(0.65, 1).toFixed(2)};--sw:${rnd(-30, 30) | 0}px`;
       el.innerHTML = '<i></i>';
       if (text) { const sp = document.createElement('span'); sp.textContent = text; el.append(sp); }
       el.addEventListener('animationend', () => el.remove());
@@ -1428,7 +1442,7 @@ body.after .after-note{display:block}
       if (document.hidden || reduce) return;
       const r = sky.getBoundingClientRect();
       if (r.bottom < 0 || r.top > innerHeight || sky.childElementCount > (zoom > 0.8 ? 14 : 8)) return;
-      const w = shared.length && Math.random() < 0.75 ? shared[wi++ % shared.length] : null;
+      const w = shared.length && Math.random() < Math.min(0.75, 0.2 + shared.length * 0.08) ? shared[wi++ % shared.length] : null;
       lantern(w ? label(w) : '');
     }, 1500);
     form.addEventListener('submit', (e) => {
@@ -1437,7 +1451,7 @@ body.after .after-note{display:block}
       if (!w.text) { input.focus(); return; }
       if (Date.now() - lastSent < 20000) { toast('Your last lantern is still rising. Try again in a few seconds.'); return; }
       lastSent = Date.now();
-      lantern(label(w), true); input.value = ''; input.blur();
+      lantern(label(w), true); input.value = ''; input.blur(); showPanel(false);
       shared.push(w);
       if (WISH_API) fetch(WISH_API, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(w) }).catch(() => {});
       share.href = 'https://wa.me/919481954900?text=' + encodeURIComponent('My wish for Pharm D Batch 2020–26: ' + label(w));
