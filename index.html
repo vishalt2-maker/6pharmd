@@ -474,6 +474,12 @@ body.in-sky .sky-ui{bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 .pf-x{position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;border-radius:50%;background:#F2F0F8;color:var(--ink);font:800 22px/1 var(--f-body)}
 .pf-photo{display:grid;place-items:center;width:132px;height:132px;margin:0 auto 14px;border-radius:50%;overflow:hidden;background:var(--c,var(--royal));color:#fff;font:800 46px/1 var(--f-display);border:5px solid #fff;box-shadow:0 0 0 3px var(--marigold)}
 .pf-photo img{width:100%;height:100%;object-fit:cover}
+.pf-gal{margin:4px 0 14px}
+.pf-gal img#pfMain{display:block;width:100%;aspect-ratio:4/5;max-height:52vh;object-fit:cover;border-radius:18px;background:#EEE;cursor:pointer}
+.pf-thumbs{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory}
+.pf-thumbs button{flex:none;width:56px;height:56px;padding:0;border:3px solid transparent;border-radius:12px;overflow:hidden;background:#EEE;scroll-snap-align:start}
+.pf-thumbs button[aria-current="true"]{border-color:var(--marigold)}
+.pf-thumbs img{width:100%;height:100%;object-fit:cover;display:block}
 .pf-card h3{font-size:28px}
 .pf-role{margin-top:2px;color:var(--ink-2);font-weight:600;font-size:15px}
 .pf-info{display:grid;gap:10px;margin:18px 0 0;text-align:left}
@@ -795,6 +801,7 @@ body.after .after-note{display:block}
   <div class="pf-card">
     <button class="pf-x" type="button" id="pfClose" aria-label="Close">×</button>
     <div class="pf-photo" id="pfPhoto"></div>
+    <div class="pf-gal" id="pfGal" hidden><img id="pfMain" alt=""><div class="pf-thumbs" id="pfThumbs"></div></div>
     <h3 id="pfName"></h3>
     <p class="pf-role">Doctor of Pharmacy · Batch 2020–2026</p>
     <dl class="pf-info" id="pfInfo"></dl>
@@ -854,7 +861,8 @@ body.after .after-note{display:block}
     'Nikitha P', 'Banylla Wankhar', 'Phibanroi Mukim', 'Abdul Akhir Sheikh', 'Dontireddy Sai Jyotsna', 'Jeevitha M',
     'Santhasivam D', 'Tejas R', 'Loganathan R', 'Rahal Abdou', 'Pritam Baidya', 'Abyay Dash', 'Md Kaif'
   ];
-  // Profiles shown when a name is tapped. photo: 'assets/photos/vishal-t.jpg' etc. Empty fields show “To be added”.
+  // Profiles shown when a name is tapped. Photos live in assets/photos/<name-slug>/01.jpg… (thumbnails t01.jpg…);
+  // set photos: <how many>. Empty fields show “To be added”.
   const PROFILES = {
     'Vishal T': { photo: '', hometown: '', favourite: '', next: '', note: '' },
     'Radhika G S': { photo: '', hometown: '', favourite: '', next: '', note: '' },
@@ -867,7 +875,7 @@ body.after .after-note{display:block}
     'Banylla Wankhar': { photo: '', hometown: '', favourite: '', next: '', note: '' },
     'Phibanroi Mukim': { photo: '', hometown: '', favourite: '', next: '', note: '' },
     'Abdul Akhir Sheikh': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Dontireddy Sai Jyotsna': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Dontireddy Sai Jyotsna': { photos: 15, hometown: 'Guntur', favourite: 'Mathematics', next: 'Marriage', note: 'I will make everyone proud.' },
     'Jeevitha M': { photo: '', hometown: '', favourite: '', next: '', note: '' },
     'Santhasivam D': { photo: '', hometown: '', favourite: '', next: '', note: '' },
     'Tejas R': { photo: '', hometown: '', favourite: '', next: '', note: '' },
@@ -1316,6 +1324,7 @@ body.after .after-note{display:block}
     [document.querySelector('.prog-list li:nth-child(7)'), document.querySelector('.foot-big')].forEach((t) => t && io.observe(t));
   });
 
+  const slug = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   /* ---------- graduate names (random order each visit) + profile cards ---------- */
   safe(() => {
     if (!GRADUATES.length) return;
@@ -1328,8 +1337,22 @@ body.after .after-note{display:block}
     function show(i) {
       cur = (i + order.length) % order.length;
       const n = order[cur], p = PROFILES[n] || {};
-      const ph = $('#pfPhoto'); ph.style.setProperty('--c', colorOf(n)); ph.textContent = '';
-      if (p.photo) { const img = document.createElement('img'); img.src = p.photo; img.alt = n; ph.append(img); } else ph.textContent = initials(n);
+      const ph = $('#pfPhoto'), gal = $('#pfGal'), thumbs = $('#pfThumbs'), main = $('#pfMain');
+      ph.style.setProperty('--c', colorOf(n)); ph.textContent = initials(n);
+      const dir = 'assets/photos/' + slug(n) + '/', count = p.photos || 0;
+      ph.hidden = count > 0; gal.hidden = !count; thumbs.innerHTML = '';
+      if (count) {
+        let at = 0;
+        const pick = (i) => { at = (i + count) % count; main.src = dir + String(at + 1).padStart(2, '0') + '.jpg'; main.alt = n + ', photo ' + (at + 1);
+          thumbs.querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', String(j === at))); };
+        for (let i = 0; i < count; i++) {
+          const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Photo ' + (i + 1));
+          const im = document.createElement('img'); im.src = dir + 't' + String(i + 1).padStart(2, '0') + '.jpg'; im.alt = ''; im.loading = 'lazy';
+          b.append(im); b.addEventListener('click', () => pick(i)); thumbs.append(b);
+        }
+        main.onclick = () => pick(at + 1);
+        pick(0);
+      }
       $('#pfName').textContent = n;
       const info = $('#pfInfo'); info.innerHTML = '';
       [['Hometown', p.hometown], ['Favourite subject', p.favourite], ['What’s next', p.next], ['A word for the families', p.note]].forEach(([k, v]) => {
@@ -1356,7 +1379,6 @@ body.after .after-note{display:block}
     list.hidden = false;
   });
 
-  const slug = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   /* ---------- personal invitations: 6pharmd.fun/#vishal-t ---------- */
   safe(() => {
     const byslug = Object.fromEntries(GRADUATES.map((n) => [slug(n), n]));
