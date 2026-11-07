@@ -416,18 +416,6 @@ body.has-live .lang{top:calc(62px + env(safe-area-inset-top,0px))}
 .album img{display:block;width:100%;height:100%;object-fit:cover}
 .lb{touch-action:pan-y}
 .mem:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
-.tn{position:relative;margin-top:24px;aspect-ratio:4/3;max-width:640px;border-radius:20px;overflow:hidden;background:#ddd;user-select:none;touch-action:pan-y}
-.tn .layer{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:800 22px/1.2 var(--f-display)}
-.tn .layer img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.tn .then{background:var(--marigold-soft)}
-.tn .now{background:var(--royal-soft);clip-path:inset(0 0 0 var(--pos,50%))}
-.tn .then span{justify-self:start;margin-left:6%}.tn .now span{justify-self:end;margin-right:6%}
-.tn .layer span{position:relative;max-width:40%;font-size:16px;padding:8px 14px 6px;border-radius:12px;background:rgba(255,255,255,.85)}
-.tn .tag{position:absolute;top:12px;padding:5px 10px 3px;border-radius:999px;background:var(--ink);color:#fff;font:700 13px/1 var(--f-body);z-index:2}
-.tn .tag.l{left:12px}.tn .tag.r{right:12px}
-.tn .bar{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:4px;margin-left:-2px;background:#fff;z-index:2;pointer-events:none;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
-.tn .bar::after{content:"⇆";position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.2)}
-.tn input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;z-index:3}
 .names{margin-top:24px}
 .names li{padding:0;box-shadow:none}
 .name-btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;overflow:hidden;border-radius:999px;font-weight:600;font-size:16px;box-shadow:0 3px 0 rgba(0,0,0,.08);transition:transform .15s ease}
@@ -637,7 +625,7 @@ body.after .after-note{display:block}
       <ol class="rx-list">
         <li><span>Tab. Celebration 2026</span><span>1 – OD × 1 day</span></li>
         <li><span>Syp. Applause</span><span>SOS, as needed</span></li>
-        <li><span>Cap. Group Photo</span><span>1 – PC (after lunch)</span></li>
+        <li><span>Cap. Group Photo</span><span>1 – PC (after the ceremony)</span></li>
       </ol>
       <p class="rx-adv">Adv: Arrive by 9:45 AM. Bring the whole family.</p>
       <div class="rx-foot">
@@ -696,7 +684,6 @@ body.after .after-note{display:block}
       <li class="rv hi" style="--c:var(--peacock);--n:var(--peacock)"><span class="time">11:30 AM</span><div><b data-i18n="p6">The Pharmacist’s Oath</b><span class="note" data-i18n="n6">the big moment</span></div></li>
       <li class="rv hi" style="--c:var(--indigo);--n:var(--indigo)"><span class="time">11:45 AM</span><div><b data-i18n="p7">Graduates’ walk &amp; cap toss</b><span class="note" data-i18n="n7">caps up!</span></div></li>
       <li class="rv" style="--c:var(--leaf)"><span class="time">12:45 PM</span><div><b data-i18n="p8">Vote of thanks &amp; group photos</b></div></li>
-      <li class="rv" style="--c:var(--orange)"><span class="time">1:00 PM</span><div><b data-i18n="p9">Lunch</b></div></li>
     </ol>
   </div>
 </section>
@@ -731,7 +718,7 @@ body.after .after-note{display:block}
   <div class="wrap rsvp-grid">
     <div class="rv">
       <h2 data-i18n="coming">Coming?</h2>
-      <p class="rsvp-lead" data-i18n="rsvpLead">Kindly register everyone who is coming with you, so we can arrange seating and lunch. It only takes a minute.</p>
+      <p class="rsvp-lead" data-i18n="rsvpLead">Kindly register everyone who is coming with you, so we can arrange seating. It only takes a minute.</p>
       <a class="capsule goldcap" href="https://gyanank.com/i/am2e7wwz" target="_blank" rel="noopener"><span class="c1" data-i18n="register">Register</span><span class="c2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
       <p class="small" data-i18n="onePer">One registration per mobile number.</p>
       <p class="after-note" data-i18n="closed">Registration is closed. Thank you to everyone who came!</p>
@@ -768,15 +755,6 @@ body.after .after-note{display:block}
     <button class="chip-btn album-more" id="albumMore" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flower"/></svg><span>See all photos</span></button>
     <div class="album" id="album" hidden></div>
     <a class="chip-btn group-photo" id="groupPhoto" download hidden><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="groupPhoto">Download the group photo</span></a>
-
-    <div class="block-head"><h3 data-i18n="tnTitle">Then &amp; now</h3><p data-i18n="tnSub">Drag the slider: day one in 2020 vs graduation day.</p></div>
-    <div class="tn" id="tn" style="--pos:50%">
-      <div class="layer then" id="tnThen"><span data-i18n="tnThen">Day one</span></div>
-      <div class="layer now" id="tnNow"><span data-i18n="tnNow">Graduation day</span></div>
-      <b class="tag l">2020</b><b class="tag r">2026</b>
-      <div class="bar" aria-hidden="true"></div>
-      <input type="range" id="tnRange" min="0" max="100" value="50" aria-label="Compare 2020 and 2026 photos">
-    </div>
 
     <div class="block-head"><h3 data-i18n="gradsTitle">The graduates</h3><p data-i18n="gradsSub">Tap a name to meet them.</p></div>
     <ul class="names" id="names" hidden></ul>
@@ -900,13 +878,12 @@ body.after .after-note{display:block}
   // Batch album: assets/memories/001.jpg… (full) and t001.jpg… (thumb), oldest first. Captions in the same order.
   const ALBUM = ["Jan 2021", "Mar 2023", "Holi · Mar 2023", "Holi · Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Boating · Mar 2023", "Mar 2023", "At Adiyogi · Mar 2023", "Mar 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Beach day · Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "White coat days · Apr 2023", "White coat days · Jul 2023", "Jul 2023", "Aug 2023", "Aug 2023", "Aug 2023", "White coat days · Sep 2023", "White coat days · Sep 2023", "Sep 2023", "Sep 2023", "Sep 2023", "Sep 2023", "Sep 2023", "Nov 2023", "White coat days · Nov 2023", "White coat days · Nov 2023", "Nov 2023", "Jan 2024", "Feb 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Apr 2024", "Apr 2024", "Apr 2024", "May 2024", "May 2024", "May 2024", "May 2024", "Jun 2024", "Jun 2024", "Jul 2024", "Jul 2024", "Jul 2024", "Aug 2024", "Aug 2024", "Aug 2024", "Sep 2024", "Sep 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Nov 2024", "Dec 2024", "Feb 2025", "Feb 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "May 2025", "May 2025", "Jun 2025", "Sep 2025", "Dec 2025", "Feb 2026", "At KRUPACON · Feb 2026", "Mar 2026", "Apr 2026", "Apr 2026", "May 2026", "May 2026", "May 2026", "May 2026", "Jun 2026", "Jul 2026", "Aug 2026", "Aug 2026", "Aug 2026", "Expo Hackathon · Sep 2026", "Sep 2026", "Nov 2026", "Nov 2026"];
   const HIGHLIGHTS = [1, 3, 16, 24, 31, 46, 91, 104];   // album numbers shown as polaroids
-  const THEN_NOW = { then: '', now: '' };          // two photos for the slider
   const GROUP_PHOTO = '';                         // shown as a download after the event
   const STREAM_URL = '';                          // YouTube live link on the day, e.g. 'https://youtube.com/live/...'
   const WISH_API = 'https://script.google.com/macros/s/AKfycbwfSXV2X_kEou9j-ig2aHUIedl-JvETGP3I3G8EpdZ8XVq3WzY9oo7k62t9YIpbpo-7/exec';                           // Google Apps Script web-app URL that stores wishes (see design/wishes-apps-script.gs)
   const WISHES = [];                              // e.g. [{ text: 'So proud of you all!', from: 'Radhika’s mother' }]
   const PROGRAMME = [                             // IST times for the live banner on the day
-    ['9:45', 'p1'], ['10:00', 'p2'], ['10:15', 'p3'], ['10:30', 'p4'], ['11:00', 'p5'], ['11:30', 'p6'], ['11:45', 'p7'], ['12:45', 'p8'], ['13:00', 'p9'], ['14:30', null]
+    ['9:45', 'p1'], ['10:00', 'p2'], ['10:15', 'p3'], ['10:30', 'p4'], ['11:00', 'p5'], ['11:30', 'p6'], ['11:45', 'p7'], ['12:45', 'p8'], ['13:15', null]
   ];
   // ?now=2026-11-21T11:35:00%2B05:30 in the address bar previews the page at that moment
   const NOW_OVERRIDE = (() => { try { const v = new URLSearchParams(location.search).get('now'); const t = v && Date.parse(v); return t || 0; } catch (e) { return 0; } })();
@@ -1452,12 +1429,6 @@ body.after .after-note{display:block}
     if (GROUP_PHOTO) { const g = $('#groupPhoto'); g.href = GROUP_PHOTO; g.hidden = false; }
   });
 
-  /* ---------- then & now slider ---------- */
-  safe(() => {
-    const tn = $('#tn'), range = $('#tnRange');
-    [['then', '#tnThen'], ['now', '#tnNow']].forEach(([k, sel]) => { if (THEN_NOW[k]) { const img = document.createElement('img'); img.src = THEN_NOW[k]; img.alt = k === 'then' ? '2020' : '2026'; img.loading = 'lazy'; $(sel).prepend(img); $(sel).querySelector('span').hidden = true; } });
-    range.addEventListener('input', () => tn.style.setProperty('--pos', range.value + '%'));
-  });
 
   /* ---------- wish lanterns: everyone's wishes keep floating up (stored in a Google Sheet via WISH_API) ---------- */
   safe(() => {
