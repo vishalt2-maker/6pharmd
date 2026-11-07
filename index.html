@@ -662,6 +662,8 @@ body.after .after-note{display:block}
       </div>
       <div class="dig">
         <p class="label" data-i18n="presence">In the presence of</p>
+        <p class="dig-name">Dr. Purushotham B</p>
+        <p class="dig-role">Campus Director, EWGI</p>
         <p class="dig-name">Dr. Purnima Ashok</p>
         <p class="dig-role" data-i18n="dean">Dean (R&amp;D)</p>
         <p class="dig-name">Dr. Apoorva Dev</p>
@@ -1370,7 +1372,7 @@ body.after .after-note{display:block}
   /* ---------- personal invitations: 6pharmd.fun/#vishal-t ---------- */
   safe(() => {
     const byslug = Object.fromEntries(GRADUATES.map((n) => [slug(n), n]));
-    const VIP = { principal: 'Dr. Md. Naseeruddin Inamdar', dean: 'Dr. Purnima Ashok', hod: 'Dr. Apoorva Dev', teachers: 'Our Beloved Teachers' };   // 6pharmd.fun/#principal etc.
+    const VIP = { director: 'Dr. Purushotham B', principal: 'Dr. Md. Naseeruddin Inamdar', dean: 'Dr. Purnima Ashok', hod: 'Dr. Apoorva Dev', teachers: 'Our Beloved Teachers' };   // 6pharmd.fun/#principal etc.
     let key, vip, who;
     function paint() {
       key = decodeURIComponent(location.hash.slice(1)).toLowerCase(); vip = VIP[key]; who = byslug[key];
