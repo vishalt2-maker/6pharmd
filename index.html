@@ -1386,9 +1386,9 @@ body.after .after-note{display:block}
   safe(() => {
     const byslug = Object.fromEntries(GRADUATES.map((n) => [slug(n), n]));
     const VIP = { principal: 'Dr. Md. Naseeruddin Inamdar', dean: 'Dr. Purnima Ashok', hod: 'Dr. Apoorva Dev', teachers: 'Our Beloved Teachers' };   // 6pharmd.fun/#principal etc.
-    const key = decodeURIComponent(location.hash.slice(1)).toLowerCase(), vip = VIP[key];
-    const who = byslug[key];
+    let key, vip, who;
     function paint() {
+      key = decodeURIComponent(location.hash.slice(1)).toLowerCase(); vip = VIP[key]; who = byslug[key];
       $('#addrName').innerHTML = who || vip ? '' : tr('you');
       if (vip) $('#addrName').textContent = vip; else if (who) $('#addrName').textContent = tr('family', { n: who });
       const p = $('#personal'); p.hidden = !(who || vip);
@@ -1396,6 +1396,7 @@ body.after .after-note{display:block}
       else if (vip) p.textContent = 'With respect, a special invitation for ' + vip; else if (who) p.textContent = tr('personal', { n: who });
     }
     paint(); langListeners.push(paint);
+    addEventListener('hashchange', paint);   // a new link pasted into an open tab only changes the hash
   });
 
   /* ---------- memory wall + lightbox ---------- */
