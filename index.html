@@ -408,6 +408,13 @@ body.has-live .lang{top:calc(62px + env(safe-area-inset-top,0px))}
 .mem .ph img{width:100%;height:100%;object-fit:cover}
 .mem .cap{display:block;margin-top:8px;font-family:var(--f-hand);font-size:17px;text-align:center;line-height:1.15}
 .mem[disabled]{cursor:default}
+.album-more{margin-top:28px}
+.album{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:16px}
+@media (min-width:880px){.album{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.album button{all:unset;box-sizing:border-box;cursor:pointer;display:block;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#E9E5F5}
+.album button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.album img{display:block;width:100%;height:100%;object-fit:cover}
+.lb{touch-action:pan-y}
 .mem:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
 .tn{position:relative;margin-top:24px;aspect-ratio:4/3;max-width:640px;border-radius:20px;overflow:hidden;background:#ddd;user-select:none;touch-action:pan-y}
 .tn .layer{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:800 22px/1.2 var(--f-display)}
@@ -756,8 +763,10 @@ body.after .after-note{display:block}
       <h2>Batch 2020–2026</h2>
       <p class="hand sub">six years, one batch</p>
     </div>
-    <div class="block-head"><h3 data-i18n="memTitle">Memory wall</h3><p data-i18n="memSub">Six years in pictures. Tap a photo to see it bigger.</p></div>
+    <div class="block-head"><h3 data-i18n="memTitle">Memory wall</h3><p data-i18n="memSub">Six years in pictures. Tap a photo to see it bigger, then swipe through them all.</p></div>
     <div class="memories" id="memories"></div>
+    <button class="chip-btn album-more" id="albumMore" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flower"/></svg><span>See all photos</span></button>
+    <div class="album" id="album" hidden></div>
     <a class="chip-btn group-photo" id="groupPhoto" download hidden><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="groupPhoto">Download the group photo</span></a>
 
     <div class="block-head"><h3 data-i18n="tnTitle">Then &amp; now</h3><p data-i18n="tnSub">Drag the slider: day one in 2020 vs graduation day.</p></div>
@@ -888,11 +897,9 @@ body.after .after-note{display:block}
     'Md Kaif': { photos: 4, hometown: "Tripura", favourite: "Mathematics", next: "My plan after graduation is to turn my dreams into reality, build a successful career, keep learning, and make my family proud.", note: "My biggest dream was to make my family proud, and today, this degree brings me one step closer to that dream. Your prayers, love, and sacrifices will always be the foundation of my success. This achievement is for you(Abbo&Ammo)." }
   };
   // Photos: put files in site/assets/photos/ and write the file name in src, e.g. 'assets/photos/day-one.jpg'
-  const MEMORIES = [
-    { caption: 'Day one, 2020', src: '' }, { caption: 'First practical', src: '' }, { caption: 'Exam season', src: '' },
-    { caption: 'Hospital rounds', src: '' }, { caption: 'Internship year', src: '' }, { caption: 'College fest', src: '' },
-    { caption: 'Farewell', src: '' }, { caption: 'Graduation day', src: '' }
-  ];
+  // Batch album: assets/memories/001.jpg… (full) and t001.jpg… (thumb), oldest first. Captions in the same order.
+  const ALBUM = ["Jan 2021", "Mar 2023", "Holi · Mar 2023", "Holi · Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Boating · Mar 2023", "Mar 2023", "At Adiyogi · Mar 2023", "Mar 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Beach day · Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "White coat days · Apr 2023", "White coat days · Jul 2023", "Jul 2023", "Aug 2023", "Aug 2023", "Aug 2023", "White coat days · Sep 2023", "White coat days · Sep 2023", "Sep 2023", "Sep 2023", "Sep 2023", "Sep 2023", "Sep 2023", "Nov 2023", "White coat days · Nov 2023", "White coat days · Nov 2023", "Nov 2023", "Jan 2024", "Feb 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Apr 2024", "Apr 2024", "Apr 2024", "May 2024", "May 2024", "May 2024", "May 2024", "Jun 2024", "Jun 2024", "Jul 2024", "Jul 2024", "Jul 2024", "Aug 2024", "Aug 2024", "Aug 2024", "Sep 2024", "Sep 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Nov 2024", "Dec 2024", "Feb 2025", "Feb 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "May 2025", "May 2025", "Jun 2025", "Sep 2025", "Dec 2025", "Feb 2026", "At KRUPACON · Feb 2026", "Mar 2026", "Apr 2026", "Apr 2026", "May 2026", "May 2026", "May 2026", "May 2026", "Jun 2026", "Jul 2026", "Aug 2026", "Aug 2026", "Aug 2026", "Expo Hackathon · Sep 2026", "Sep 2026", "Nov 2026", "Nov 2026"];
+  const HIGHLIGHTS = [1, 3, 16, 24, 31, 46, 91, 104];   // album numbers shown as polaroids
   const THEN_NOW = { then: '', now: '' };          // two photos for the slider
   const GROUP_PHOTO = '';                         // shown as a download after the event
   const STREAM_URL = '';                          // YouTube live link on the day, e.g. 'https://youtube.com/live/...'
@@ -1402,29 +1409,43 @@ body.after .after-note{display:block}
   /* ---------- memory wall + lightbox ---------- */
   safe(() => {
     const wrap = $('#memories'), tints = ['var(--marigold-soft)', 'var(--peacock-soft)', 'var(--royal-soft)', '#FFE4D6'], tapes = ['var(--royal)', 'var(--peacock)', 'var(--marigold)', 'var(--leaf)'];
-    const withPhoto = MEMORIES.filter((m) => m.src);
-    const cam = '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></g></svg>';
+    const n3 = (i) => String(i).padStart(3, '0');
+    const full = (i) => 'assets/memories/' + n3(i) + '.jpg', thumb = (i) => 'assets/memories/t' + n3(i) + '.jpg';
+    const withPhoto = ALBUM.map((caption, k) => ({ caption, src: full(k + 1) }));
     function render() {
       wrap.innerHTML = '';
-      MEMORIES.forEach((m, i) => {
+      HIGHLIGHTS.forEach((no, i) => {
         const b = document.createElement('button'); b.type = 'button'; b.className = 'mem';
         b.style.cssText = `--r:${[-2.5, 1.8, -1.2, 2.4][i % 4]}deg;--tint:${tints[i % 4]};--tape:${tapes[i % 4]}`;
         const ph = document.createElement('span'); ph.className = 'ph';
-        if (m.src) { const img = document.createElement('img'); img.src = m.src; img.alt = m.caption; img.loading = 'lazy'; ph.append(img); }
-        else { ph.innerHTML = cam + '<br>'; ph.append(tr('soon')); b.disabled = true; }
-        const cap = document.createElement('span'); cap.className = 'cap'; cap.textContent = m.caption;
+        const img = document.createElement('img'); img.src = thumb(no); img.alt = ALBUM[no - 1]; img.loading = 'lazy'; ph.append(img);
+        const cap = document.createElement('span'); cap.className = 'cap'; cap.textContent = ALBUM[no - 1];
         b.append(ph, cap); wrap.append(b);
-        if (m.src) b.addEventListener('click', () => open(withPhoto.indexOf(m)));
+        b.addEventListener('click', () => open(no - 1));
       });
     }
+    const grid = $('#album'), more = $('#albumMore');
+    more.querySelector('span').textContent = 'See all ' + ALBUM.length + ' photos';
+    more.addEventListener('click', () => {
+      if (!grid.childElementCount) ALBUM.forEach((c, k) => {
+        const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', c);
+        const img = document.createElement('img'); img.src = thumb(k + 1); img.alt = ''; img.loading = 'lazy';
+        b.append(img); b.addEventListener('click', () => open(k)); grid.append(b);
+      });
+      grid.hidden = !grid.hidden;
+      more.querySelector('span').textContent = grid.hidden ? 'See all ' + ALBUM.length + ' photos' : 'Show fewer';
+    });
     const lb = $('#lb'); let cur = 0;
-    function show() { const m = withPhoto[cur]; $('#lbImg').src = m.src; $('#lbImg').alt = m.caption; $('#lbCap').textContent = m.caption; }
+    function show() { const m = withPhoto[cur]; $('#lbImg').src = m.src; $('#lbImg').alt = m.caption; $('#lbCap').textContent = m.caption + '  ·  ' + (cur + 1) + ' / ' + withPhoto.length; }
     function open(i) { cur = i; show(); lb.hidden = false; document.body.classList.add('locked'); $('#lbClose').focus(); }
     function close() { lb.hidden = true; document.body.classList.remove('locked'); }
     $('#lbClose').addEventListener('click', close);
     $('#lbPrev').addEventListener('click', () => { cur = (cur - 1 + withPhoto.length) % withPhoto.length; show(); });
     $('#lbNext').addEventListener('click', () => { cur = (cur + 1) % withPhoto.length; show(); });
     lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+    let sx = null;
+    lb.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', (e) => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; sx = null; if (Math.abs(dx) > 50) $(dx < 0 ? '#lbNext' : '#lbPrev').click(); });
     document.addEventListener('keydown', (e) => { if (lb.hidden) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') $('#lbPrev').click(); if (e.key === 'ArrowRight') $('#lbNext').click(); });
     if (withPhoto.length < 2) { $('#lbPrev').hidden = $('#lbNext').hidden = true; }
     render(); langListeners.push(render);
