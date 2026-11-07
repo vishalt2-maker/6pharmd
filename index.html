@@ -875,9 +875,9 @@ body.after .after-note{display:block}
     'Md Kaif': { photos: 4, hometown: "Tripura", favourite: "Mathematics", next: "My plan after graduation is to turn my dreams into reality, build a successful career, keep learning, and make my family proud.", note: "My biggest dream was to make my family proud, and today, this degree brings me one step closer to that dream. Your prayers, love, and sacrifices will always be the foundation of my success. This achievement is for you(Abbo&Ammo)." }
   };
   // Photos: put files in site/assets/photos/ and write the file name in src, e.g. 'assets/photos/day-one.jpg'
-  // Batch album: assets/memories/001.jpg… (full) and t001.jpg… (thumb), oldest first. Captions in the same order.
-  const ALBUM = ["Jan 2021", "Mar 2023", "Holi · Mar 2023", "Holi · Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Mar 2023", "Boating · Mar 2023", "Mar 2023", "At Adiyogi · Mar 2023", "Mar 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Beach day · Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "Apr 2023", "White coat days · Apr 2023", "White coat days · Jul 2023", "Jul 2023", "Aug 2023", "Aug 2023", "Aug 2023", "White coat days · Sep 2023", "White coat days · Sep 2023", "Sep 2023", "Sep 2023", "Sep 2023", "Sep 2023", "Sep 2023", "Nov 2023", "White coat days · Nov 2023", "White coat days · Nov 2023", "Nov 2023", "Jan 2024", "Feb 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Mar 2024", "Apr 2024", "Apr 2024", "Apr 2024", "May 2024", "May 2024", "May 2024", "May 2024", "Jun 2024", "Jun 2024", "Jul 2024", "Jul 2024", "Jul 2024", "Aug 2024", "Aug 2024", "Aug 2024", "Sep 2024", "Sep 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Nov 2024", "Dec 2024", "Feb 2025", "Feb 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "May 2025", "May 2025", "Jun 2025", "Sep 2025", "Dec 2025", "Feb 2026", "At KRUPACON · Feb 2026", "Mar 2026", "Apr 2026", "Apr 2026", "May 2026", "May 2026", "May 2026", "May 2026", "Jun 2026", "Jul 2026", "Aug 2026", "Aug 2026", "Aug 2026", "Expo Hackathon · Sep 2026", "Sep 2026", "Nov 2026", "Nov 2026"];
-  const HIGHLIGHTS = [1, 3, 16, 24, 31, 46, 91, 104];   // album numbers shown as polaroids
+  // Batch album: assets/memories/001.jpg… (full) and t001.jpg… (thumb). A caption only where the moment is known ('' = none).
+  const ALBUM = ["", "", "Holi", "Holi", "", "", "", "", "", "", "", "", "", "Boating", "", "At Adiyogi", "", "", "", "", "", "", "", "Beach day", "", "", "", "", "", "", "White coat days", "White coat days", "", "", "", "", "White coat days", "White coat days", "", "", "", "", "", "", "White coat days", "White coat days", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "At KRUPACON", "", "", "", "", "", "", "", "", "", "", "", "", "Expo Hackathon", "", "", ""];
+  const WALL_COUNT = 8;                           // polaroids on the wall; a fresh random pick on every visit
   const GROUP_PHOTO = '';                         // shown as a download after the event
   const STREAM_URL = '';                          // YouTube live link on the day, e.g. 'https://youtube.com/live/...'
   const WISH_API = 'https://script.google.com/macros/s/AKfycbwfSXV2X_kEou9j-ig2aHUIedl-JvETGP3I3G8EpdZ8XVq3WzY9oo7k62t9YIpbpo-7/exec';                           // Google Apps Script web-app URL that stores wishes (see design/wishes-apps-script.gs)
@@ -1388,32 +1388,35 @@ body.after .after-note{display:block}
     const wrap = $('#memories'), tints = ['var(--marigold-soft)', 'var(--peacock-soft)', 'var(--royal-soft)', '#FFE4D6'], tapes = ['var(--royal)', 'var(--peacock)', 'var(--marigold)', 'var(--leaf)'];
     const n3 = (i) => String(i).padStart(3, '0');
     const full = (i) => 'assets/memories/' + n3(i) + '.jpg', thumb = (i) => 'assets/memories/t' + n3(i) + '.jpg';
-    const withPhoto = ALBUM.map((caption, k) => ({ caption, src: full(k + 1) }));
+    const order = ALBUM.map((c, k) => k + 1);       // shuffled on every visit
+    for (let i = order.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [order[i], order[j]] = [order[j], order[i]]; }
+    const fillers = ['Good times', 'Batchmates', 'Six years', 'Together', 'Never forget', 'Our people', 'Memories', 'Us, always'];
+    const withPhoto = order.map((no) => ({ caption: ALBUM[no - 1], src: full(no) }));
     function render() {
       wrap.innerHTML = '';
-      HIGHLIGHTS.forEach((no, i) => {
+      order.slice(0, WALL_COUNT).forEach((no, i) => {
         const b = document.createElement('button'); b.type = 'button'; b.className = 'mem';
         b.style.cssText = `--r:${[-2.5, 1.8, -1.2, 2.4][i % 4]}deg;--tint:${tints[i % 4]};--tape:${tapes[i % 4]}`;
         const ph = document.createElement('span'); ph.className = 'ph';
-        const img = document.createElement('img'); img.src = thumb(no); img.alt = ALBUM[no - 1]; img.loading = 'lazy'; ph.append(img);
-        const cap = document.createElement('span'); cap.className = 'cap'; cap.textContent = ALBUM[no - 1];
+        const img = document.createElement('img'); img.src = thumb(no); img.alt = ALBUM[no - 1] || 'Batch photo'; img.loading = 'lazy'; ph.append(img);
+        const cap = document.createElement('span'); cap.className = 'cap'; cap.textContent = ALBUM[no - 1] || fillers[i % fillers.length];
         b.append(ph, cap); wrap.append(b);
-        b.addEventListener('click', () => open(no - 1));
+        b.addEventListener('click', () => open(i));
       });
     }
     const grid = $('#album'), more = $('#albumMore');
     more.querySelector('span').textContent = 'See all ' + ALBUM.length + ' photos';
     more.addEventListener('click', () => {
-      if (!grid.childElementCount) ALBUM.forEach((c, k) => {
-        const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', c);
-        const img = document.createElement('img'); img.src = thumb(k + 1); img.alt = ''; img.loading = 'lazy';
+      if (!grid.childElementCount) order.forEach((no, k) => {
+        const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Photo ' + (k + 1));
+        const img = document.createElement('img'); img.src = thumb(no); img.alt = ''; img.loading = 'lazy';
         b.append(img); b.addEventListener('click', () => open(k)); grid.append(b);
       });
       grid.hidden = !grid.hidden;
       more.querySelector('span').textContent = grid.hidden ? 'See all ' + ALBUM.length + ' photos' : 'Show fewer';
     });
     const lb = $('#lb'); let cur = 0;
-    function show() { const m = withPhoto[cur]; $('#lbImg').src = m.src; $('#lbImg').alt = m.caption; $('#lbCap').textContent = m.caption + '  ·  ' + (cur + 1) + ' / ' + withPhoto.length; }
+    function show() { const m = withPhoto[cur]; $('#lbImg').src = m.src; $('#lbImg').alt = m.caption; $('#lbCap').textContent = (m.caption ? m.caption + '  ·  ' : '') + (cur + 1) + ' / ' + withPhoto.length; }
     function open(i) { cur = i; show(); lb.hidden = false; document.body.classList.add('locked'); $('#lbClose').focus(); }
     function close() { lb.hidden = true; document.body.classList.remove('locked'); }
     $('#lbClose').addEventListener('click', close);
