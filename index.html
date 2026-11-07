@@ -877,6 +877,7 @@ body.after .after-note{display:block}
   // Photos: put files in site/assets/photos/ and write the file name in src, e.g. 'assets/photos/day-one.jpg'
   // Batch album: assets/memories/001.jpg… (full) and t001.jpg… (thumb). A caption only where the moment is known ('' = none).
   const ALBUM = ["", "", "Holi", "Holi", "", "", "", "", "", "", "", "", "", "Boating", "", "At Adiyogi", "", "", "", "", "", "", "", "Beach day", "", "", "", "", "", "", "White coat days", "White coat days", "", "", "", "", "White coat days", "White coat days", "", "", "", "", "", "", "White coat days", "White coat days", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "At KRUPACON", "", "", "", "", "", "", "", "", "", "", "", "", "Expo Hackathon", "", "", ""];
+  const ALBUM_REMOVED = [95];                     // photo numbers taken off the site
   const WALL_COUNT = 8;                           // polaroids on the wall; a fresh random pick on every visit
   const GROUP_PHOTO = '';                         // shown as a download after the event
   const STREAM_URL = '';                          // YouTube live link on the day, e.g. 'https://youtube.com/live/...'
@@ -1388,7 +1389,7 @@ body.after .after-note{display:block}
     const wrap = $('#memories'), tints = ['var(--marigold-soft)', 'var(--peacock-soft)', 'var(--royal-soft)', '#FFE4D6'], tapes = ['var(--royal)', 'var(--peacock)', 'var(--marigold)', 'var(--leaf)'];
     const n3 = (i) => String(i).padStart(3, '0');
     const full = (i) => 'assets/memories/' + n3(i) + '.jpg', thumb = (i) => 'assets/memories/t' + n3(i) + '.jpg';
-    const order = ALBUM.map((c, k) => k + 1);       // shuffled on every visit
+    const order = ALBUM.map((c, k) => k + 1).filter((no) => !ALBUM_REMOVED.includes(no));   // shuffled on every visit
     for (let i = order.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [order[i], order[j]] = [order[j], order[i]]; }
     const fillers = ['Good times', 'Batchmates', 'Six years', 'Together', 'Never forget', 'Our people', 'Memories', 'Us, always'];
     const withPhoto = order.map((no) => ({ caption: ALBUM[no - 1], src: full(no) }));
@@ -1405,7 +1406,7 @@ body.after .after-note{display:block}
       });
     }
     const grid = $('#album'), more = $('#albumMore');
-    more.querySelector('span').textContent = 'See all ' + ALBUM.length + ' photos';
+    more.querySelector('span').textContent = 'See all ' + order.length + ' photos';
     more.addEventListener('click', () => {
       if (!grid.childElementCount) order.forEach((no, k) => {
         const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Photo ' + (k + 1));
@@ -1413,7 +1414,7 @@ body.after .after-note{display:block}
         b.append(img); b.addEventListener('click', () => open(k)); grid.append(b);
       });
       grid.hidden = !grid.hidden;
-      more.querySelector('span').textContent = grid.hidden ? 'See all ' + ALBUM.length + ' photos' : 'Show fewer';
+      more.querySelector('span').textContent = grid.hidden ? 'See all ' + order.length + ' photos' : 'Show fewer';
     });
     const lb = $('#lb'); let cur = 0;
     function show() { const m = withPhoto[cur]; $('#lbImg').src = m.src; $('#lbImg').alt = m.caption; $('#lbCap').textContent = (m.caption ? m.caption + '  ·  ' : '') + (cur + 1) + ' / ' + withPhoto.length; }
