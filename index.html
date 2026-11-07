@@ -428,6 +428,7 @@ body.has-live .lang{top:calc(62px + env(safe-area-inset-top,0px))}
 .name-btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 .name-btn span{padding:7px 14px 5px}
 .name-btn span:first-child{background:var(--c);color:#fff;font-family:var(--f-display);font-weight:800}
+.names .name-btn span.av{display:block;width:44px;padding:0;background-size:cover;background-position:center;min-height:34px}
 .name-btn span:last-child{background:#F4F1FA;background:color-mix(in srgb,var(--c) 14%,#fff)}
 .invite-gen{display:grid;gap:12px;margin-top:20px;padding:18px;border-radius:20px;background:var(--royal-soft);max-width:640px}
 .invite-gen select{min-height:48px;padding:0 12px;border:2px solid rgba(30,18,56,.2);border-radius:14px;background:#fff;color:var(--ink);font:600 16px var(--f-body)}
@@ -475,7 +476,7 @@ body.in-sky .sky-ui{bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 .pf-photo{display:grid;place-items:center;width:132px;height:132px;margin:0 auto 14px;border-radius:50%;overflow:hidden;background:var(--c,var(--royal));color:#fff;font:800 46px/1 var(--f-display);border:5px solid #fff;box-shadow:0 0 0 3px var(--marigold)}
 .pf-photo img{width:100%;height:100%;object-fit:cover}
 .pf-gal{margin:4px 0 14px}
-.pf-gal img#pfMain{display:block;width:100%;aspect-ratio:4/5;max-height:52vh;object-fit:cover;border-radius:18px;background:#EEE;cursor:pointer}
+.pf-gal img#pfMain{display:block;width:100%;aspect-ratio:4/5;max-height:52vh;object-fit:contain;border-radius:18px;background:#EEE;background:color-mix(in srgb,var(--c,var(--royal)) 12%,#fff);cursor:pointer}
 .pf-thumbs{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory}
 .pf-thumbs button{flex:none;width:56px;height:56px;padding:0;border:3px solid transparent;border-radius:12px;overflow:hidden;background:#EEE;scroll-snap-align:start}
 .pf-thumbs button[aria-current="true"]{border-color:var(--marigold)}
@@ -863,27 +864,28 @@ body.after .after-note{display:block}
   ];
   // Profiles shown when a name is tapped. Photos live in assets/photos/<name-slug>/01.jpg… (thumbnails t01.jpg…);
   // set photos: <how many>. Empty fields show “To be added”.
+  const PHOTO_VERSION = 2;   // bump after replacing any photo so phones load the new one
   const PROFILES = {
     'Vishal T': { photos: 4, hometown: 'Bengaluru', favourite: 'Community Pharmacy', next: 'Put six years of learning to work for patients, and keep learning every day.', note: 'Thank you for every sacrifice behind this day. This degree is as much yours as it is ours.' },
-    'Radhika G S': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Mohan M': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Radhika G S': { photo: '', hometown: "Katagondanahalli, Madhugiri", favourite: "", next: "", note: "Behind every little achievement is a family's endless love, support, and sacrifices. Thank you for believing in us, cheering for us, and being our biggest strength. This success is yours too." },
+    'Mohan M': { photo: '', hometown: "", favourite: "", next: "", note: "" },
     'Amara Yousuf Wani': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Vaishnavi V Mesta': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Vaishnavi V Mesta': { photo: '', hometown: "Bangalore", favourite: "", next: "", note: "" },
     'Dharshan Gowda H A': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Chandini J': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Nikitha P': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Chandini J': { photo: '', hometown: "Sidlaghatta", favourite: "Pharmacology, Clinical Research", next: "", note: "Thank you, Amma and Appa, for your endless love, sacrifices, and support. This achievement belongs to you as much as it belongs to me.....❤️" },
+    'Nikitha P': { photo: '', hometown: "Dharmapuri", favourite: "Medicinal Chemistry", next: "No idea but have to get a good job.", note: "I am really very blessed have them" },
     'Banylla Wankhar': { photo: '', hometown: '', favourite: '', next: '', note: '' },
     'Phibanroi Mukim': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Abdul Akhir Sheikh': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Abdul Akhir Sheikh': { photo: '', hometown: "Lumbini, Nepal", favourite: "Human anatomy and physiology and BPPK", next: "Still not confirmed", note: "" },
     'Dontireddy Sai Jyotsna': { photos: 15, hometown: 'Guntur', favourite: 'Mathematics', next: 'Marriage', note: 'I will make everyone proud.' },
     'Jeevitha M': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Santhasivam D': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Tejas R': { photos: 4, hometown: '', favourite: '', next: '', note: '' },
-    'Loganathan R': { photo: '', hometown: '', favourite: '', next: '', note: '' },
+    'Santhasivam D': { photo: '', hometown: "Trichy", favourite: "Medicinal Chemistry, BPPK, Clinical Research", next: "", note: "Thank you, Mom and Dad, for your endless love, sacrifices, and support. This achievement wouldn’t have been possible without you. This degree is as much yours as it is mine. ❤️🎓" },
+    'Tejas R': { photos: 4, hometown: "Bengaluru", favourite: "Microbiology, Jurisprudence", next: "After completing my Pharm-D, I plan to continue my higher studies and improve my knowledge and skills. I want to gain more practical experience and explore good career opportunities in the healthcare field. My aim is to build a successful career, become financially independent, and achieve my goals. I will work hard, take responsibility for my family, and make them proud. I believe in growing step by step and creating a better future for myself and my family.", note: "Thank you for all your love, support, and encouragement throughout my journey. After completing my Pharm-D, I plan to continue my studies in India, work hard, and build a good career. My dream is to become successful, support my family, fulfill our dreams, and make you all proud. Your support means everything to me, and I will always do my best to give you happiness and a better future. ❤️" },
+    'Loganathan R': { photo: '', hometown: "Krishnagiri, Tamilnadu", favourite: "Microbiology, clinical pharmacy and PEPE", next: "", note: "My heartfelt thanks to my Dad and Mom for their endless love, sacrifices, support, and encouragement. This graduation is as much yours as it is mine. I love you both and will always make you proud! ❤️🙏" },
     'Rahal Abdou': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Pritam Baidya': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Abyay Dash': { photo: '', hometown: '', favourite: '', next: '', note: '' },
-    'Md Kaif': { photo: '', hometown: '', favourite: '', next: '', note: '' }
+    'Pritam Baidya': { photo: '', hometown: "Agartala", favourite: "Pharmacology, Clinical Pharmacy", next: "First, recover from six years of Pharm.D. After that, let's see what life prescribes 📝", note: "Behind every graduate is a family that sacrificed, supported, worried, and believed. This achievement belongs to them as much as it belongs to us. Thank you for being our strength through every difficult day and for reminding us that education is not just a degree, but a responsibility to serve others." },
+    'Abyay Dash': { photo: '', hometown: "Kolkata", favourite: "Clinical Research", next: "", note: "Thank you Maa and Papa❤️🫂 Thanks for supporting me till date and fulfilling my small small wishes , Love you both infinty 😚❤️" },
+    'Md Kaif': { photo: '', hometown: "Tripura", favourite: "Mathematics", next: "My plan after graduation is to turn my dreams into reality, build a successful career, keep learning, and make my family proud.", note: "My biggest dream was to make my family proud, and today, this degree brings me one step closer to that dream. Your prayers, love, and sacrifices will always be the foundation of my success. This achievement is for you(Abbo&Ammo)." }
   };
   // Photos: put files in site/assets/photos/ and write the file name in src, e.g. 'assets/photos/day-one.jpg'
   const MEMORIES = [
@@ -1338,16 +1340,16 @@ body.after .after-note{display:block}
       cur = (i + order.length) % order.length;
       const n = order[cur], p = PROFILES[n] || {};
       const ph = $('#pfPhoto'), gal = $('#pfGal'), thumbs = $('#pfThumbs'), main = $('#pfMain');
-      ph.style.setProperty('--c', colorOf(n)); ph.textContent = initials(n);
-      const dir = 'assets/photos/' + slug(n) + '/', count = p.photos || 0;
+      ph.style.setProperty('--c', colorOf(n)); gal.style.setProperty('--c', colorOf(n)); ph.textContent = initials(n);
+      const dir = 'assets/photos/' + slug(n) + '/', count = p.photos || 0, v = '?v=' + PHOTO_VERSION;
       ph.hidden = count > 0; gal.hidden = !count; thumbs.innerHTML = '';
       if (count) {
         let at = 0;
-        const pick = (i) => { at = (i + count) % count; main.src = dir + String(at + 1).padStart(2, '0') + '.jpg'; main.alt = n + ', photo ' + (at + 1);
+        const pick = (i) => { at = (i + count) % count; main.src = dir + String(at + 1).padStart(2, '0') + '.jpg' + v; main.alt = n + ', photo ' + (at + 1);
           thumbs.querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', String(j === at))); };
         for (let i = 0; i < count; i++) {
           const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Photo ' + (i + 1));
-          const im = document.createElement('img'); im.src = dir + 't' + String(i + 1).padStart(2, '0') + '.jpg'; im.alt = ''; im.loading = 'lazy';
+          const im = document.createElement('img'); im.src = dir + 't' + String(i + 1).padStart(2, '0') + '.jpg' + v; im.alt = ''; im.loading = 'lazy';
           b.append(im); b.addEventListener('click', () => pick(i)); thumbs.append(b);
         }
         main.onclick = () => pick(at + 1);
@@ -1367,6 +1369,7 @@ body.after .after-note{display:block}
       const li = document.createElement('li');
       const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'name-btn'; btn.style.setProperty('--c', colorOf(name));
       const a = document.createElement('span'); a.textContent = initials(name);
+      if ((PROFILES[name] || {}).photos) { a.textContent = ''; a.className = 'av'; a.setAttribute('aria-hidden', 'true'); a.style.backgroundImage = 'url(assets/photos/' + slug(name) + '/face.jpg?v=' + PHOTO_VERSION + ')'; }
       const b = document.createElement('span'); b.textContent = name;
       btn.append(a, b); li.append(btn); list.append(li);
       btn.addEventListener('click', () => { const r = btn.getBoundingClientRect(); FX.named(r.left + r.width / 2, r.top, name); Music.chime(); open(i); });
