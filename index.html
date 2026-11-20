@@ -307,8 +307,6 @@ html.js .hero:not(.drawn) .u path{stroke-dashoffset:1}
 .tune span{font-size:13px;line-height:1.3;color:#CFC8E8}
 .tune[aria-current="true"]{background:var(--marigold);color:var(--ink)}
 .tune[aria-current="true"] span{color:var(--ink-2)}
-.yt{aspect-ratio:16/9;max-width:100%;border-radius:12px;overflow:hidden;background:#000}
-.yt iframe{display:block;width:100%;height:100%;border:0}
 .tune-off{display:block;text-align:center;background:transparent;border:2px solid rgba(255,255,255,.28);font-weight:600}
 @media (hover:hover){.tune:hover{background:rgba(255,255,255,.14)}.tune[aria-current="true"]:hover{background:var(--marigold)}}
 .toast{position:fixed;z-index:45;left:50%;bottom:calc(var(--dock-h) + 30px + env(safe-area-inset-bottom,0px));max-width:calc(100% - 32px);padding:10px 16px 8px;border-radius:12px;background:var(--ink);color:#fff;font-weight:600;text-align:center;overflow-wrap:anywhere;opacity:0;pointer-events:none;transform:translate(-50%,16px);transition:opacity .25s ease,transform .25s ease}
@@ -817,7 +815,7 @@ body.after .after-note{display:block}
     </div>
     <div class="logo-chip"><img src="assets/ewcp-logo.png" width="1275" height="389" alt="East West College of Pharmacy" loading="lazy"></div>
     <p class="domain">6pharmd.fun</p>
-    <p class="legal">© 2026 Vishal T. All rights reserved.<br>College name and logo © East West College of Pharmacy. “We Are The Champions” © Queen, played from Queen’s official YouTube video.</p>
+    <p class="legal">© 2026 Vishal T. All rights reserved.<br>College name and logo © East West College of Pharmacy. Music: “Wholesome” by Kevin MacLeod (incompetech.com), licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
   </div>
 </footer>
 
@@ -829,9 +827,7 @@ body.after .after-note{display:block}
 </nav>
 <div class="tunes closed" id="tunes" role="dialog" aria-label="Music" aria-hidden="true">
   <p class="tunes-head">Music</p>
-  <button class="tune" type="button" id="songBtn"><b>We Are The Champions</b><span>Queen · official video on YouTube</span></button>
-  <div class="yt"><div id="ytPlayer"></div></div>
-  <a class="tunes-link" href="https://www.google.com/search?q=Queen+We+Are+The+Champions+lyrics" target="_blank" rel="noopener">See the lyrics ↗</a>
+  <button class="tune" type="button" id="songBtn"><b>Wholesome</b><span>Kevin MacLeod · royalty-free</span></button>
   <button class="tune tune-off" type="button" id="musicOff">Music off</button>
 </div>
 <button class="play-chip" id="playChip" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sound-on"/></svg>Play music</button>
@@ -899,38 +895,45 @@ body.after .after-note{display:block}
   const safe = (fn) => { try { fn(); } catch (e) { console.error(e); } };
   const rnd = (a, b) => a + Math.random() * (b - a);
 
-  /* ---------- music: Queen – "We Are The Champions", official video played through YouTube ---------- */
+  /* ---------- music: royalty-free track hosted with the site, faded in and out so it never starts or stops abruptly ---------- */
   const Music = (() => {
-    const VIDEO = '04854XqcfCY';            // Queen Official channel upload
-    let player = null, ready = false, playing = false, want = false, failed = false, onChange = null, ctx = null, sfx = null;
+    const TRACK = 'assets/music/wholesome.m4a';      // "Wholesome" by Kevin MacLeod (incompetech.com), CC BY 4.0
+    const LEVEL = 0.7, FADE_IN = 2.5, FADE_OUT = 1.2, LOOP_FADE = 3;
+    const audio = new Audio(); audio.preload = 'none'; audio.src = TRACK;
+    let playing = false, want = false, failed = false, onChange = null, ctx = null, sfx = null, mg = null, stopT = 0, ending = false;
     const changed = () => { if (onChange) onChange(); };
-    function build() {
-      if (player || !window.YT || !window.YT.Player) return;
-      player = new window.YT.Player('ytPlayer', {
-        host: 'https://www.youtube-nocookie.com', videoId: VIDEO, width: '100%', height: '100%',
-        playerVars: { playsinline: 1, rel: 0, loop: 1, playlist: VIDEO, cc_load_policy: 1, cc_lang_pref: 'en' },   // captions on when the video has them
-        events: {
-          onReady: () => { ready = true; player.setVolume(80); if (want) player.playVideo(); changed(); },
-          onStateChange: (e) => { playing = e.data === 1; changed(); },      // 1 = playing
-          onError: () => { failed = true; changed(); }
-        }
-      });
+    function ramp(to, secs) {                       // Web Audio gain works on iPhones too (audio.volume does not)
+      if (mg) { const t = ctx.currentTime; mg.gain.cancelScheduledValues(t); mg.gain.setValueAtTime(mg.gain.value, t); mg.gain.linearRampToValueAtTime(to, t + secs); }
+      else audio.volume = to;
     }
-    function load() {                       // YouTube's player API, fetched while the envelope is showing
-      if (window.YT && window.YT.Player) return build();
-      const prev = window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady = () => { if (prev) prev(); build(); };
-      const sc = document.createElement('script');
-      sc.src = 'https://www.youtube.com/iframe_api'; sc.async = true;
-      sc.onerror = () => { failed = true; changed(); };
-      document.head.appendChild(sc);
+    audio.addEventListener('playing', () => { playing = true; changed(); });
+    audio.addEventListener('pause', () => { playing = false; changed(); });
+    audio.addEventListener('error', () => { failed = true; changed(); });
+    audio.addEventListener('timeupdate', () => {     // gentle fade at the end of each pass, then start again with a fade-in
+      if (!want || ending || !audio.duration) return;
+      if (audio.duration - audio.currentTime < LOOP_FADE) { ending = true; ramp(0, LOOP_FADE - 0.2); }
+    });
+    audio.addEventListener('ended', () => { ending = false; if (want) { audio.currentTime = 0; audio.play().catch(() => {}); ramp(LEVEL, FADE_IN); } });
+    document.addEventListener('visibilitychange', () => {   // quiet while the tab is in the background
+      if (document.hidden) { if (playing) { ramp(0, 0.4); setTimeout(() => audio.pause(), 450); } }
+      else if (want) { audio.play().catch(() => {}); ramp(LEVEL, FADE_IN); }
+    });
+    function load() { audio.preload = 'auto'; audio.load(); }
+    function play() {
+      want = true; clearTimeout(stopT); ending = false;
+      if (ctx && ctx.state === 'suspended') ctx.resume();
+      if (mg) mg.gain.value = Math.min(mg.gain.value, 0.0001); else audio.volume = 0;
+      audio.play().then(() => ramp(LEVEL, FADE_IN)).catch(() => { playing = false; changed(); });
+      changed();
     }
-    function play() { want = true; if (ready) player.playVideo(); changed(); }
-    function pause() { want = false; if (ready) player.pauseVideo(); changed(); }
+    function pause() { want = false; ramp(0, FADE_OUT); clearTimeout(stopT); stopT = setTimeout(() => { if (!want) audio.pause(); }, FADE_OUT * 1000 + 80); changed(); }
     function start() {                      // called inside the envelope tap so browsers allow sound
       if (!ctx) {
         const AC = window.AudioContext || window.webkitAudioContext;
-        if (AC) { ctx = new AC(); sfx = ctx.createGain(); sfx.gain.value = 0.5; sfx.connect(ctx.destination); }
+        if (AC) {
+          ctx = new AC(); sfx = ctx.createGain(); sfx.gain.value = 0.5; sfx.connect(ctx.destination);
+          try { mg = ctx.createGain(); mg.gain.value = 0; ctx.createMediaElementSource(audio).connect(mg); mg.connect(ctx.destination); } catch (e) { mg = null; }
+        }
       }
       play();
       return true;
@@ -1282,7 +1285,7 @@ body.after .after-note{display:block}
       $('#soundIcon').setAttribute('href', on ? '#i-sound-on' : '#i-sound-off');
       $('#soundTxt').textContent = on ? tr('music') : tr('muted');
       $('#songBtn').setAttribute('aria-current', String(on));
-      chip.hidden = !(chipReady && Music.wanted && !on && !Music.failed);   // e.g. iPhones need a tap on the player itself
+      chip.hidden = !(chipReady && Music.wanted && !on && !Music.failed);   // shown if the browser blocked autoplay
       if (Music.failed) { soundBtn.hidden = true; showTunes(false); }
     }
     Music.onChange = renderMusic;
