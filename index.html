@@ -815,7 +815,7 @@ body.after .after-note{display:block}
     </div>
     <div class="logo-chip"><img src="assets/ewcp-logo.png" width="1275" height="389" alt="East West College of Pharmacy" loading="lazy"></div>
     <p class="domain">6pharmd.fun</p>
-    <p class="legal">© 2026 Vishal T. All rights reserved.<br>College name and logo © East West College of Pharmacy. Music: “Wholesome” by Kevin MacLeod (incompetech.com), licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
+    <p class="legal">© 2026 Vishal T. All rights reserved.<br>College name and logo © East West College of Pharmacy. Music: “Carefree” by Kevin MacLeod (incompetech.com), licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
   </div>
 </footer>
 
@@ -827,7 +827,7 @@ body.after .after-note{display:block}
 </nav>
 <div class="tunes closed" id="tunes" role="dialog" aria-label="Music" aria-hidden="true">
   <p class="tunes-head">Music</p>
-  <button class="tune" type="button" id="songBtn"><b>Wholesome</b><span>Kevin MacLeod · royalty-free</span></button>
+  <button class="tune" type="button" id="songBtn"><b>Carefree</b><span>Kevin MacLeod · royalty-free</span></button>
   <button class="tune tune-off" type="button" id="musicOff">Music off</button>
 </div>
 <button class="play-chip" id="playChip" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sound-on"/></svg>Play music</button>
@@ -897,7 +897,7 @@ body.after .after-note{display:block}
 
   /* ---------- music: royalty-free track hosted with the site, faded in and out so it never starts or stops abruptly ---------- */
   const Music = (() => {
-    const TRACK = 'assets/music/wholesome.m4a';      // "Wholesome" by Kevin MacLeod (incompetech.com), CC BY 4.0
+    const TRACK = 'assets/music/carefree.m4a';       // "Carefree" by Kevin MacLeod (incompetech.com), CC BY 4.0
     const LEVEL = 0.7, FADE_IN = 2.5, FADE_OUT = 1.2, LOOP_FADE = 3;
     const audio = new Audio(); audio.preload = 'none'; audio.src = TRACK;
     let playing = false, want = false, failed = false, onChange = null, ctx = null, sfx = null, mg = null, stopT = 0, ending = false;
