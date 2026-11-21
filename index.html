@@ -455,7 +455,7 @@ body.in-sky .sky-ui{bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 .sky-ui .wish-share{color:var(--gold-text)}
 .lantern{--k:calc(.8 + var(--p,0) * 1.1);position:absolute;left:var(--x);bottom:-150px;display:grid;justify-items:center;gap:6px;pointer-events:none;animation:rise var(--dur) linear forwards}
 .lantern i{display:block;width:calc(30px * var(--k));height:calc(40px * var(--k));border-radius:12px 12px 16px 16px;background:linear-gradient(180deg,#FFD27A,#FF8A2A 70%,#E8650F);box-shadow:0 0 22px 6px rgba(255,170,60,.5),inset 0 -8px 10px rgba(255,240,180,.6)}
-.lantern span{width:max-content;max-width:min(260px,64vw);padding:6px 14px 5px;border-radius:12px;background:rgba(20,16,50,.45);color:#FFF4D6;font-family:var(--f-hand);font-weight:700;font-size:calc(16px + 8px * var(--p,0));line-height:1.25;text-align:center;text-shadow:0 1px 8px rgba(255,170,60,.45)}
+.lantern span{width:max-content;max-width:var(--mw,min(260px,64vw));padding:6px 14px 5px;border-radius:12px;background:rgba(20,16,50,.45);color:#FFF4D6;font-family:var(--f-hand);font-weight:700;font-size:calc(16px + 8px * var(--p,0));line-height:1.25;text-align:center;text-shadow:0 1px 8px rgba(255,170,60,.45)}
 @keyframes rise{0%{transform:translate(-50%,0) scale(var(--s));opacity:0}8%{opacity:1}50%{transform:translate(calc(-50% + var(--sw)),calc(var(--rise,440px) * -.5)) scale(var(--s))}88%{opacity:1}100%{transform:translate(-50%,calc(var(--rise,440px) * -1)) scale(calc(var(--s) * .75));opacity:0}}
 .wish-form{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;max-width:620px}
 .wish-form #wishText{flex:1 1 100%}
@@ -1106,7 +1106,13 @@ body.after .after-note{display:block}
     [[0, 's1'], [230, 's2'], [560, 's3'], [760, 's4'], [1060, 's5'], [1180, 's6']].forEach(([t, c]) => setTimeout(() => env.classList.add(c), t));
     setTimeout(finish, 2150);
   }
-  if (intro && getComputedStyle(intro).display !== 'none') {
+  const toLamps = /^#(lamps?|lanterns?|wish(es)?)$/i.test(location.hash);   // QR at the venue: 6pharmd.fun/#lamps
+  if (toLamps && intro) {
+    opened = true; intro.hidden = true; document.body.classList.remove('locked');
+    dock.hidden = false; dock.classList.remove('away'); hero.classList.add('drawn');
+    addEventListener('load', () => { const st = $('#wishes'); scrollTo(0, st.offsetTop + innerHeight * 0.45); });
+    intro.addEventListener('click', openInvite);
+  } else if (intro && getComputedStyle(intro).display !== 'none') {
     document.body.classList.add('locked');
     intro.addEventListener('click', openInvite);
   } else if (dock) {
@@ -1464,14 +1470,28 @@ body.after .after-note{display:block}
     openBtn.addEventListener('click', () => showPanel(true));
     $('#wishClose').addEventListener('click', () => { showPanel(false); openBtn.focus(); });
     let shared = WISHES.slice(), wi = 0, lastSent = 0;
+    const laneFree = [];                                  // when each lane is clear again
+    function pickLane() {                                 // lanes side by side; a lane is reused only after its last lantern has risen well clear
+      const n = Math.max(2, Math.min(4, Math.floor(sky.clientWidth / 240)));
+      const now = Date.now(), free = [];
+      for (let i = 0; i < n; i++) if (!(laneFree[i] > now)) free.push(i);
+      if (!free.length) return null;
+      const i = free[(Math.random() * free.length) | 0];
+      laneFree[i] = now + 5200;
+      return { x: (i + 0.5) * 100 / n, w: sky.clientWidth / n - 18 };
+    }
     function lantern(text, big) {
+      let x = rnd(6, 94), mw = '';
+      if (text && !big) { const l = pickLane(); if (!l) return false; x = l.x; mw = `;--mw:${l.w | 0}px`; }
+      if (big) { x = 50; mw = `;--mw:${Math.min(300, sky.clientWidth - 40) | 0}px`; }
       const el = document.createElement('div');
       el.className = 'lantern';
-      el.style.cssText = `--x:${big ? 50 : (text ? rnd(34, 66) : rnd(8, 92)).toFixed(0)}%;--dur:${big ? 12 : rnd(10, 14).toFixed(1)}s;--s:${big ? 1.15 : (text ? rnd(0.9, 1) : rnd(0.65, 1)).toFixed(2)};--sw:${rnd(-30, 30) | 0}px`;
+      el.style.cssText = `--x:${x.toFixed(1)}%;--dur:${big ? 12 : (text ? 13 : rnd(10, 14)).toFixed(1)}s;--s:${big ? 1.15 : (text ? 0.95 : rnd(0.55, 0.85)).toFixed(2)};--sw:${text ? 0 : rnd(-30, 30) | 0}px${mw}`;
       el.innerHTML = '<i></i>';
       if (text) { const sp = document.createElement('span'); sp.textContent = text; el.append(sp); }
       el.addEventListener('animationend', () => el.remove());
       sky.append(el);
+      return true;
     }
     const label = (w) => w.text + (w.from ? ' — ' + w.from : '');
     function load() {
@@ -1483,8 +1503,8 @@ body.after .after-note{display:block}
       if (document.hidden || reduce) return;
       const r = sky.getBoundingClientRect();
       if (r.bottom < 0 || r.top > innerHeight || sky.childElementCount > (zoom > 0.8 ? 14 : 8)) return;
-      const w = shared.length && Math.random() < Math.min(0.75, 0.2 + shared.length * 0.08) ? shared[wi++ % shared.length] : null;
-      lantern(w ? label(w) : '');
+      const w = shared.length && Math.random() < Math.min(0.75, 0.2 + shared.length * 0.08) ? shared[wi % shared.length] : null;
+      if (w) { if (lantern(label(w))) wi++; else lantern(''); } else lantern('');
     }, 1500);
     form.addEventListener('submit', (e) => {
       e.preventDefault();
